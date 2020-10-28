@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="fixing-solutions:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>fixing-solutions</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="fixing-solutions-0.0.1-SNAPSHOT.war">
+      <element id="artifact" artifact-name="fixing-solutions:war exploded" />
+    </root>
+  </artifact>
+</component>
