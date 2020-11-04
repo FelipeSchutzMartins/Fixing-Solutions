@@ -1,19 +1,20 @@
 package com.fixingsolutions.repository;
 
+import com.fixingsolutions.domain.Funcionario;
+
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Optional;
 
 
 public interface Dao<T> {
 
-	    Optional<T> get(long id) throws SQLException;
+	    Funcionario get(int id);
 
-	    List<T> getAll() throws SQLException;
+	    List<T> getAll();
 
-	    void save(T t) throws SQLException;
+	    void save(T t);
 
-	    void update(T t, String[] params) throws SQLException;
+	    void update(T t);
 
-	    void delete(T t) throws SQLException;
+	    void delete(T t);
 	}
