@@ -1,23 +1,13 @@
 <template>
   <div id="app">
-    <login></login>
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
- import Login from "./components/Login";
 
 export default {
   name: 'app',
-  components: {Login},
-  data () {
-    return {
-
-    }
-  }
 }
 </script>
 
-<style>
-
-</style>

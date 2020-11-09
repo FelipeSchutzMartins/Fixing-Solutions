@@ -1,25 +1,26 @@
 package com.fixingsolutions.domain;
 
 public class Funcionario{
-    private int id;
-    private int idCargo;
+    private Integer id;
+    private Integer idCargo;
     private String email;
     private String password;
     private String nome;
+    private boolean logado;
 
-    public void setId(int id){
+    public void setId(Integer id){
         this.id = id;
     }
 
-    public int getId(){
+    public Integer getId(){
         return this.id;
     }
 
-    public void setIdCargo(int idCargo){
+    public void setIdCargo(Integer idCargo){
         this.idCargo = idCargo;
     }
 
-    public int getIdCargo(){
+    public Integer getIdCargo(){
         return this.idCargo;
     }
 
@@ -45,5 +46,13 @@ public class Funcionario{
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public boolean isLogado() {
+        return logado;
+    }
+
+    public void setLogado(boolean logado) {
+        this.logado = logado;
     }
 }

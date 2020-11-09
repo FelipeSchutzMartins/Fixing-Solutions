@@ -12,135 +12,131 @@ public class FuncionarioDao implements Dao<Funcionario> {
   private Conexao conexao = new Conexao();
 
   @Override
-  public Funcionario get(int id){
+  public Funcionario get(int id) throws SQLException{
     String comando = "select * from funcionario where id = ?";
     Funcionario funcionario = new Funcionario();
 
-    try{
-      Connection dbConenection = conexao.abrirConexao();
-      PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
-      preparedStatement.setInt(1,id);
-      ResultSet rs = preparedStatement.executeQuery();
+    Connection dbConenection = conexao.abrirConexao();
+    PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
+    preparedStatement.setInt(1,id);
+    ResultSet rs = preparedStatement.executeQuery();
 
-      if(rs.next()){
+    if(rs.next()){
 
-        funcionario.setId(rs.getInt("id"));
-        funcionario.setEmail(rs.getString("email"));
-        funcionario.setPassword(rs.getString("password"));
-        funcionario.setNome(rs.getString("nome"));
-        funcionario.setIdCargo(rs.getInt("idCargo"));
-
-      }
-
-      dbConenection.close();
-    }catch (Exception e){
-
-      System.out.println("Erro ao buscar funcionario"+e);
-
+      funcionario.setId(rs.getInt("id"));
+      funcionario.setEmail(rs.getString("email"));
+      funcionario.setPassword(rs.getString("password"));
+      funcionario.setNome(rs.getString("nome"));
+      funcionario.setIdCargo(rs.getInt("idCargo"));
+      funcionario.setLogado(rs.getBoolean("logado"));
     }
+
+    dbConenection.close();
+
     return funcionario;
   }
 
   @Override
-  public List<Funcionario> getAll(){
+  public List<Funcionario> getAll() throws SQLException {
 
     List<Funcionario> funcionarios = new ArrayList<Funcionario>();
     Funcionario funcionario = null;
     String comando = "select * from funcionario";
-    try{
-      Connection dbConenection = conexao.abrirConexao();
-      Statement stmt = dbConenection.createStatement();
-      ResultSet rs = stmt.executeQuery(comando);
 
-      while(rs.next()) {
+    Connection dbConenection = conexao.abrirConexao();
+    Statement stmt = dbConenection.createStatement();
+    ResultSet rs = stmt.executeQuery(comando);
+
+    while(rs.next()) {
         funcionario = new Funcionario();
         funcionario.setId(rs.getInt("id"));
         funcionario.setIdCargo(rs.getInt("idCargo"));
         funcionario.setNome(rs.getString("nome"));
         funcionario.setEmail(rs.getString("email"));
-        funcionario.setPassword(rs.getString("password-"));
+        funcionario.setPassword(rs.getString("password"));
+        funcionario.setLogado(rs.getBoolean("logado"));
         funcionarios.add(funcionario);
-      }
-
-      dbConenection.close();
-
-    }catch(Exception e){
-
-      System.out.println("Erro ao buscar funcionarios"+e);
-
     }
+
+    dbConenection.close();
 
     return funcionarios;
 
   }
 
   @Override
-  public void save(Funcionario funcionario){
-    String comando = "insert into funcionario(nome,email,password,idCargo) values ?,?,?,?";
+  public void save(Funcionario funcionario) throws SQLException{
 
-    try{
-      Connection dbConenection = conexao.abrirConexao();
-      PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
-      preparedStatement.setString(1,funcionario.getNome());
-      preparedStatement.setString(2,funcionario.getEmail());
-      preparedStatement.setString(3,funcionario.getPassword());
-      preparedStatement.setInt(4,funcionario.getIdCargo());
+    String comando = "insert into funcionario(nome,email,password,idCargo) values (?,?,?,?)";
+    Connection dbConenection = conexao.abrirConexao();
+    PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
+    preparedStatement.setString(1,funcionario.getNome());
+    preparedStatement.setString(2,funcionario.getEmail());
+    preparedStatement.setString(3,funcionario.getPassword());
+    preparedStatement.setInt(4,funcionario.getIdCargo());
 
-      ResultSet rs = preparedStatement.executeQuery();
+    int rs = preparedStatement.executeUpdate();
 
-      dbConenection.close();
-
-    }catch (Exception e){
-
-      System.out.println("Erro ao inserir funcionario"+e);
-
-    }
+    dbConenection.close();
 
   }
 
   @Override
-  public void update(Funcionario funcionario){
-    String comando = "update funcionario set nome = ?,email = ?,password = ?, idCargo = ? where id = ?";
+  public void update(Funcionario funcionario) throws SQLException{
+    String comando = "update funcionario set nome = ?,email = ?,password = ?, idCargo = ?, logado = ? where id = ?";
 
-    try{
-      Connection dbConenection = conexao.abrirConexao();
-      PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
-      preparedStatement.setString(1,funcionario.getNome());
-      preparedStatement.setString(2,funcionario.getEmail());
-      preparedStatement.setString(3,funcionario.getPassword());
-      preparedStatement.setInt(4,funcionario.getIdCargo());
-      preparedStatement.setInt(5,funcionario.getId());
+    Connection dbConenection = conexao.abrirConexao();
+    PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
+    preparedStatement.setString(1,funcionario.getNome());
+    preparedStatement.setString(2,funcionario.getEmail());
+    preparedStatement.setString(3,funcionario.getPassword());
+    preparedStatement.setInt(4,funcionario.getIdCargo());
+    preparedStatement.setInt(5,funcionario.getId());
+    preparedStatement.setBoolean(6,funcionario.isLogado());
 
-      ResultSet rs = preparedStatement.executeQuery();
+    Integer rs = preparedStatement.executeUpdate();
 
-      dbConenection.close();
-
-    }catch (Exception e){
-
-      System.out.println("Erro ao atualizar funcionario"+e);
-
-    }
+    dbConenection.close();
 
   }
 
   @Override
-  public void delete(Funcionario funcionario){
+  public void delete(Funcionario funcionario) throws SQLException{
     String comando = "delete from funcionario where id = ?";
 
-    try{
-      Connection dbConenection = conexao.abrirConexao();
-      PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
-      preparedStatement.setInt(1,funcionario.getId());
+    Connection dbConenection = conexao.abrirConexao();
+    PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
+    preparedStatement.setInt(1,funcionario.getId());
 
-      ResultSet rs = preparedStatement.executeQuery();
+    ResultSet rs = preparedStatement.executeQuery();
 
-      dbConenection.close();
+    dbConenection.close();
 
-    }catch (Exception e){
+  }
 
-      System.out.println("Erro ao deletar funcionario"+e);
+  public Funcionario findByEmailSenha(String email,String senha) throws SQLException{
 
+    String comando = "select * from funcionario where email = ? and password   = ?";
+    Funcionario funcionario = new Funcionario();
+
+    Connection dbConenection = conexao.abrirConexao();
+    PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
+    preparedStatement.setString(1,email);
+    preparedStatement.setString(2,senha);
+    ResultSet rs = preparedStatement.executeQuery();
+
+    if(rs.next()) {
+
+      funcionario.setId(rs.getInt("id"));
+      funcionario.setEmail(rs.getString("email"));
+      funcionario.setPassword(rs.getString("password"));
+      funcionario.setNome(rs.getString("nome"));
+      funcionario.setIdCargo(rs.getInt("idCargo"));
+      funcionario.setLogado(rs.getBoolean("logado"));
     }
+
+    dbConenection.close();
+    return funcionario;
 
   }
 
