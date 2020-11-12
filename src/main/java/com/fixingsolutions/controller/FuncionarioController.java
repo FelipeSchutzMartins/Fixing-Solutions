@@ -21,38 +21,76 @@ public class FuncionarioController {
 
     @CrossOrigin(origins = "http://localhost:8081")
     @GetMapping("/buscarCargos")
-    public ResponseEntity buscarCargos(){
+    public ResponseEntity<?> buscarCargos(){
 
         AjaxResponseBody resposta = new AjaxResponseBody();
         CargoDao dao = new CargoDao();
-        List<Cargo> cargos = dao.getAll();
-        if(cargos.isEmpty()){
+        try {
+            List<Cargo> cargos = dao.getAll();
+            if (cargos.isEmpty()) {
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Cargos não encontrados");
+            }
+
+            resposta.setResult(cargos);
+        }catch(Exception e){
             return ResponseEntity
-                    .status(HttpStatus.FORBIDDEN)
-                    .body("Cargo não encontrado");
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Houve um problema, tente novamente mais tarde");
         }
-
-        resposta.setResult(cargos);
-
         return ResponseEntity.ok(resposta);
 
     }
 
     @CrossOrigin(origins = "http://localhost:8081")
-    @PostMapping(value = "/criarConta", consumes = {MediaType.APPLICATION_JSON_VALUE })
+    @PostMapping(value = "/criarConta",consumes = {MediaType.APPLICATION_JSON_VALUE })
     @ResponseBody
-    public ResponseEntity criarConta(@RequestBody Map<String,Object> params){
+    public ResponseEntity<?> criarConta(@RequestBody Map<String,Object> params){
 
         AjaxResponseBody resposta = new AjaxResponseBody();
         Funcionario funcionario = new Funcionario();
-        funcionario.setEmail((String) params.get("email"));
-        funcionario.setPassword((String) params.get("senha"));
-        funcionario.setNome((String) params.get("nome"));
-        funcionario.setIdCargo((Integer) params.get("cargo"));
+        try {
 
-        FuncionarioDao dao = new FuncionarioDao();
-        dao.save(funcionario);
+            String email = (String) params.get("email");
+            if(email == null || email.isEmpty()){
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Email inválido");
+            }
 
+            String senha = (String) params.get("senha");
+            if(senha == null || senha.isEmpty()){
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Senha inválido");
+            }
+            String nome = (String) params.get("nome");
+            if(nome == null || nome.isEmpty()){
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Nome inválido");
+            }
+            Integer cargo = (Integer) params.get("cargo");
+            if(cargo == null){
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Cargo inválido");
+            }
+
+            funcionario.setEmail(email);
+            funcionario.setPassword(senha);
+            funcionario.setNome(nome);
+            funcionario.setIdCargo(cargo);
+
+            FuncionarioDao dao = new FuncionarioDao();
+            dao.save(funcionario);
+
+        }catch (Exception e){
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Houve um problema, tente novamente mais tarde");
+        }
         return ResponseEntity.ok(resposta);
 
     }

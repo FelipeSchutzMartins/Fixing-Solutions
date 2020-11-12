@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@vue/cli": "^4.5.4",
+    "bootstrap-vue": "^2.19.0",
     "core-js": "^3.6.5",
     "jquery": "^3.5.1",
     "vue": "^2.6.11",
@@ -38,7 +39,9 @@
     "parserOptions": {
       "parser": "babel-eslint"
     },
-    "rules": {}
+    "rules": {
+      "no-unused-vars": "off"
+    }
   },
   "browserslist": [
     "> 1%",

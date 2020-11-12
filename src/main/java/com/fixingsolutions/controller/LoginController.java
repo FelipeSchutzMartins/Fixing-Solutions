@@ -3,12 +3,12 @@ package com.fixingsolutions.controller;
 import com.fixingsolutions.bean.FuncionarioDao;
 import com.fixingsolutions.domain.AjaxResponseBody;
 import com.fixingsolutions.domain.Funcionario;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
-
 
 @RestController
 public class LoginController {
@@ -19,15 +19,39 @@ public class LoginController {
     public ResponseEntity<?> login(@RequestBody Map<String,Object> params){
 
         AjaxResponseBody result = new AjaxResponseBody();
-        String email = (String) params.get("email");
-        String password = (String) params.get("senha");
+
 
         FuncionarioDao dao = new FuncionarioDao();
+        try {
 
-        Funcionario funcionario = dao.findByEmailSenha(email,password);
-        if(funcionario.getId() != null){
-            funcionario.setLogado(true);
-            dao.update(funcionario);
+            String email = (String) params.get("email");
+            if(email == null || email.isEmpty() || !email.contains("@")){
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Email inválido");
+            }
+
+            String senha = (String) params.get("senha");
+            if(senha == null || senha.isEmpty()){
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Senha inválida");
+            }
+
+            Funcionario funcionario = dao.findByEmailSenha(email,senha);
+            if (funcionario.getId() != null) {
+                funcionario.setLogado(true);
+                dao.update(funcionario);
+            }else{
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Usuário não encontrado");
+            }
+
+        }catch (Exception e){
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Houve um problema, tente nvoamente mais tarde");
         }
 
         return ResponseEntity.ok(result);

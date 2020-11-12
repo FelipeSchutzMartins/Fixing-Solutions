@@ -1,10 +1,20 @@
 <template>
-  <div>
-    <input v-model="email" placeholder="seuemail@emailless.com">
-    <br><br>
-    <input v-model="senha" :type="'password'">
-    <br><br>
-    <button @click="$router.push({ name:'criarConta'})">Criar Conta</button><button @click="fazerLogin()">Login</button>
+  <div style="background: dodgerblue;height: 100vh;" class="d-flex justify-content-center">
+    <div class="card align-self-center rounded" style="width: 400px;">
+      <form class="col-12">
+        <div class="card-body">
+          <label>Email</label>
+          <input v-model="email" placeholder="seuemail@emailless.com" class="form-control">
+        </div>
+        <div class="card-body">
+          <label>Senha</label>
+          <input v-model="senha" :type="'password'" class="form-control">
+        </div>
+        <div class="card-body">
+          <button @click="$router.push({ name:'criarConta'})" class="btn btn-primary">Criar Conta</button><button @click="fazerLogin()" class="btn btn-success float-right">Login</button>
+        </div>
+      </form>
+    </div>
   </div>
 </template>
 
@@ -31,7 +41,12 @@
             dataType: 'json',
             data: JSON.stringify({email:ref.email,senha:ref.senha}),
             success: function (result) {
-              console.log(result)
+              alert("Logado com sucesso!")
+            },
+            error: function (result){
+
+              alert(result.responseText)
+
             }
           });
         }

@@ -5,9 +5,14 @@
 </template>
 
 <script>
-
 export default {
   name: 'app',
 }
 </script>
+
+<style>
+body{
+  font-family:"Century Gothic", Arial;
+}
+</style>
 
