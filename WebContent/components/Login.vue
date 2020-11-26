@@ -1,5 +1,6 @@
 <template>
   <div style="background: dodgerblue;height: 100vh;" class="d-flex justify-content-center">
+<!--    <div style="height: 100vh;" :style="{backgroundImage: 'url('+require('../assets/backgroundImage.jpg')+')'}" class="d-flex justify-content-center">-->
     <div class="card align-self-center rounded" style="width: 400px;">
       <form class="col-12">
         <div class="card-body">
@@ -11,7 +12,7 @@
           <input v-model="senha" :type="'password'" class="form-control">
         </div>
         <div class="card-body">
-          <button @click="$router.push({ name:'criarConta'})" class="btn btn-primary">Criar Conta</button><button @click="fazerLogin()" class="btn btn-success float-right">Login</button>
+          <button @click="$router.push({ name:'criarConta'})" class="btn btn-primary">Criar Conta</button><button @click="fazerLogin()" type="button" class="btn btn-success float-right">Login</button>
         </div>
       </form>
     </div>
@@ -32,7 +33,7 @@
       methods: {
         fazerLogin: function () {
 
-          var ref = this
+          var ref = this;
 
           $.ajax({
             method: "POST",
@@ -41,7 +42,9 @@
             dataType: 'json',
             data: JSON.stringify({email:ref.email,senha:ref.senha}),
             success: function (result) {
-              alert("Logado com sucesso!")
+
+              ref.$router.push({ name:'home',params: { user: 'someValue' }})
+
             },
             error: function (result){
 

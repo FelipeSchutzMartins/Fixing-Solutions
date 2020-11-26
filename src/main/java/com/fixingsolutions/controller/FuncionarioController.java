@@ -60,6 +60,7 @@ public class FuncionarioController {
             }
 
             String senha = (String) params.get("senha");
+
             if(senha == null || senha.isEmpty()){
                 return ResponseEntity
                         .status(HttpStatus.INTERNAL_SERVER_ERROR)
