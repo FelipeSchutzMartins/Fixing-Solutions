@@ -39,10 +39,7 @@ public class LoginController {
             }
 
             Funcionario funcionario = dao.findByEmailSenha(email,senha);
-            if (funcionario.getId() != null) {
-                funcionario.setLogado(true);
-                dao.update(funcionario);
-            }else{
+            if (funcionario.getId() == null){
                 return ResponseEntity
                         .status(HttpStatus.INTERNAL_SERVER_ERROR)
                         .body("Usuário não encontrado");

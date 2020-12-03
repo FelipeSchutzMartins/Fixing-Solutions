@@ -20,8 +20,6 @@
 </template>
 
 <script>
-    import jQuery from "jquery";
-    const $ = jQuery;
     export default {
       name: "Login",
       data() {
@@ -35,7 +33,7 @@
 
           var ref = this;
 
-          $.ajax({
+          window.$.ajax({
             method: "POST",
             url: "http://localhost:8080/login",
             contentType: "application/json",

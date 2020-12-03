@@ -83,12 +83,12 @@ public class CargoDao implements Dao<Cargo> {
     }
 
     @Override
-    public void delete(Cargo cargo) throws SQLException{
+    public void delete(Integer id) throws SQLException{
         String comando = "delete from cargo where id = ?";
 
         Connection dbConenection = conexao.abrirConexao();
         PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
-        preparedStatement.setInt(1,cargo.getId());
+        preparedStatement.setInt(1,id);
 
         ResultSet rs = preparedStatement.executeQuery();
         dbConenection.close();

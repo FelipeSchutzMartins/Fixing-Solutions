@@ -28,7 +28,6 @@ public class FuncionarioDao implements Dao<Funcionario> {
       funcionario.setPassword(rs.getString("password"));
       funcionario.setNome(rs.getString("nome"));
       funcionario.setIdCargo(rs.getInt("idCargo"));
-      funcionario.setLogado(rs.getBoolean("logado"));
     }
 
     dbConenection.close();
@@ -54,7 +53,6 @@ public class FuncionarioDao implements Dao<Funcionario> {
         funcionario.setNome(rs.getString("nome"));
         funcionario.setEmail(rs.getString("email"));
         funcionario.setPassword(rs.getString("password"));
-        funcionario.setLogado(rs.getBoolean("logado"));
         funcionarios.add(funcionario);
     }
 
@@ -83,7 +81,7 @@ public class FuncionarioDao implements Dao<Funcionario> {
 
   @Override
   public void update(Funcionario funcionario) throws SQLException{
-    String comando = "update funcionario set nome = ?,email = ?,password = ?, idCargo = ?, logado = ? where id = ?";
+    String comando = "update funcionario set nome = ?,email = ?,password = ?, idCargo = ?  where id = ?";
 
     Connection dbConenection = conexao.abrirConexao();
     PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
@@ -92,7 +90,6 @@ public class FuncionarioDao implements Dao<Funcionario> {
     preparedStatement.setString(3,funcionario.getPassword());
     preparedStatement.setInt(4,funcionario.getIdCargo());
     preparedStatement.setInt(5,funcionario.getId());
-    preparedStatement.setBoolean(6,funcionario.isLogado());
 
     Integer rs = preparedStatement.executeUpdate();
 
@@ -101,12 +98,12 @@ public class FuncionarioDao implements Dao<Funcionario> {
   }
 
   @Override
-  public void delete(Funcionario funcionario) throws SQLException{
+  public void delete(Integer id) throws SQLException{
     String comando = "delete from funcionario where id = ?";
 
     Connection dbConenection = conexao.abrirConexao();
     PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
-    preparedStatement.setInt(1,funcionario.getId());
+    preparedStatement.setInt(1,id);
 
     ResultSet rs = preparedStatement.executeQuery();
 
@@ -132,7 +129,6 @@ public class FuncionarioDao implements Dao<Funcionario> {
       funcionario.setPassword(rs.getString("password"));
       funcionario.setNome(rs.getString("nome"));
       funcionario.setIdCargo(rs.getInt("idCargo"));
-      funcionario.setLogado(rs.getBoolean("logado"));
     }
 
     dbConenection.close();

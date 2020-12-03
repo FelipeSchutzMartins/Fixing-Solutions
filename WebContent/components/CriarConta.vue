@@ -31,8 +31,6 @@
 </template>
 
 <script>
-    import jQuery from "jquery";
-    const $ = jQuery;
     export default {
         name: "criarConta",
         data () {
@@ -48,7 +46,7 @@
           cadastrar: function () {
             var ref = this
 
-            $.ajax({
+            window.$.ajax({
               method: "POST",
               url: "http://localhost:8080/criarConta",
               contentType: 'application/json',
@@ -73,7 +71,7 @@
           buscarCargos: function (){
             var ref = this
 
-            $.ajax({
+            window.$.ajax({
               method: "GET",
               url: "http://localhost:8080/buscarCargos",
               contentType: "application/json",

@@ -13,7 +13,7 @@ foreign key (idCargo) references cargo(id) );
 create table cliente(id int not null auto_increment primary key,
 nome varchar(45),
 email varchar(70),
-cpf char(11) ,
+cpf VARCHAR(20) ,
 telefone VARCHAR(20)
 );
 
