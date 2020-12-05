@@ -4,13 +4,13 @@
     <div style="background: dodgerblue;height: 100vh;" class="d-flex justify-content-center">
       <div v-if="!clientes"  style="background-color: white;height: 43%;width: 50%;display: block;" class="align-self-center rounded">
         <div style="margin-left: 5%;margin-top: 5%;display: block;">
-          <button style="width: 30%;height:90px;">OS</button>
-          <button style="width: 30%;height:90px;margin-left: 2%;" @click="clientes=true">Clientes</button>
-          <button style="width: 30%;height:90px;margin-left: 2%;">Orçamento</button>
+          <button style="width: 30%;height:90px;" class="btn-default bg-info rounded btn-sm">OS</button>
+          <button style="width: 30%;height:90px;margin-left: 2%;" class="btn-default bg-info rounded btn-sm" @click="abrirCliente()">Clientes</button>
+          <button style="width: 30%;height:90px;margin-left: 2%;"  class="btn-default bg-info rounded btn-sm">Orçamento</button>
         </div>
         <div style="margin-left: 5%;margin-top: 5%;display: block;">
-          <button style="width: 30%;height:90px;">Funcionários</button>
-          <button style="width: 30%;margin-left: 2%;height:90px;">Relatórios</button>
+          <button style="width: 30%;height:90px;" class="btn-default bg-info rounded btn-sm">Funcionários</button>
+          <button style="width: 30%;margin-left: 2%;height:90px;" class="btn-default bg-info rounded btn-sm">Relatórios</button>
         </div>
       </div>
       <Cliente v-if="clientes"></Cliente>
@@ -41,6 +41,21 @@ export default {
   },
   mounted() {
     // alert(this.user)
+  },
+  methods:{
+    abrirCliente: function (){
+
+      var ref = this;
+
+      ref.clientes = true
+
+    },
+    abrirHome: function (){
+
+      var ref = this
+      ref.clientes = false
+
+    }
   }
 }
 </script>

@@ -1,10 +1,34 @@
 <template>
-  <div style="height: 43%;width: 50%;display: block;" class="align-self-center rounded">
-    <button @click="showModal('criarCliente')">Criar Cliente</button>
-    <div style="background-color: white;height: 86%;width: 100%;display: block;" class="align-self-center rounded">
-      <Tabela :url="'http://localhost:8080/buscarClientes'" ref="tabela"></Tabela>
-    </div>
-    <b-modal ref="criarCliente" hide-footer title="Criar Cliente">
+  <div class="align-self-center">
+    <button @click="showModal('criarCliente','reload')" style="height: 45px;" class="btn-default btn-success rounded">Criar Cliente</button>
+    <div style="height: auto;width: auto;display: block;margin-top: 15px;text-align: center;" class="rounded">
+      <div style="background-color: white;height: 86%;width: 100%;display: block;" class="align-self-center rounded">
+        <Tabela :url="'http://localhost:8080/buscarClientes'" ref="tabelaAjax"></Tabela>
+      </div>
+      <b-modal ref="criarCliente" hide-footer title="Criar Cliente">
+          <form class="col-12">
+            <div class="card-body">
+              <label>Nome</label>
+              <input v-model="nome" class="form-control">
+            </div>
+            <div class="card-body">
+              <label>Email</label>
+              <input v-model="email" placeholder="seuemail@emailless.com" class="form-control">
+            </div>
+            <div class="card-body">
+              <label>CPF</label>
+              <input v-model="cpf" v-mask="'###.###.###-##'" class="form-control">
+            </div>
+            <div class="card-body">
+              <label>Telefone</label>
+              <input v-model="telefone" v-mask="'(##) #####-####'" class="form-control">
+            </div>
+            <div class="card-body">
+              <button @click="criarCliente()" type="button" class="btn btn-success float-right">Criar</button>
+            </div>
+          </form>
+      </b-modal>
+      <b-modal ref="editar" hide-footer onclose="reload()">
         <form class="col-12">
           <div class="card-body">
             <label>Nome</label>
@@ -23,33 +47,11 @@
             <input v-model="telefone" v-mask="'(##) #####-####'" class="form-control">
           </div>
           <div class="card-body">
-            <button @click="criarCliente()" type="button" class="btn btn-success float-right">Criar</button>
+            <button @click="excluir()" class="btn btn-danger float-left" type="button">Excluir</button><button @click="editar()" type="button" class="btn btn-success float-right">Salvar</button>
           </div>
         </form>
-    </b-modal>
-    <b-modal ref="editar" hide-footer>
-      <form class="col-12">
-        <div class="card-body">
-          <label>Nome</label>
-          <input v-model="nome" class="form-control">
-        </div>
-        <div class="card-body">
-          <label>Email</label>
-          <input v-model="email" placeholder="seuemail@emailless.com" class="form-control">
-        </div>
-        <div class="card-body">
-          <label>CPF</label>
-          <input v-model="cpf" v-mask="'###.###.###-##'" class="form-control">
-        </div>
-        <div class="card-body">
-          <label>Telefone</label>
-          <input v-model="telefone" v-mask="'(##) #####-####'" class="form-control">
-        </div>
-        <div class="card-body">
-          <button @click="excluir()" class="btn btn-danger float-left" type="button">Excluir</button><button @click="editar()" type="button" class="btn btn-success float-right">Salvar</button>
-        </div>
-      </form>
-    </b-modal>
+      </b-modal>
+    </div>
   </div>
 </template>
 
@@ -80,6 +82,7 @@ export default {
         success: function (result) {
 
           alert("Cliente criado com sucesso!")
+          ref.hideModal('criarCliente')
           ref.reload();
 
         },
@@ -104,6 +107,7 @@ export default {
         success: function (result) {
 
           alert("Cliente atualizado com sucesso!")
+          ref.hideModal('editar')
           ref.reload();
 
         },
@@ -128,6 +132,7 @@ export default {
         success: function (result) {
 
           alert("Cliente excluido com sucesso!")
+          ref.hideModal('editar')
           ref.reload();
 
         },
@@ -138,19 +143,17 @@ export default {
         }
       });
     },
-    showModal: function(modaiId) {
-
-      this.$refs[modaiId].show()
+    showModal: function(modaiId,acao) {
+      var ref = this
+      if(acao=='reload'){
+        ref.reload();
+      }
+      ref.$refs[modaiId].show()
 
     },
     hideModal: function(modaiId) {
 
       this.$refs[modaiId].hide()
-
-    },
-    toggleModal: function(modaiId) {
-
-      this.$refs[modaiId].toggle('#toggle-btn')
 
     },
     abrirPopupEditar: function(cliente){
@@ -167,7 +170,7 @@ export default {
     reload: function (){
 
       var ref = this;
-      ref.$ref.tabela.request();
+      ref.$refs.tabelaAjax.request();
       ref.id = null
       ref.telefone = null
       ref.nome = null

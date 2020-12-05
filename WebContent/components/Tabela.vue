@@ -1,18 +1,18 @@
 <template>
-  <div>
-    <table>
+    <table class="table table-bordered">
+      <thead class="thead-dark">
+        <tr>
+          <th v-for="chave in keys" :key="chave" scope="col">{{ chave }}</th>
+          <th></th>
+        </tr>
+      </thead>
       <tbody>
-      <tr>
-        <td v-for="chave in keys" :key="chave">{{ chave }}</td>
-        <td></td>
-      </tr>
       <tr v-for="dado in dados" :key="dado.id">
-        <td v-for="(value , key) in dado" :key="key">{{ value }}</td>
-        <button type="button" @click="editar(dado)">Editar</button>
+        <td scope="row" v-for="(value , key) in dado" :key="key">{{ value }}</td>
+        <td><button type="button" class="btn-sm btn-primary btn-rounded" @click="editar(dado)">Editar</button></td>
       </tr>
       </tbody>
     </table>
-  </div>
 </template>
 
 <script>
