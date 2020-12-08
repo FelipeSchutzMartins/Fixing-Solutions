@@ -1,8 +1,9 @@
 <template>
   <div>
     <Header></Header>
-    <div style="background: dodgerblue;height: 100vh;" class="d-flex justify-content-center">
-      <div v-if="!clientes"  style="background-color: white;height: 43%;width: 50%;display: block;" class="align-self-center rounded">
+    <div style="height: 100vh;" :style="{ backgroundImage: 'url(' + require('../assets/backgroundImage.jpg') + ')' }"  class="d-flex justify-content-center">
+<!--      style="background: dodgerblue;height: 100vh;"-->
+      <div v-if="!clientes"  style="background-color: white;height: 44%;width: 50%;display: block;" class="align-self-center rounded">
         <div style="margin-left: 5%;margin-top: 5%;display: block;">
           <button style="width: 30%;height:90px;" class="btn-default bg-info rounded btn-sm">OS</button>
           <button style="width: 30%;height:90px;margin-left: 2%;" class="btn-default bg-info rounded btn-sm" @click="abrirCliente()">Clientes</button>

@@ -1,6 +1,6 @@
 <template>
-  <div style="background: dodgerblue;height: 100vh;" class="d-flex justify-content-center">
-<!--    <div style="height: 100vh;" :style="{backgroundImage: 'url('+require('../assets/backgroundImage.jpg')+')'}" class="d-flex justify-content-center">-->
+<!--  <div style="background: dodgerblue;height: 100vh;" class="d-flex justify-content-center">-->
+    <div style="height: 100vh;" :style="{backgroundImage: 'url('+require('../assets/backgroundImage.jpg')+')'}" class="d-flex justify-content-center">
     <div class="card align-self-center rounded" style="width: 400px;">
       <form class="col-12">
         <div class="card-body">
