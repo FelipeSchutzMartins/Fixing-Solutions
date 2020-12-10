@@ -8,7 +8,7 @@
       </thead>
       <tbody>
       <tr v-for="dado in dados" :key="dado.id">
-        <td scope="row" v-for="(value , key) in dado" :key="key">{{ value }}</td>
+        <td scope="row" v-for="(value , key) in dado" :key="key">{{ value != null ? value.descricao == undefined ? value : value.descricao : value }}</td>
         <td><button type="button" class="btn-sm btn-primary btn-rounded" @click="editar(dado)">Editar</button></td>
       </tr>
       </tbody>

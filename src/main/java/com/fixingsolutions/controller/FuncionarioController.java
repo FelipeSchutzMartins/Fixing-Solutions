@@ -1,8 +1,10 @@
 package com.fixingsolutions.controller;
 
+import com.fixingsolutions.bean.ClienteDao;
 import com.fixingsolutions.bean.FuncionarioDao;
 import com.fixingsolutions.domain.AjaxResponseBody;
 import com.fixingsolutions.domain.Cargo;
+import com.fixingsolutions.domain.Cliente;
 import com.fixingsolutions.domain.Funcionario;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -72,22 +74,135 @@ public class FuncionarioController {
                         .status(HttpStatus.INTERNAL_SERVER_ERROR)
                         .body("Nome inválido");
             }
-            Integer cargo = (Integer) params.get("cargo");
-            if(cargo == null){
+            Integer idCargo = (Integer) params.get("cargo");
+            if(idCargo == null){
                 return ResponseEntity
                         .status(HttpStatus.INTERNAL_SERVER_ERROR)
                         .body("Cargo inválido");
             }
 
+            CargoDao cargoDao = new CargoDao();
+            Cargo cargo = cargoDao.get(idCargo);
+
             funcionario.setEmail(email);
             funcionario.setPassword(senha);
             funcionario.setNome(nome);
-            funcionario.setIdCargo(cargo);
+            funcionario.setCargo(cargo);
 
             FuncionarioDao dao = new FuncionarioDao();
             dao.save(funcionario);
 
         }catch (Exception e){
+            System.out.println("Houve um problema a criar conta || e: "+e);
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Houve um problema, tente novamente mais tarde");
+        }
+        return ResponseEntity.ok(resposta);
+
+    }
+
+    @CrossOrigin(origins = "http://localhost:8081")
+    @GetMapping("/buscarFuncionario")
+    public ResponseEntity<?> buscarFuncionario(){
+
+        AjaxResponseBody resposta = new AjaxResponseBody();
+        FuncionarioDao dao = new FuncionarioDao();
+        try {
+            List<Funcionario> funcionarios = dao.getAll();
+            if (funcionarios.isEmpty()) {
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Cargos não encontrados");
+            }
+            resposta.setResult(funcionarios);
+        }catch(Exception e){
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Houve um problema, tente novamente mais tarde");
+        }
+        return ResponseEntity.ok(resposta);
+
+    }
+
+    @CrossOrigin(origins = "http://localhost:8081")
+    @DeleteMapping(value = "/deletarFuncionario",consumes = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<?> deletarCliente(@RequestBody Map<String,Object> params){
+
+        AjaxResponseBody resposta = new AjaxResponseBody();
+
+        try {
+
+            Integer id = (Integer) params.get("id");
+
+
+            FuncionarioDao dao = new  FuncionarioDao();
+            dao.delete(id);
+
+
+        }catch(Exception e){
+            System.out.println(e);
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Houve um problema, tente novamente mais tarde");
+        }
+        return ResponseEntity.ok(resposta);
+
+    }
+
+    @CrossOrigin(origins = "http://localhost:8081")
+    @PutMapping(value = "/editarFuncionario",consumes = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<?> editarCliente(@RequestBody Map<String,Object> params){
+
+        AjaxResponseBody resposta = new AjaxResponseBody();
+        Funcionario funcionario = new Funcionario();
+
+        try {
+
+            Integer id = (Integer) params.get("id");
+
+            String email = (String) params.get("email");
+            if(email == null || email.isEmpty()){
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Email inválido");
+            }
+
+            String senha = (String) params.get("senha");
+
+            if(senha == null || senha.isEmpty()){
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Senha inválido");
+            }
+            String nome = (String) params.get("nome");
+            if(nome == null || nome.isEmpty()){
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Nome inválido");
+            }
+            Integer idCargo = (Integer) params.get("cargo");
+            if(idCargo == null){
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Cargo inválido");
+            }
+
+            CargoDao cargoDao = new CargoDao();
+            Cargo cargo = cargoDao.get(idCargo);
+
+            funcionario.setEmail(email);
+            funcionario.setPassword(senha);
+            funcionario.setNome(nome);
+            funcionario.setCargo(cargo);
+            funcionario.setId(id);
+
+            FuncionarioDao dao = new FuncionarioDao();
+            dao.update(funcionario);
+
+
+        }catch(Exception e){
+            System.out.println(e);
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Houve um problema, tente novamente mais tarde");
