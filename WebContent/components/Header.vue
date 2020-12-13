@@ -17,7 +17,7 @@
     <nav class="navbar navbar-dark bg-dark">
 
       <button class="navbar-toggler float-right" type="button" @click="isPanelOpen=true"><span class="navbar-toggler-icon"></span></button>
-
+      <h4 style="color: white;margin-right: 45%;">Fixing Solutions</h4>
     </nav>
 
   </div>

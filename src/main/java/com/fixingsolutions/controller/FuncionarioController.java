@@ -1,21 +1,17 @@
 package com.fixingsolutions.controller;
 
-import com.fixingsolutions.bean.ClienteDao;
 import com.fixingsolutions.bean.FuncionarioDao;
 import com.fixingsolutions.domain.AjaxResponseBody;
 import com.fixingsolutions.domain.Cargo;
-import com.fixingsolutions.domain.Cliente;
 import com.fixingsolutions.domain.Funcionario;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+
 import com.fixingsolutions.bean.CargoDao;
 
 @RestController
@@ -85,7 +81,7 @@ public class FuncionarioController {
             Cargo cargo = cargoDao.get(idCargo);
 
             funcionario.setEmail(email);
-            funcionario.setPassword(senha);
+            funcionario.setSenha(senha);
             funcionario.setNome(nome);
             funcionario.setCargo(cargo);
 
@@ -127,7 +123,7 @@ public class FuncionarioController {
 
     @CrossOrigin(origins = "http://localhost:8081")
     @DeleteMapping(value = "/deletarFuncionario",consumes = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<?> deletarCliente(@RequestBody Map<String,Object> params){
+    public ResponseEntity<?> deletarFuncionario(@RequestBody Map<String,Object> params){
 
         AjaxResponseBody resposta = new AjaxResponseBody();
 
@@ -192,7 +188,7 @@ public class FuncionarioController {
             Cargo cargo = cargoDao.get(idCargo);
 
             funcionario.setEmail(email);
-            funcionario.setPassword(senha);
+            funcionario.setSenha(senha);
             funcionario.setNome(nome);
             funcionario.setCargo(cargo);
             funcionario.setId(id);

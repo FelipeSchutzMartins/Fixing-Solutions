@@ -1,6 +1,7 @@
 <template>
   <div class="align-self-center">
     <button @click="showModal('criarFuncionario','reload')" style="height: 45px;" class="btn-default btn-success rounded">Criar Funcionario</button>
+
     <div style="height: auto;width: auto;display: block;margin-top: 15px;text-align: center;" class="rounded">
       <div style="background-color: white;height: 86%;width: 100%;display: block;" class="align-self-center rounded">
         <Tabela :url="'http://localhost:8080/buscarFuncionario'" ref="tabelaAjax"></Tabela>
@@ -32,7 +33,7 @@
           </div>
         </form>
       </b-modal>
-      <b-modal ref="editar" hide-footer onclose="reload()">
+      <b-modal ref="editar" hide-footer onclose="reload()" title="Criar Funcionario">
         <form class="col-12">
           <div class="card-body">
             <label>Nome</label>
@@ -55,7 +56,7 @@
             </select>
           </div>
           <div class="card-body">
-            <button @click="excluir()" class="btn btn-danger float-left" type="button">Excluir</button><button @click="editar()" type="button" class="btn btn-success float-right">Salvar</button>
+            <button @click="editar()" type="button" class="btn btn-success float-right">Salvar</button>
           </div>
         </form>
       </b-modal>
@@ -128,7 +129,7 @@ export default {
       });
 
     },
-    excluir: function () {
+    excluir: function (id) {
 
       var ref = this
 
@@ -137,7 +138,7 @@ export default {
         url: "http://localhost:8080/deletarFuncionario",
         contentType: 'application/json',
         dataType: 'json',
-        data: JSON.stringify({id: ref.id}),
+        data: JSON.stringify({id: id}),
         success: function (result) {
 
           alert("Funcionario excluido com sucesso!")
@@ -169,7 +170,7 @@ export default {
 
       var ref = this
       ref.id = funcionario.id
-      ref.senha = funcionario.password
+      ref.senha = funcionario.senha
       ref.nome = funcionario.nome
       ref.email = funcionario.email
       ref.cargoSelecionado = funcionario.cargo

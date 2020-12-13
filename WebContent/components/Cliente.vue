@@ -28,7 +28,7 @@
             </div>
           </form>
       </b-modal>
-      <b-modal ref="editar" hide-footer onclose="reload()">
+      <b-modal ref="editar" hide-footer onclose="reload()" title="Criar Cliente">
         <form class="col-12">
           <div class="card-body">
             <label>Nome</label>
@@ -47,7 +47,7 @@
             <input v-model="telefone" v-mask="'(##) #####-####'" class="form-control">
           </div>
           <div class="card-body">
-            <button @click="excluir()" class="btn btn-danger float-left" type="button">Excluir</button><button @click="editar()" type="button" class="btn btn-success float-right">Salvar</button>
+            <button @click="editar()" type="button" class="btn btn-success float-right">Salvar</button>
           </div>
         </form>
       </b-modal>
@@ -119,7 +119,7 @@ export default {
       });
 
     },
-    excluir: function () {
+    excluir: function (id) {
 
       var ref = this
 
@@ -128,7 +128,7 @@ export default {
         url: "http://localhost:8080/deletarCliente",
         contentType: 'application/json',
         dataType: 'json',
-        data: JSON.stringify({id: ref.id}),
+        data: JSON.stringify({id: id}),
         success: function (result) {
 
           alert("Cliente excluido com sucesso!")

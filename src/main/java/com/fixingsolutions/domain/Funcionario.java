@@ -3,7 +3,7 @@ package com.fixingsolutions.domain;
 public class Funcionario extends Usuario
 {
     private Cargo cargo;
-    private String password;
+    private String senha;
 
     public void setCargo(Cargo cargo){
         this.cargo = cargo;
@@ -13,12 +13,12 @@ public class Funcionario extends Usuario
         return this.cargo;
     }
 
-    public void setPassword(String password){
-        this.password = password;
+    public void setSenha(String senha){
+        this.senha = senha;
     }
 
-    public String getPassword(){
-        return this.password;
+    public String getSenha(){
+        return this.senha;
     }
 
 }
