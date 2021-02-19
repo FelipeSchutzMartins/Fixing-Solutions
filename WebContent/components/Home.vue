@@ -3,11 +3,11 @@
     <Header></Header>
     <div style="height: 100vh;" :style="{ backgroundImage: 'url(' + require('../assets/backgroundImage.jpg') + ')' }"  class="d-flex justify-content-center">
       <!--      style="background: dodgerblue;height: 100vh;"-->
-      <div v-if="!cliente&&!funcionario"  style="background-color: white;height: 44%;width: 50%;display: block;" class="align-self-center rounded">
+      <div v-if="!cliente&&!funcionario&&!orcamento"  style="background-color: white;height: 44%;width: 50%;display: block;" class="align-self-center rounded">
         <div style="margin-left: 5%;margin-top: 5%;display: block;">
           <button style="width: 30%;height:90px;" class="btn-default bg-info rounded btn-sm">OS</button>
           <button style="width: 30%;height:90px;margin-left: 2%;" class="btn-default bg-info rounded btn-sm" @click="abrirCliente()">Clientes</button>
-          <button style="width: 30%;height:90px;margin-left: 2%;"  class="btn-default bg-info rounded btn-sm">Orçamento</button>
+          <button style="width: 30%;height:90px;margin-left: 2%;"  class="btn-default bg-info rounded btn-sm" @click="abrirOrcamento()">Orçamento</button>
         </div>
         <div style="margin-left: 5%;margin-top: 5%;display: block;">
           <button style="width: 30%;height:90px;" class="btn-default bg-info rounded btn-sm" @click="abrirFuncionario()">Funcionários</button>
@@ -16,6 +16,7 @@
       </div>
       <Cliente v-if="cliente"></Cliente>
       <Funcionario v-if="funcionario"></Funcionario>
+      <Orcamento v-if="orcamento"></Orcamento>
     </div>
     <Footer></Footer>
   </div>
@@ -26,26 +27,46 @@ import Header from "./Header";
 import Footer from "./Footer";
 import Cliente from "./Cliente";
 import Funcionario from "./Funcionario";
+import Orcamento from "./Orcamento";
 
 export default {
   name: "Home",
   components:{
     Funcionario,
     Cliente,
+    Orcamento,
     Header,
     Footer
   },
   data () {
     return {
       cliente:false,
-      funcionario:false
+      funcionario:false,
+      orcamento:false
     }
   },
   props: {
     user:null
   },
   mounted() {
-    // alert(this.user)
+
+   window.$.ajax({
+           method: "GET",
+           url: "http://localhost:8080/verificarlogin",
+           contentType: 'application/json',
+           dataType: 'json',
+           success: function (result) {
+
+
+
+           },
+           error: function (result){
+
+             alert(result.responseText)
+
+           }
+         });
+
   },
   methods:{
 
@@ -55,6 +76,7 @@ export default {
 
       ref.cliente = true
       ref.funcionario = false
+      ref.orcamento = false
 
     },
 
@@ -64,6 +86,7 @@ export default {
 
       ref.funcionario = true
       ref.cliente = false
+      ref.orcamento = false
 
     },
 
@@ -72,6 +95,16 @@ export default {
       var ref = this
       ref.cliente = false
       ref.funcionario = false
+      ref.orcamento = false
+
+    },
+
+    abrirOrcamento: function(){
+
+        var ref = this
+        ref.cliente = false
+        ref.funcionario = false
+        ref.orcamento = true
 
     }
   }

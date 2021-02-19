@@ -9,6 +9,7 @@
             <li><button @click="$parent.abrirHome()" class="list-group-item list-group-item-action bg-dark" style="color: white;">Home</button></li>
             <li><button @click="$parent.abrirCliente()" class="list-group-item list-group-item-action bg-dark" style="color: white;">Cliente</button></li>
             <li><button @click="$parent.abrirFuncionario()" class="list-group-item list-group-item-action bg-dark" style="color: white;">Funcionario</button></li>
+            <li><button @click="$parent.abrirOrcamento()" class="list-group-item list-group-item-action bg-dark" style="color: white;">Orçamento</button></li>
           </ul>
         </div>
       </transition>
