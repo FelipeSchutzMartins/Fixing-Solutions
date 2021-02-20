@@ -1,64 +1,53 @@
 <template>
   <div class="align-self-center">
-    <button @click="showModal('criarFuncionario','reload')" style="height: 45px;" class="btn-default btn-success rounded">Criar Funcionario</button>
+    <button @click="showModal('criarOrcamento','reload')" style="height: 45px;" class="btn-default btn-success rounded">Criar Orçamento</button>
 
     <div style="height: auto;width: auto;display: block;margin-top: 15px;text-align: center;" class="rounded">
       <div style="background-color: white;height: 86%;width: 100%;display: block;" class="align-self-center rounded">
-        <Tabela :url="'http://localhost:8080/buscarFuncionario'" ref="tabelaAjax"></Tabela>
+        <Tabela :url="'http://localhost:8080/buscarOrcamentos'" ref="tabelaAjax"></Tabela>
       </div>
-      <b-modal ref="criarFuncionario" hide-footer title="Criar Funcionario">
-        <form class="col-12">
-          <div class="card-body">
-            <label>Nome</label>
-            <input v-model="nome" class="form-control">
-          </div>
-          <div class="card-body">
-            <label>Email</label>
-            <input v-model="email" placeholder="seuemail@emailless.com" class="form-control">
-          </div>
-          <div class="card-body">
-            <label>Senha</label>
-            <input v-model="senha" :type="'password'" class="form-control">
-          </div>
-          <div class="card-body">
-            <label>Cargo</label>
-            <select v-model="cargoSelecionado" class="form-control">
-              <option v-for="cargo in cargos" :value="cargo" :key="cargo.id">
-                {{ cargo.descricao }}
-              </option>
-            </select>
-          </div>
-          <div class="card-body">
-            <button @click="criarCliente()" type="button" class="btn btn-success float-right">Criar</button>
-          </div>
-        </form>
+      <b-modal ref="criarOrcamento" hide-footer title="Criar Orçamento">
+<!--        <form class="col-12">-->
+<!--          <div class="card-body">-->
+<!--            <label></label>-->
+<!--            <input v-model="" class="form-control">-->
+<!--          </div>-->
+<!--          <div class="card-body">-->
+<!--            <label></label>-->
+<!--            <input v-model="" placeholder="" class="form-control">-->
+<!--          </div>-->
+<!--          <div class="card-body">-->
+<!--            <label></label>-->
+<!--            <input v-model="" class="form-control">-->
+<!--          </div>-->
+<!--          <div class="card-body">-->
+<!--          </div>-->
+<!--          <div class="card-body">-->
+<!--            <button @click="criarOrcamento()" type="button" class="btn btn-success float-right">Criar</button>-->
+<!--          </div>-->
+<!--        </form>-->
       </b-modal>
-      <b-modal ref="editar" hide-footer onclose="reload()" title="Criar Funcionario">
-        <form class="col-12">
-          <div class="card-body">
-            <label>Nome</label>
-            <input v-model="nome" class="form-control">
-          </div>
-          <div class="card-body">
-            <label>Email</label>
-            <input v-model="email" placeholder="seuemail@emailless.com" class="form-control">
-          </div>
-          <div class="card-body">
-            <label>Senha</label>
-            <input v-model="senha" :type="'password'" class="form-control">
-          </div>
-          <div class="card-body">
-            <label>Cargo</label>
-            <select v-model="cargoSelecionado" class="form-control">
-              <option v-for="cargo in cargos" :value="cargo" :key="cargo.id">
-                {{ cargo.descricao }}
-              </option>
-            </select>
-          </div>
-          <div class="card-body">
-            <button @click="editar()" type="button" class="btn btn-success float-right">Salvar</button>
-          </div>
-        </form>
+      <b-modal ref="editar" hide-footer onclose="reload()" title="Editar Orçamento">
+<!--        <form class="col-12">-->
+<!--          <div class="card-body">-->
+<!--            <label></label>-->
+<!--            <input v-model="" class="form-control">-->
+<!--          </div>-->
+<!--          <div class="card-body">-->
+<!--            <label></label>-->
+<!--            <input v-model="" placeholder="" class="form-control">-->
+<!--          </div>-->
+<!--          <div class="card-body">-->
+<!--            <label>Senha</label>-->
+<!--            <input v-model="" class="form-control">-->
+<!--          </div>-->
+<!--          <div class="card-body">-->
+
+<!--          </div>-->
+<!--          <div class="card-body">-->
+<!--            <button @click="editar()" type="button" class="btn btn-success float-right">Salvar</button>-->
+<!--          </div>-->
+<!--        </form>-->
       </b-modal>
     </div>
   </div>
@@ -71,28 +60,23 @@ export default {
   components: {Tabela},
   data: function(){
     return {
-      id:null,
-      email: null,
-      senha: null,
-      nome: null,
-      cargoSelecionado:null,
-      cargos: []
+
     }
   },
   methods:{
-    criarFuncionario: function () {
+    criarOrcamento: function () {
       var ref = this
 
       window.$.ajax({
         method: "POST",
-        url: "http://localhost:8080/criarConta",
+        url: "http://localhost:8080/criarOrcamento",
         contentType: 'application/json',
         dataType: 'json',
-        data: JSON.stringify({email:ref.email,senha:ref.senha,nome:ref.nome,cargo:ref.cargoSelecionado?.id}),
+        data: JSON.stringify({}),
         success: function (result) {
 
-          alert("Funcionario criado com sucesso!")
-          ref.hideModal('criarFuncionario')
+          alert("Orçamento criado com sucesso!")
+          ref.hideModal('criarOrcamento')
           ref.reload();
 
         },
@@ -110,13 +94,13 @@ export default {
 
       window.$.ajax({
         method: "PUT",
-        url: "http://localhost:8080/editarFuncionario",
+        url: "http://localhost:8080/editarOrcamento",
         contentType: 'application/json',
         dataType: 'json',
-        data: JSON.stringify({id:ref.id,email:ref.email,senha:ref.senha,nome:ref.nome,cargo:ref.cargoSelecionado?.id}),
+        data: JSON.stringify({}),
         success: function (result) {
 
-          alert("Funcionario atualizado com sucesso!")
+          alert("Orcamento atualizado com sucesso!")
           ref.hideModal('editar')
           ref.reload();
 
@@ -135,14 +119,13 @@ export default {
 
       window.$.ajax({
         method: "DELETE",
-        url: "http://localhost:8080/deletarFuncionario",
+        url: "http://localhost:8080/deletarOrcamento",
         contentType: 'application/json',
         dataType: 'json',
-        data: JSON.stringify({id: id}),
+        data: JSON.stringify({}),
         success: function (result) {
 
-          alert("Funcionario excluido com sucesso!")
-          ref.hideModal('editar')
+          alert("Orçamento excluido com sucesso!")
           ref.reload();
 
         },
@@ -166,14 +149,10 @@ export default {
       this.$refs[modaiId].hide()
 
     },
-    abrirPopupEditar: function(funcionario){
+    abrirPopupEditar: function(Orcamento){
 
       var ref = this
-      ref.id = funcionario.id
-      ref.senha = funcionario.senha
-      ref.nome = funcionario.nome
-      ref.email = funcionario.email
-      ref.cargoSelecionado = funcionario.cargo
+
       ref.showModal('editar');
 
     },
@@ -181,35 +160,9 @@ export default {
 
       var ref = this;
       ref.$refs.tabelaAjax.request();
-      ref.id = null
-      ref.senha = null
-      ref.nome = null
-      ref.email = null
-      ref.cargoSelecionado = null
 
-    },
-    buscarCargos: function (){
-      var ref = this
 
-      window.$.ajax({
-        method: "GET",
-        url: "http://localhost:8080/buscarCargos",
-        contentType: "application/json",
-        success: function (result) {
-
-          ref.cargos = result.result
-
-        },
-        error: function (result){
-
-          alert(result.responseText)
-
-        }
-      });
     }
-  },
-  mounted() {
-    this.buscarCargos();
   }
 }
 </script>
