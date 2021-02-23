@@ -17,7 +17,6 @@ import com.fixingsolutions.bean.CargoDao;
 @RestController
 public class FuncionarioController {
 
-    @CrossOrigin(origins = "http://localhost:8081")
     @GetMapping("/buscarCargos")
     public ResponseEntity<?> buscarCargos(){
 
@@ -41,7 +40,6 @@ public class FuncionarioController {
 
     }
 
-    @CrossOrigin(origins = "http://localhost:8081")
     @PostMapping(value = "/criarConta",consumes = {MediaType.APPLICATION_JSON_VALUE })
     @ResponseBody
     public ResponseEntity<?> criarConta(@RequestBody Map<String,Object> params){
@@ -98,7 +96,6 @@ public class FuncionarioController {
 
     }
 
-    @CrossOrigin(origins = "http://localhost:8081")
     @GetMapping("/buscarFuncionario")
     public ResponseEntity<?> buscarFuncionario(){
 
@@ -121,7 +118,6 @@ public class FuncionarioController {
 
     }
 
-    @CrossOrigin(origins = "http://localhost:8081")
     @DeleteMapping(value = "/deletarFuncionario",consumes = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> deletarFuncionario(@RequestBody Map<String,Object> params){
 
@@ -146,7 +142,6 @@ public class FuncionarioController {
 
     }
 
-    @CrossOrigin(origins = "http://localhost:8081")
     @PutMapping(value = "/editarFuncionario",consumes = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> editarCliente(@RequestBody Map<String,Object> params){
 

@@ -52,3 +52,5 @@ insert
 	into
 	fixing_solutions.cargo(descricao)
 values ("Administrador");
+
+create table token(id int not null auto_increment primary key,user_id int,code varchar(45));

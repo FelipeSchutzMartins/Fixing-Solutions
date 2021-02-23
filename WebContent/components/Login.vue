@@ -41,7 +41,7 @@
             data: JSON.stringify({email:ref.email,senha:ref.senha}),
             success: function (result) {
 
-              ref.$router.push({ name:'home',params: { user: 'someValue' }})
+              ref.$router.push({ name:'home'})
 
             },
             error: function (result){

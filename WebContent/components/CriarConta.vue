@@ -23,7 +23,7 @@
               </select>
             </div>
             <div class="card-body">
-              <button @click="$router.push({ name:'login'})" class="btn btn-danger">Cancelar</button><button @click="cadastrar()" class="btn btn-success float-right">Cadastrar</button>
+              <button @click="$router.push({ name:'login'})" class="btn btn-danger">Cancelar</button><button @click="cadastrar()" type="button" class="btn btn-success float-right">Cadastrar</button>
             </div>
           </form>
         </div>

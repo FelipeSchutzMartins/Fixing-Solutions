@@ -16,7 +16,6 @@ import java.util.Map;
 @RestController
 public class ClienteController {
 
-    @CrossOrigin(origins = "http://localhost:8081")
     @GetMapping("/buscarClientes")
     public ResponseEntity<?> buscarClientes(){
 
@@ -41,7 +40,6 @@ public class ClienteController {
 
     }
 
-    @CrossOrigin(origins = "http://localhost:8081")
     @PostMapping(value = "/criarCliente",consumes = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> criarCliente(@RequestBody Map<String,Object> params){
 
@@ -77,7 +75,6 @@ public class ClienteController {
 
     }
 
-    @CrossOrigin(origins = "http://localhost:8081")
     @PutMapping(value = "/editarCliente",consumes = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> editarCliente(@RequestBody Map<String,Object> params){
 
@@ -116,7 +113,6 @@ public class ClienteController {
 
     }
 
-    @CrossOrigin(origins = "http://localhost:8081")
     @DeleteMapping(value = "/deletarCliente",consumes = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> deletarCliente(@RequestBody Map<String,Object> params){
 

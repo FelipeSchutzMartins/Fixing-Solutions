@@ -49,8 +49,8 @@ export default {
     user:null
   },
   mounted() {
-
-   window.$.ajax({
+    var ref = this
+    window.$.ajax({
            method: "GET",
            url: "http://localhost:8080/verificarlogin",
            contentType: 'application/json',
@@ -63,6 +63,7 @@ export default {
            error: function (result){
 
              alert(result.responseText)
+             ref.$router.push({ name:'login'})
 
            }
          });

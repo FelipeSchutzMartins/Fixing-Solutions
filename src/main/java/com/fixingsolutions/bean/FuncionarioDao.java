@@ -2,15 +2,18 @@ package com.fixingsolutions.bean;
 
 import com.fixingsolutions.domain.Cargo;
 import com.fixingsolutions.domain.Conexao;
+import com.fixingsolutions.domain.Token;
 import com.fixingsolutions.repository.Dao;
 import com.fixingsolutions.domain.Funcionario;
 
+import java.nio.charset.Charset;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class FuncionarioDao implements Dao<Funcionario> {
-  private Conexao conexao = new Conexao();
+  private static Conexao conexao = new Conexao();
 
   @Override
   public Funcionario get(int id) throws SQLException{
@@ -136,12 +139,15 @@ public class FuncionarioDao implements Dao<Funcionario> {
 
     if(rs.next()) {
 
+      funcionario.setId(rs.getInt("id"));
+
+      gerarToken(funcionario.getId());
+
       Cargo cargo = new Cargo();
       cargo.setId(rs.getInt("car.id"));
       cargo.setDescricao(rs.getString("car.descricao"));
 
       funcionario.setCargo(cargo);
-      funcionario.setId(rs.getInt("id"));
       funcionario.setEmail(rs.getString("email"));
       funcionario.setSenha(rs.getString("password"));
       funcionario.setNome(rs.getString("nome"));
@@ -152,5 +158,46 @@ public class FuncionarioDao implements Dao<Funcionario> {
 
   }
 
+  public void gerarToken(Integer id) throws SQLException {
+
+    String comando = "insert into token(code,user_id) values (?,?)";
+    Connection dbConenection = conexao.abrirConexao();
+    PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
+
+    byte[] array = new byte[10];
+    new Random().nextBytes(array);
+    String code = new String(array, Charset.forName("UTF-8"));
+
+    preparedStatement.setString(1,code);
+    preparedStatement.setInt(2,id);
+
+    int rs = preparedStatement.executeUpdate();
+
+    dbConenection.close();
+
+  }
+
+  public static Token findToken() throws SQLException {
+
+    Token token = new Token();
+
+    String comando = "select * from token";
+
+    Connection dbConenection = conexao.abrirConexao();
+    PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
+    ResultSet rs = preparedStatement.executeQuery();
+
+    if(rs.next()){
+
+      token.setId(rs.getInt("id"));
+      token.setUserId(rs.getInt("user_id"));
+      token.setCode(rs.getString("code"));
+
+    }
+
+    dbConenection.close();
+
+    return token;
+  }
 
 }

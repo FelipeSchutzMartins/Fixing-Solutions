@@ -16,7 +16,6 @@ import java.util.Map;
 @RestController
 public class OrcamentoController {
 
-    @CrossOrigin(origins = "http://localhost:8081")
     @PostMapping(value = "/criarOrcamento",consumes = {MediaType.APPLICATION_JSON_VALUE })
     @ResponseBody
     public ResponseEntity<?> criarOrcamento(@RequestBody Map<String,Object> params){
@@ -35,7 +34,6 @@ public class OrcamentoController {
 
     }
 
-    @CrossOrigin(origins = "http://localhost:8081")
     @GetMapping("/buscarOrcamentos")
     public ResponseEntity<?> buscarOrcamento(){
 
@@ -52,7 +50,6 @@ public class OrcamentoController {
 
     }
 
-    @CrossOrigin(origins = "http://localhost:8081")
     @DeleteMapping(value = "/deletarOrcamento",consumes = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> deletarOrcamento(@RequestBody Map<String,Object> params){
 
@@ -72,7 +69,6 @@ public class OrcamentoController {
 
     }
 
-    @CrossOrigin(origins = "http://localhost:8081")
     @PutMapping(value = "/editarOrcamento",consumes = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> editarOrcamento(@RequestBody Map<String,Object> params){
 
