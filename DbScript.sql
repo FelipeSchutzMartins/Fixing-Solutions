@@ -35,7 +35,8 @@ dataUltimaAtualizacao date,
 foreign key (idOrcamento) references orcamento(id) );
 
 create table tipoServico(id int not null auto_increment primary key,
-descricao varchar(45) );
+descricao varchar(45),
+valor decimal(13,2) );
 
 create table tipoServico_orcamento(id int not null auto_increment primary key,
 idTipoServico int not null,

@@ -59,7 +59,7 @@
                 ref.senha = ''
                 ref.nome  = ''
                 ref.cargoSelecionado = null
-
+                ref.$router.push({ name:'login'})
               },
               error: function (result){
 

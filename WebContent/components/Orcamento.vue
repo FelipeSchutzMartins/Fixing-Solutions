@@ -7,25 +7,31 @@
         <Tabela :url="'http://localhost:8080/buscarOrcamentos'" ref="tabelaAjax"></Tabela>
       </div>
       <b-modal ref="criarOrcamento" hide-footer title="Criar Orçamento">
-<!--        <form class="col-12">-->
-<!--          <div class="card-body">-->
-<!--            <label></label>-->
-<!--            <input v-model="" class="form-control">-->
-<!--          </div>-->
-<!--          <div class="card-body">-->
-<!--            <label></label>-->
-<!--            <input v-model="" placeholder="" class="form-control">-->
-<!--          </div>-->
-<!--          <div class="card-body">-->
-<!--            <label></label>-->
-<!--            <input v-model="" class="form-control">-->
-<!--          </div>-->
-<!--          <div class="card-body">-->
-<!--          </div>-->
-<!--          <div class="card-body">-->
-<!--            <button @click="criarOrcamento()" type="button" class="btn btn-success float-right">Criar</button>-->
-<!--          </div>-->
-<!--        </form>-->
+        <form class="col-12">
+          <div class="card-body">
+            <label>Horas Previstas</label>
+            <input v-model="horasPrevistas" class="form-control">
+          </div>
+          <div class="card-body">
+            <label>Responsável</label>
+            <select v-model="responsavel" class="form-control">
+              <option></option>
+            </select>
+          </div>
+          <div class="card-body">
+            <label>Cliente</label>
+            <select v-model="cliente" class="form-control">
+              <option></option>
+            </select>
+          </div>
+          <div class="card-body">
+            <label>Valor</label>
+            <input v-model="valor" class="form-control" style="width: 60px;" disabled>
+          </div>
+          <div class="card-body">
+            <button @click="criarOrcamento()" type="button" class="btn btn-success float-right">Criar</button>
+          </div>
+        </form>
       </b-modal>
       <b-modal ref="editar" hide-footer onclose="reload()" title="Editar Orçamento">
 <!--        <form class="col-12">-->
@@ -60,7 +66,11 @@ export default {
   components: {Tabela},
   data: function(){
     return {
-
+      valor:null,
+      cliente:null,
+      horasPrevistas:null,
+      responsavel:null,
+      servicos:[]
     }
   },
   methods:{

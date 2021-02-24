@@ -11,7 +11,7 @@ import java.util.List;
 
 public class ClienteDao implements Dao<Cliente> {
 
-    private Conexao conexao = new Conexao();
+    private static Conexao conexao = new Conexao();
 
     @Override
     public Cliente get(int id) throws SQLException {

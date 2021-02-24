@@ -47,7 +47,7 @@ public class FuncionarioController {
         AjaxResponseBody resposta = new AjaxResponseBody();
         Funcionario funcionario = new Funcionario();
         try {
-
+            System.out.println("entrou");
             String email = (String) params.get("email");
             if(email == null || email.isEmpty()){
                 return ResponseEntity

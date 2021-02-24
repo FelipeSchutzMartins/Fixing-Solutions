@@ -29,7 +29,7 @@
             </select>
           </div>
           <div class="card-body">
-            <button @click="criarCliente()" type="button" class="btn btn-success float-right">Criar</button>
+            <button @click="criarFuncionario()" type="button" class="btn btn-success float-right">Criar</button>
           </div>
         </form>
       </b-modal>
@@ -80,7 +80,7 @@ export default {
     }
   },
   methods:{
-    criarFuncionario: function () {
+    criarFuncionario() {
       var ref = this
 
       window.$.ajax({
@@ -104,7 +104,7 @@ export default {
       });
 
     },
-    editar:function (){
+    editar(){
 
       var ref = this
 
@@ -129,7 +129,7 @@ export default {
       });
 
     },
-    excluir: function (id) {
+    excluir(id) {
 
       var ref = this
 
@@ -153,7 +153,7 @@ export default {
         }
       });
     },
-    showModal: function(modaiId,acao) {
+    showModal(modaiId,acao) {
       var ref = this
       if(acao=='reload'){
         ref.reload();
@@ -166,7 +166,7 @@ export default {
       this.$refs[modaiId].hide()
 
     },
-    abrirPopupEditar: function(funcionario){
+    abrirPopupEditar(funcionario){
 
       var ref = this
       ref.id = funcionario.id
@@ -177,7 +177,7 @@ export default {
       ref.showModal('editar');
 
     },
-    reload: function (){
+    reload(){
 
       var ref = this;
       ref.$refs.tabelaAjax.request();
@@ -188,7 +188,7 @@ export default {
       ref.cargoSelecionado = null
 
     },
-    buscarCargos: function (){
+    buscarCargos(){
       var ref = this
 
       window.$.ajax({
