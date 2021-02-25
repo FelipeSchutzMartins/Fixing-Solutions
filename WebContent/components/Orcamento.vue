@@ -15,15 +15,26 @@
           <div class="card-body">
             <label>Responsável</label>
             <select v-model="responsavel" class="form-control">
-              <option></option>
+              <option v-for="responsavel in responsaveis" :value="responsavel" :key="responsavel.id">
+                {{ responsavel.email }}
+              </option>
             </select>
           </div>
           <div class="card-body">
             <label>Cliente</label>
             <select v-model="cliente" class="form-control">
-              <option></option>
+              <option v-for="cliente in clientes" :value="cliente" :key="cliente.id">
+                {{ cliente.email }}
+              </option>
             </select>
           </div>
+
+          <a @click="adicionarServico"><i></i>Adicionar Serviço</a>
+
+          <div class="card-body" v-for="servico in servicos" :key="servico.descricao">
+            <input v-model="servico.descricao" class="form-control" style="width: 60px;" placeholder="Descrição"><input v-model="servico.valor" @change="atualizarValor()" class="form-control" style="width: 60px;" placeholder="valor">
+          </div>
+
           <div class="card-body">
             <label>Valor</label>
             <input v-model="valor" class="form-control" style="width: 60px;" disabled>
@@ -66,11 +77,22 @@ export default {
   components: {Tabela},
   data: function(){
     return {
-      valor:null,
-      cliente:null,
+      valor:0,
+      clientes:[],
       horasPrevistas:null,
+      responsaveis:[],
+      servicos:[],
       responsavel:null,
-      servicos:[]
+      cliente:null
+    }
+  },
+  watch:{
+    servicos:function (newVal,old){
+
+      var ref = this
+
+      ref.atualizarValor();
+
     }
   },
   methods:{
@@ -82,7 +104,8 @@ export default {
         url: "http://localhost:8080/criarOrcamento",
         contentType: 'application/json',
         dataType: 'json',
-        data: JSON.stringify({}),
+        data: JSON.stringify({horasPrevistas:ref.horasPrevistas,cliente:ref.cliente,
+          responsavel:ref.responsavel,servicos:ref.servicos,valor:ref.valor}),
         success: function (result) {
 
           alert("Orçamento criado com sucesso!")
@@ -151,6 +174,7 @@ export default {
       if(acao=='reload'){
         ref.reload();
       }
+      ref.carregarDadosCriacao();
       ref.$refs[modaiId].show()
 
     },
@@ -172,7 +196,70 @@ export default {
       ref.$refs.tabelaAjax.request();
 
 
+    },
+
+    carregarDadosCriacao(){
+
+      var ref = this
+
+      window.$.ajax({
+        method: "GET",
+        url: "http://localhost:8080/buscarCliente",
+        contentType: 'application/json',
+        dataType: 'json',
+        success: function (result) {
+
+          ref.clientes = result.result
+
+        },
+        error: function (result) {
+
+          alert(result.responseText)
+
+        }
+      });
+
+      window.$.ajax({
+        method: "GET",
+        url: "http://localhost:8080/buscarResponsaveis",
+        contentType: 'application/json',
+        dataType: 'json',
+        success: function (result) {
+
+          ref.responsaveis = result.result
+
+        },
+        error: function (result) {
+
+          alert(result.responseText)
+
+        }
+      });
+
+    },
+
+    adicionarServico(){
+
+      var ref = this
+
+      ref.servicos.push({descricao:null,valor:0})
+
+    },
+
+    atualizarValor(){
+
+      var ref = this
+
+      ref.valor = 0
+
+      for(var i=0;i<ref.servicos.length;i++){
+
+        ref.valor = Number(ref.valor) + Number(ref.servicos[i].valor)
+
+      }
+
     }
+
   }
 }
 </script>

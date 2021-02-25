@@ -3,17 +3,13 @@ package com.fixingsolutions.controller;
 import com.fixingsolutions.bean.CargoDao;
 import com.fixingsolutions.bean.ClienteDao;
 import com.fixingsolutions.bean.FuncionarioDao;
-import com.fixingsolutions.domain.AjaxResponseBody;
-import com.fixingsolutions.domain.Cargo;
-import com.fixingsolutions.domain.Cliente;
-import com.fixingsolutions.domain.Funcionario;
+import com.fixingsolutions.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 public class OrcamentoController {
@@ -25,6 +21,28 @@ public class OrcamentoController {
         AjaxResponseBody resposta = new AjaxResponseBody();
 
         try {
+
+            Orcamento orcamento = new Orcamento();
+            Cliente cliente = new Cliente();
+            Funcionario funcionario = new Funcionario();
+
+            List<?> servicos = new ArrayList<>();
+
+            servicos = (ArrayList) params.get("servicos");
+
+            for(int i=0;i<servicos.size()-1;i++){
+
+                Servico servico = new Servico();
+
+                LinkedHashMap hashMap = new LinkedHashMap();
+                LinkedHashMap.
+
+                servico.setDescricao(hashMap.));
+                servico.setValor(.valor);
+
+            }
+
+            System.out.println();
 
         }catch (Exception e){
             System.out.println("Houve um problema a criar conta || e: "+e);
