@@ -1,6 +1,5 @@
 package com.fixingsolutions.controller;
 
-import com.fixingsolutions.bean.CargoDao;
 import com.fixingsolutions.bean.ClienteDao;
 import com.fixingsolutions.bean.FuncionarioDao;
 import com.fixingsolutions.domain.*;
@@ -9,6 +8,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+import java.sql.Date;
 import java.util.*;
 
 @RestController
@@ -22,27 +23,34 @@ public class OrcamentoController {
 
         try {
 
-            Orcamento orcamento = new Orcamento();
-            Cliente cliente = new Cliente();
-            Funcionario funcionario = new Funcionario();
+            List<Servico> servicos = new ArrayList<>();
+            List<?> paramsServicos = (ArrayList) params.get("servicos");
 
-            List<?> servicos = new ArrayList<>();
-
-            servicos = (ArrayList) params.get("servicos");
-
-            for(int i=0;i<servicos.size()-1;i++){
+            for(int i=0;i<paramsServicos.size();i++){
 
                 Servico servico = new Servico();
 
-                LinkedHashMap hashMap = new LinkedHashMap();
-                LinkedHashMap.
+                LinkedHashMap ob = (LinkedHashMap) paramsServicos.get(i);
 
-                servico.setDescricao(hashMap.));
-                servico.setValor(.valor);
+                servico.setDescricao((String) ob.get("descricao"));
+                servico.setValor(new BigDecimal((String) ob.get("valor")));
+
+                servicos.add(servico);
 
             }
 
-            System.out.println();
+            ClienteDao clienteDao = new ClienteDao();
+            Cliente cliente = clienteDao.get((Integer) params.get("cliente"));
+
+            FuncionarioDao funcionarioDao = new FuncionarioDao();
+            Funcionario funcionario = funcionarioDao.get((Integer) params.get("responsavel"));
+
+            Orcamento orcamento = new Orcamento();
+            orcamento.setCliente(cliente);
+            orcamento.setFuncionario(funcionario);
+            orcamento.setData(new Date());
+            orcamento.setValor(new BigDecimal((String) params.get("horasPrevistas")));
+            orcamento.setHorasPrevistas();
 
         }catch (Exception e){
             System.out.println("Houve um problema a criar conta || e: "+e);

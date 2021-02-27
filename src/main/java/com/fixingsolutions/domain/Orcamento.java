@@ -60,4 +60,5 @@ public class Orcamento {
     public void setValor(BigDecimal valor) {
         this.valor = valor;
     }
+
 }

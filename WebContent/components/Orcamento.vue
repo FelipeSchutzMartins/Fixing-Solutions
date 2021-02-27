@@ -104,8 +104,8 @@ export default {
         url: "http://localhost:8080/criarOrcamento",
         contentType: 'application/json',
         dataType: 'json',
-        data: JSON.stringify({horasPrevistas:ref.horasPrevistas,cliente:ref.cliente,
-          responsavel:ref.responsavel,servicos:ref.servicos,valor:ref.valor}),
+        data: JSON.stringify({horasPrevistas:ref.horasPrevistas,cliente:ref.cliente.id,
+          responsavel:ref.responsavel.id,servicos:ref.servicos,valor:ref.valor}),
         success: function (result) {
 
           alert("Orçamento criado com sucesso!")
