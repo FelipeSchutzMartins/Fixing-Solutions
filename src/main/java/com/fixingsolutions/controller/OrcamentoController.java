@@ -2,6 +2,7 @@ package com.fixingsolutions.controller;
 
 import com.fixingsolutions.bean.ClienteDao;
 import com.fixingsolutions.bean.FuncionarioDao;
+import com.fixingsolutions.bean.OrcamentoDao;
 import com.fixingsolutions.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -9,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.sql.Date;
 import java.util.*;
 
 @RestController
@@ -45,15 +45,22 @@ public class OrcamentoController {
             FuncionarioDao funcionarioDao = new FuncionarioDao();
             Funcionario funcionario = funcionarioDao.get((Integer) params.get("responsavel"));
 
+            OrcamentoDao orcamentoDao = new OrcamentoDao();
             Orcamento orcamento = new Orcamento();
             orcamento.setCliente(cliente);
             orcamento.setFuncionario(funcionario);
             orcamento.setData(new Date());
-            orcamento.setValor(new BigDecimal((String) params.get("horasPrevistas")));
-            orcamento.setHorasPrevistas();
+
+            Number valor = (Number) params.get("valor");
+
+            orcamento.setValor(new BigDecimal(valor.toString()));
+            orcamento.setHorasPrevistas(new Integer((String) params.get("horasPrevistas")));
+            orcamento.setServicos(servicos.toArray());
+
+            orcamentoDao.save(orcamento);
 
         }catch (Exception e){
-            System.out.println("Houve um problema a criar conta || e: "+e);
+            e.printStackTrace();
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Houve um problema, tente novamente mais tarde");
@@ -66,10 +73,19 @@ public class OrcamentoController {
     public ResponseEntity<?> buscarOrcamento(){
 
         AjaxResponseBody resposta = new AjaxResponseBody();
-
+        OrcamentoDao dao = new OrcamentoDao();
         try {
+            List<Orcamento> orcamentos = dao.getAll();
+            if (orcamentos.isEmpty()) {
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Orcamentos não encontrados");
+            }
 
-        }catch(Exception e){
+                resposta.setResult(orcamentos);
+
+            }catch(Exception e){
+            e.printStackTrace();
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Houve um problema, tente novamente mais tarde");
@@ -85,7 +101,11 @@ public class OrcamentoController {
 
         try {
 
+            Integer id = (Integer) params.get("id");
 
+
+            OrcamentoDao dao = new  OrcamentoDao();
+            dao.delete(id);
 
         }catch(Exception e){
             System.out.println(e);

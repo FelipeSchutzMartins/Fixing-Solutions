@@ -2,7 +2,7 @@ package com.fixingsolutions.domain;
 
 
 import java.math.BigDecimal;
-import java.sql.Date;
+import java.util.Date;
 
 public class Orcamento {
 
@@ -12,6 +12,7 @@ public class Orcamento {
     private BigDecimal valor;
     private Funcionario funcionario;
     private Cliente cliente;
+    private Object[] servicos = {};
 
     public Integer getId() {
         return id;
@@ -61,4 +62,11 @@ public class Orcamento {
         this.valor = valor;
     }
 
+    public Object[] getServicos() {
+        return servicos;
+    }
+
+    public void setServicos(Object[] servicos) {
+        this.servicos = servicos;
+    }
 }

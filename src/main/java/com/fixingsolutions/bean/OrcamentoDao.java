@@ -61,14 +61,13 @@ public class OrcamentoDao implements Dao<Orcamento>{
     public List<Orcamento> getAll() throws SQLException {
 
         List<Orcamento> orcamentos = new ArrayList<Orcamento>();
-        String comando = "select * from orcamento orc join funcionario fun on fun.idCargo = orc.idFuncionario join cargo on fun.idCargo = cargo.id join cliente cli on or.idCliente = cli.id";
+        String comando = "select * from orcamento orc join funcionario fun on fun.id = orc.idFuncionario join cargo on fun.idCargo = cargo.id join cliente cli on orc.idCliente = cli.id";
 
         Connection dbConenection = conexao.abrirConexao();
         Statement stmt = dbConenection.createStatement();
         ResultSet rs = stmt.executeQuery(comando);
 
         while(rs.next()) {
-
             Orcamento orcamento = new Orcamento();
             orcamento.setId(rs.getInt("orc.id"));
             orcamento.setData(rs.getDate("orc.data"));
@@ -111,15 +110,40 @@ public class OrcamentoDao implements Dao<Orcamento>{
     public void save(Orcamento orcamento) throws SQLException{
 
         String comando = "insert into orcamento(data,valor,horasPrevistas,idFuncionario,idCliente) values (?,?,?,?,?)";
+
         Connection dbConenection = conexao.abrirConexao();
         PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
-        preparedStatement.setDate(1,orcamento.getData());
+        preparedStatement.setDate(1,new java.sql.Date(orcamento.getData().getTime()));
         preparedStatement.setBigDecimal(2,orcamento.getValor());
         preparedStatement.setInt(3,orcamento.getHorasPrevistas());
         preparedStatement.setInt(4,orcamento.getFuncionario().getId());
         preparedStatement.setInt(5,orcamento.getCliente().getId());
 
         int rs = preparedStatement.executeUpdate();
+
+
+
+        if(orcamento.getServicos() != null){
+
+            ServicoDao servicoDao = new ServicoDao();
+
+            for(Object ob : orcamento.getServicos()){
+
+                Servico servico = (Servico) ob;
+
+                if(servico.getId() != null){
+
+                    servicoDao.update(servico);
+
+                }else{
+
+                    servicoDao.save(servico,findIdByObject(orcamento));
+
+                }
+
+            }
+
+        }
 
         dbConenection.close();
 
@@ -131,7 +155,7 @@ public class OrcamentoDao implements Dao<Orcamento>{
 
         Connection dbConenection = conexao.abrirConexao();
         PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
-        preparedStatement.setDate(1,orcamento.getData());
+        preparedStatement.setDate(1,new java.sql.Date(orcamento.getData().getTime()));
         preparedStatement.setBigDecimal(2,orcamento.getValor());
         preparedStatement.setInt(3,orcamento.getHorasPrevistas());
         preparedStatement.setInt(4,orcamento.getFuncionario().getId());
@@ -155,6 +179,33 @@ public class OrcamentoDao implements Dao<Orcamento>{
         int rs = preparedStatement.executeUpdate();
 
         dbConenection.close();
+
+    }
+
+    public Integer findIdByObject(Orcamento orcamento) throws SQLException {
+
+        String comando = "select * from orcamento where data = ? and valor = ? and horasPrevistas = ? and idFuncionario = ? and idCliente = ?";
+
+        Connection dbConenection = conexao.abrirConexao();
+        PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
+        preparedStatement.setDate(1, new java.sql.Date(orcamento.getData().getTime()));
+        preparedStatement.setBigDecimal(2, orcamento.getValor());
+        preparedStatement.setInt(3, orcamento.getHorasPrevistas());
+        preparedStatement.setInt(4, orcamento.getFuncionario().getId());
+        preparedStatement.setInt(5, orcamento.getCliente().getId());
+        ResultSet rs = preparedStatement.executeQuery();
+
+        Integer id = null;
+
+        if(rs.next()){
+
+            id = rs.getInt("id");
+
+        }
+
+        dbConenection.close();
+
+        return id;
 
     }
 

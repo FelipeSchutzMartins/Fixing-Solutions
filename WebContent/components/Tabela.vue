@@ -9,12 +9,14 @@
       </thead>
       <tbody>
         <tr v-for="dado in dados" :key="dado.id" v-show="!dadosFiltrados.length>0&&(filtro == null || filtro == '')">
-          <td scope="row" v-show="key!='id'" v-for="(value , key) in dado" :key="key">{{ value != null ? value.descricao == undefined ? value : value.descricao : value }}</td>
+          <td scope="row" v-show="key!='id'&&key!='servicos'" v-for="(value , key) in dado" :key="key">{{ valorExibido(value) }}</td>
+          <td><button type="button" v-show="dado.servicos!=undefined" class="btn-sm btn-primary btn-rounded" @click="editar(dado)">Ver serviços</button></td>
           <td><button type="button" class="btn-sm btn-primary btn-rounded" @click="editar(dado)">Editar</button></td>
           <td><button @click="excluir(dado.id)" class="btn-sm btn-danger float-left" type="button">Excluir</button></td>
         </tr>
         <tr v-for="dado in dadosFiltrados" :key="dado.id" v-show="dadosFiltrados.length>0||(filtro != null || filtro != '')">
-          <td scope="row" v-show="key!='id'" v-for="(value , key) in dado" :key="key">{{ value != null ? value.descricao == undefined ? value : value.descricao : value }}</td>
+          <td scope="row" v-show="key!='id'&&key!='servicos'" v-for="(value , key) in dado" :key="key">{{ valorExibido(value) }}</td>
+          <td><button type="button" v-show="dado.servicos!=undefined" class="btn-sm btn-primary btn-rounded" @click="editar(dado)">Ver serviços</button></td>
           <td><button type="button" class="btn-sm btn-primary btn-rounded" @click="editar(dado)">Editar</button></td>
           <td><button @click="excluir(dado.id)" class="btn-sm btn-danger float-left" type="button">Excluir</button></td>
         </tr>
@@ -57,6 +59,11 @@ export default {
           ref.dados = result.result
           ref.keys = Object.keys(result.result[0])
 
+        },
+        error: function (result){
+
+          alert(result.responseText)
+
         }
       });
 
@@ -84,6 +91,20 @@ export default {
       }
 
       return false
+
+    },
+    valorExibido: function(value){
+
+      var valor;
+      if(value.email!=undefined){
+        valor = value.email
+      }else if(value.descricao!=undefined){
+        valor = value.descricao
+      }else{
+        valor = value
+      }
+
+      return valor;
 
     }
   },
@@ -128,6 +149,7 @@ export default {
       }
     }
   },
+
   mounted() {
     this.request()
   }

@@ -32,7 +32,7 @@
           <a @click="adicionarServico"><i></i>Adicionar Serviço</a>
 
           <div class="card-body" v-for="servico in servicos" :key="servico.descricao">
-            <input v-model="servico.descricao" class="form-control" style="width: 60px;" placeholder="Descrição"><input v-model="servico.valor" @change="atualizarValor()" class="form-control" style="width: 60px;" placeholder="valor">
+            <input v-model="servico.descricao" type="text" class="form-control" style="width: 120px;" placeholder="Descrição"><input v-model="servico.valor" @change="atualizarValor()" class="form-control" style="width: 60px;" placeholder="valor">
           </div>
 
           <div class="card-body">
@@ -79,7 +79,7 @@ export default {
     return {
       valor:0,
       clientes:[],
-      horasPrevistas:null,
+      horasPrevistas:0,
       responsaveis:[],
       servicos:[],
       responsavel:null,
@@ -155,7 +155,7 @@ export default {
         url: "http://localhost:8080/deletarOrcamento",
         contentType: 'application/json',
         dataType: 'json',
-        data: JSON.stringify({}),
+        data: JSON.stringify({id:id}),
         success: function (result) {
 
           alert("Orçamento excluido com sucesso!")
@@ -242,7 +242,7 @@ export default {
 
       var ref = this
 
-      ref.servicos.push({descricao:null,valor:0})
+      ref.servicos.push({descricao:"",valor:0})
 
     },
 

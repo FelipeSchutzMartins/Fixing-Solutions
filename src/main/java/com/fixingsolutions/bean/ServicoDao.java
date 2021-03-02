@@ -60,14 +60,32 @@ public class ServicoDao implements Dao<Servico> {
 
     @Override
     public void save(Servico servico) throws SQLException{
-        String comando = "insert into tiposervico(descricao,valor) values ?,?";
+        String comando = "insert into tiposervico(descricao,valor) values (?,?)";
 
         Connection dbConenection = conexao.abrirConexao();
         PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
         preparedStatement.setString(1, servico.getDescricao());
         preparedStatement.setBigDecimal(2, servico.getValor());
 
-        ResultSet rs = preparedStatement.executeQuery();
+        int rs = preparedStatement.executeUpdate();
+        dbConenection.close();
+
+    }
+
+    public void save(Servico servico,Integer idOrcamento) throws SQLException {
+
+        save(servico);
+
+        servico.setId(findByDescricao(servico.getDescricao()).getId());
+
+        String comando = "insert into tiposervico_orcamento(idTipoServico,idOrcamento) values (?,?)";
+
+        Connection dbConenection = conexao.abrirConexao();
+        PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
+        preparedStatement.setInt(1, servico.getId());
+        preparedStatement.setInt(2, idOrcamento);
+
+        int rs = preparedStatement.executeUpdate();
         dbConenection.close();
 
     }
@@ -99,6 +117,26 @@ public class ServicoDao implements Dao<Servico> {
         ResultSet rs = preparedStatement.executeQuery();
         dbConenection.close();
 
+    }
+
+    public Servico findByDescricao(String descricao) throws SQLException {
+        String comando = "select * from tiposervico where descricao = ?";
+        Servico servico = new Servico();
+
+        Connection dbConenection = conexao.abrirConexao();
+        PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
+        preparedStatement.setString(1,descricao);
+        ResultSet rs = preparedStatement.executeQuery();
+
+        if(rs.next()){
+
+            servico.setId(rs.getInt("id"));
+            servico.setValor(rs.getBigDecimal("valor"));
+            servico.setDescricao(rs.getString("descricao"));
+
+        }
+        dbConenection.close();
+        return servico;
     }
 
 }
