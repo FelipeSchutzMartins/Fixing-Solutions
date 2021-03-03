@@ -141,7 +141,10 @@ public class OrcamentoController {
             Number valor = (Number) params.get("valor");
 
             orcamento.setValor(new BigDecimal(valor.toString()));
-            orcamento.setHorasPrevistas(new Integer((String) params.get("horasPrevistas")));
+
+            Object horasPrevistas = params.get("horasPrevistas");
+
+            orcamento.setHorasPrevistas(new Integer(horasPrevistas.toString()));
 
             orcamentoDao.update(orcamento);
 
