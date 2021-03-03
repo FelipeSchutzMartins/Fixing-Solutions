@@ -2,7 +2,7 @@
     <table class="table table-bordered">
       <thead class="thead-dark">
         <tr>
-          <th v-for="chave in keys" v-show="chave!='id'" :key="chave" scope="col">{{ chave }}</th>
+          <th v-for="chave in keys" v-show="chave!='Id'" :key="chave" scope="col">{{ chave }}</th>
           <th></th>
           <th></th>
         </tr>
@@ -57,7 +57,24 @@ export default {
         success: function (result) {
 
           ref.dados = result.result
-          ref.keys = Object.keys(result.result[0])
+
+          var keys = Object.keys(result.result[0])
+          for(var i=0;i<keys.length;i++){
+
+            var key = keys[i]
+
+            var keyCorrigida = key[0].toUpperCase()
+            for(var j = 1;j<key.length;j++){
+
+              keyCorrigida += key[j]
+
+            }
+
+            keys[i] = keyCorrigida
+
+          }
+
+          ref.keys = keys
 
         },
         error: function (result){
