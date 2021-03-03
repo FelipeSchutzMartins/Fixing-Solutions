@@ -100,7 +100,7 @@ public class ServicoDao implements Dao<Servico> {
         preparedStatement.setBigDecimal(2, servico.getValor());
         preparedStatement.setInt(3, servico.getId());
 
-        ResultSet rs = preparedStatement.executeQuery();
+        int rs = preparedStatement.executeUpdate();
 
         dbConenection.close();
 
@@ -110,11 +110,13 @@ public class ServicoDao implements Dao<Servico> {
     public void delete(Integer id) throws SQLException{
         String comando = "delete from tiposervico where id = ?";
 
+        deleteFromMm(id);
+
         Connection dbConenection = conexao.abrirConexao();
         PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
         preparedStatement.setInt(1,id);
 
-        ResultSet rs = preparedStatement.executeQuery();
+        int rs = preparedStatement.executeUpdate();
         dbConenection.close();
 
     }
@@ -137,6 +139,42 @@ public class ServicoDao implements Dao<Servico> {
         }
         dbConenection.close();
         return servico;
+    }
+
+    public List<Servico> findByOrcamento(Integer idOrcamento) throws SQLException{
+
+        List<Servico> servicos = new ArrayList<Servico>();
+        Servico servico = null;
+        String comando = "select * from tiposervico ts join tiposervico_orcamento tsc on tsc.idTipoServico = ts.id where tsc.idOrcamento = ?";
+        Connection dbConenection = conexao.abrirConexao();
+        PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
+        preparedStatement.setInt(1,idOrcamento);
+        ResultSet rs = preparedStatement.executeQuery();
+
+        while(rs.next()) {
+            servico = new Servico();
+            servico.setId(rs.getInt("ts.id"));
+            servico.setDescricao(rs.getString("ts.descricao"));
+            servico.setValor(rs.getBigDecimal("ts.valor"));
+            servicos.add(servico);
+        }
+
+        dbConenection.close();
+
+        return servicos;
+
+    }
+
+    public void deleteFromMm(Integer id) throws SQLException{
+        String comando = "delete from tiposervico_orcamento where idTipoServico = ?";
+
+        Connection dbConenection = conexao.abrirConexao();
+        PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
+        preparedStatement.setInt(1,id);
+
+        int rs = preparedStatement.executeUpdate();
+        dbConenection.close();
+
     }
 
 }

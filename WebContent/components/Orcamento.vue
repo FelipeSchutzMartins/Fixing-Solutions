@@ -45,26 +45,43 @@
         </form>
       </b-modal>
       <b-modal ref="editar" hide-footer onclose="reload()" title="Editar Orçamento">
-<!--        <form class="col-12">-->
-<!--          <div class="card-body">-->
-<!--            <label></label>-->
-<!--            <input v-model="" class="form-control">-->
-<!--          </div>-->
-<!--          <div class="card-body">-->
-<!--            <label></label>-->
-<!--            <input v-model="" placeholder="" class="form-control">-->
-<!--          </div>-->
-<!--          <div class="card-body">-->
-<!--            <label>Senha</label>-->
-<!--            <input v-model="" class="form-control">-->
-<!--          </div>-->
-<!--          <div class="card-body">-->
-
-<!--          </div>-->
-<!--          <div class="card-body">-->
-<!--            <button @click="editar()" type="button" class="btn btn-success float-right">Salvar</button>-->
-<!--          </div>-->
-<!--        </form>-->
+        <form class="col-12">
+          <div class="card-body">
+            <label>Horas Previstas</label>
+            <input v-model="horasPrevistas" class="form-control">
+          </div>
+          <div class="card-body">
+            <label>Responsável</label>
+            <select v-model="responsavel" class="form-control">
+              <option v-for="responsavel in responsaveis" :value="responsavel" :key="responsavel.id">
+                {{ responsavel.email }}
+              </option>
+            </select>
+          </div>
+          <div class="card-body">
+            <label>Cliente</label>
+            <select v-model="cliente" class="form-control">
+              <option v-for="cliente in clientes" :value="cliente" :key="cliente.id">
+                {{ cliente.email }}
+              </option>
+            </select>
+          </div>
+          <div class="card-body">
+            <button @click="editar()" type="button" class="btn btn-success float-right">Salvar</button>
+          </div>
+        </form>
+      </b-modal>
+      <b-modal ref="servicos" hide-footer onclose="reload()" title="Editar Servicos">
+        <form class="col-12">
+          <a @click="adicionarServico"><i></i>Adicionar Serviço</a>
+          <div class="card-body" v-for="servico in servicos" :key="servico.descricao">
+            <input v-model="servico.descricao" type="text" class="form-control" style="width: 120px;" placeholder="Descrição"><input v-model="servico.valor" class="form-control" style="width: 60px;" placeholder="valor">
+            <button @click="excluirServico(servico.id)" class="btn-sm btn-danger float-left" type="button">Excluir</button>
+          </div>
+          <div class="card-body">
+            <button @click="salvarServicos()" type="button" class="btn btn-success float-right">Salvar</button>
+          </div>
+        </form>
       </b-modal>
     </div>
   </div>
@@ -83,7 +100,8 @@ export default {
       responsaveis:[],
       servicos:[],
       responsavel:null,
-      cliente:null
+      cliente:null,
+      id:null
     }
   },
   watch:{
@@ -130,7 +148,8 @@ export default {
         url: "http://localhost:8080/editarOrcamento",
         contentType: 'application/json',
         dataType: 'json',
-        data: JSON.stringify({}),
+        data: JSON.stringify({horasPrevistas:ref.horasPrevistas,cliente:ref.cliente.id,
+          responsavel:ref.responsavel.id,valor:ref.valor,id:ref.id}),
         success: function (result) {
 
           alert("Orcamento atualizado com sucesso!")
@@ -174,7 +193,7 @@ export default {
       if(acao=='reload'){
         ref.reload();
       }
-      ref.carregarDadosCriacao();
+      ref.carregarDados();
       ref.$refs[modaiId].show()
 
     },
@@ -183,10 +202,17 @@ export default {
       this.$refs[modaiId].hide()
 
     },
-    abrirPopupEditar: function(Orcamento){
+    abrirPopupEditar: function(orcamento){
 
       var ref = this
 
+      ref.id             = orcamento.id
+      ref.horasPrevistas = orcamento.horasPrevistas
+      ref.valor          = orcamento.valor
+      ref.responsavel    = orcamento.funcionario
+      ref.cliente        = orcamento.cliente
+
+      ref.carregarDados()
       ref.showModal('editar');
 
     },
@@ -198,7 +224,7 @@ export default {
 
     },
 
-    carregarDadosCriacao(){
+    carregarDados(){
 
       var ref = this
 
@@ -257,6 +283,90 @@ export default {
         ref.valor = Number(ref.valor) + Number(ref.servicos[i].valor)
 
       }
+
+    },
+
+    abrirPopupServicos: function (value){
+
+      var ref = this;
+
+      ref.id = value.id
+
+      ref.carregarServicos();
+      ref.showModal('servicos');
+
+    },
+    carregarServicos:function (){
+
+      var ref = this;
+
+      window.$.ajax({
+        method: "PUT",
+        url: "http://localhost:8080/buscarServicos",
+        contentType: 'application/json',
+        dataType: 'json',
+        data: JSON.stringify({id:ref.id}),
+        success: function (result) {
+
+          ref.servicos = result.result
+
+        },
+        error: function (result) {
+
+          alert(result.responseText)
+
+        }
+      });
+
+    },
+
+    excluirServico:function (id){
+      var ref = this;
+
+      window.$.ajax({
+        method: "DELETE",
+        url: "http://localhost:8080/excluirServico",
+        contentType: 'application/json',
+        dataType: 'json',
+        data: JSON.stringify({id:id}),
+        success: function (result) {
+
+          ref.carregarServicos()
+          alert("Excluido com sucesso bro!")
+
+        },
+        error: function (result) {
+
+          alert(result.responseText)
+
+        }
+      });
+
+
+
+    },
+
+    salvarServicos: function(){
+
+      var ref = this;
+
+      window.$.ajax({
+        method: "POST",
+        url: "http://localhost:8080/salvarServicos",
+        contentType: 'application/json',
+        dataType: 'json',
+        data: JSON.stringify({servicos:ref.servicos,id:ref.id}),
+        success: function (result) {
+
+          alert("Salvo com sucesso bro")
+
+        },
+        error: function (result) {
+
+          alert(result.responseText)
+
+        }
+      });
 
     }
 

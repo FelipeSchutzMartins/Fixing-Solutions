@@ -10,13 +10,13 @@
       <tbody>
         <tr v-for="dado in dados" :key="dado.id" v-show="!dadosFiltrados.length>0&&(filtro == null || filtro == '')">
           <td scope="row" v-show="key!='id'&&key!='servicos'" v-for="(value , key) in dado" :key="key">{{ valorExibido(value) }}</td>
-          <td><button type="button" v-show="dado.servicos!=undefined" class="btn-sm btn-primary btn-rounded" @click="editar(dado)">Ver serviços</button></td>
+          <td><button type="button" v-show="dado.servicos!=undefined" class="btn-sm btn-primary btn-rounded" @click="verServico(dado)">Ver serviços</button></td>
           <td><button type="button" class="btn-sm btn-primary btn-rounded" @click="editar(dado)">Editar</button></td>
           <td><button @click="excluir(dado.id)" class="btn-sm btn-danger float-left" type="button">Excluir</button></td>
         </tr>
         <tr v-for="dado in dadosFiltrados" :key="dado.id" v-show="dadosFiltrados.length>0||(filtro != null || filtro != '')">
           <td scope="row" v-show="key!='id'&&key!='servicos'" v-for="(value , key) in dado" :key="key">{{ valorExibido(value) }}</td>
-          <td><button type="button" v-show="dado.servicos!=undefined" class="btn-sm btn-primary btn-rounded" @click="editar(dado)">Ver serviços</button></td>
+          <td><button type="button" v-show="dado.servicos!=undefined" class="btn-sm btn-primary btn-rounded" @click="verServico(dado)">Ver serviços</button></td>
           <td><button type="button" class="btn-sm btn-primary btn-rounded" @click="editar(dado)">Editar</button></td>
           <td><button @click="excluir(dado.id)" class="btn-sm btn-danger float-left" type="button">Excluir</button></td>
         </tr>
@@ -105,6 +105,11 @@ export default {
       }
 
       return valor;
+
+    },
+    verServico(value){
+
+      this.$parent.abrirPopupServicos(value);
 
     }
   },
