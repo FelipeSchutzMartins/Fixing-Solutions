@@ -30,7 +30,7 @@
           </div>
 
           <div class="card-body">
-            <button @click="adicionarServico" class="btn-default btn-success rounded" type="button" style="height: 40px;"><font-awesome-icon :icon="['fa', 'plus-circle']"/>Adicionar Serviço</button>
+            <button @click="adicionarServico" class="btn-default btn-success rounded" type="button" style="height: 40px;"><font-awesome-icon :icon="['fa', 'plus-circle']" style="margin-right: 5px;"/>Adicionar Serviço</button>
           </div>
 
           <div class="card-body" v-for="servico in servicos" :key="servico">
@@ -78,7 +78,7 @@
         <form class="col-12">
 
           <div class="card-body">
-            <button @click="adicionarServico" class="btn-default btn-success rounded" type="button" style="height: 40px;"><font-awesome-icon :icon="['fa', 'plus-circle']"/>Adicionar Serviço</button>
+            <button @click="adicionarServico" class="btn-default btn-success rounded" type="button" style="height: 40px;"><font-awesome-icon :icon="['fa', 'plus-circle']" style="margin-right: 5px;"/>Adicionar Serviço</button>
           </div>
 
           <div class="card-body" v-for="servico in servicos" :key="servico">
