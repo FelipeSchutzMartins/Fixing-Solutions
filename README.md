@@ -24,7 +24,7 @@ open DbScript.sql in your workbench and run the script
 # Running the application locally
 Step 1: Run Spring Boot from home folder with:
 ```
-mvnw spring-boot:run
+mvn spring-boot:run
 ```
 Step 2: Run the Vue.js from home folder with:
 ```

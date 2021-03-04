@@ -27,24 +27,86 @@ public class OrcamentoController {
             List<Servico> servicos = new ArrayList<>();
             List<?> paramsServicos = (ArrayList) params.get("servicos");
 
+            if(paramsServicos==null){
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Serviços inválidos");
+            }
+
+            if(!(paramsServicos instanceof List)){
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Serviços inválidos");
+            }
+
+            Integer idCliente = (Integer) params.get("cliente");
+            if(idCliente==null){
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Cliente inválido");
+            }
+
+            Integer idFuncionario = (Integer) params.get("responsavel");
+            if(idFuncionario==null){
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Responsável inválido");
+            }
+
+            Object horasPrevistas = params.get("horasPrevistas");
+            if(horasPrevistas==null || horasPrevistas.toString().isEmpty()){
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Horas prevístas inválida");
+            }
+
+            Number valor = (Number) params.get("valor");
+            if(valor==null || valor.doubleValue() <= 0){
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Valor inválido");
+            }
+
+
             for(int i=0;i<paramsServicos.size();i++){
 
                 Servico servico = new Servico();
 
                 LinkedHashMap ob = (LinkedHashMap) paramsServicos.get(i);
 
-                servico.setDescricao((String) ob.get("descricao"));
-                servico.setValor(new BigDecimal((String) ob.get("valor")));
+                String descricao = (String) ob.get("descricao");
+                if(descricao==null || descricao.isEmpty()){
+                    return ResponseEntity
+                            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                            .body("Descrição do serviço #"+(i+1)+" inválido");
+                }
+
+                Object paramValor = ob.get("valor");
+                if(paramValor==null){
+                    return ResponseEntity
+                            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                            .body("Valor do serviço #"+(i+1)+" inválido");
+                }
+
+                BigDecimal valorServico = new BigDecimal(paramValor.toString());
+                if(valorServico.compareTo(new BigDecimal("0")) <= 0){
+                    return ResponseEntity
+                            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                            .body("Valor do serviço #"+(i+1)+" inválido");
+                }
+
+                servico.setDescricao(descricao);
+                servico.setValor(valorServico);
 
                 servicos.add(servico);
 
             }
 
             ClienteDao clienteDao = new ClienteDao();
-            Cliente cliente = clienteDao.get((Integer) params.get("cliente"));
+            Cliente cliente = clienteDao.get(idCliente);
 
             FuncionarioDao funcionarioDao = new FuncionarioDao();
-            Funcionario funcionario = funcionarioDao.get((Integer) params.get("responsavel"));
+            Funcionario funcionario = funcionarioDao.get(idFuncionario);
 
             OrcamentoDao orcamentoDao = new OrcamentoDao();
             Orcamento orcamento = new Orcamento();
@@ -52,10 +114,8 @@ public class OrcamentoController {
             orcamento.setFuncionario(funcionario);
             orcamento.setData(new Date());
 
-            Number valor = (Number) params.get("valor");
-
             orcamento.setValor(new BigDecimal(valor.toString()));
-            orcamento.setHorasPrevistas(new Integer((String) params.get("horasPrevistas")));
+            orcamento.setHorasPrevistas(new Integer(horasPrevistas.toString()));
             orcamento.setServicos(servicos.toArray());
 
             orcamentoDao.save(orcamento);
@@ -83,7 +143,7 @@ public class OrcamentoController {
                         .body("Orcamentos não encontrados");
             }
 
-                resposta.setResult(orcamentos);
+            resposta.setResult(orcamentos);
 
             }catch(Exception e){
             e.printStackTrace();
@@ -103,13 +163,17 @@ public class OrcamentoController {
         try {
 
             Integer id = (Integer) params.get("id");
-
+            if(id==null){
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Orçamento inválido");
+            }
 
             OrcamentoDao dao = new  OrcamentoDao();
             dao.delete(id);
 
         }catch(Exception e){
-            System.out.println(e);
+            e.printStackTrace();
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Houve um problema, tente novamente mais tarde");
@@ -125,6 +189,34 @@ public class OrcamentoController {
 
         try {
 
+            Integer id = (Integer) params.get("id");
+            if(id==null){
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Orçamento inválido");
+            }
+
+            Integer idCliente = (Integer) params.get("cliente");
+            if(idCliente==null){
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Cliente inválido");
+            }
+
+            Integer idFuncionario = (Integer) params.get("responsavel");
+            if(idFuncionario==null){
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Responsável inválido");
+            }
+
+            Object horasPrevistas = params.get("horasPrevistas");
+            if(horasPrevistas==null || horasPrevistas.toString().isEmpty()){
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Horas prevístas inválida");
+            }
+
             ClienteDao clienteDao = new ClienteDao();
             Cliente cliente = clienteDao.get((Integer) params.get("cliente"));
 
@@ -132,18 +224,10 @@ public class OrcamentoController {
             Funcionario funcionario = funcionarioDao.get((Integer) params.get("responsavel"));
 
             OrcamentoDao orcamentoDao = new OrcamentoDao();
-            Orcamento orcamento = new Orcamento();
+            Orcamento orcamento = orcamentoDao.get(id);
             orcamento.setCliente(cliente);
             orcamento.setFuncionario(funcionario);
-            orcamento.setData(new Date());
-            orcamento.setId((Integer) params.get("id"));
-
-            Number valor = (Number) params.get("valor");
-
-            orcamento.setValor(new BigDecimal(valor.toString()));
-
-            Object horasPrevistas = params.get("horasPrevistas");
-
+            orcamento.setId(id);
             orcamento.setHorasPrevistas(new Integer(horasPrevistas.toString()));
 
             orcamentoDao.update(orcamento);
@@ -165,10 +249,15 @@ public class OrcamentoController {
 
         try {
 
+            Integer id = (Integer) params.get("id");
+            if(id==null){
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Orçamento inválido");
+            }
+
             ServicoDao servicoDao = new ServicoDao();
-
-            List<Servico> servicos = servicoDao.findByOrcamento((Integer) params.get("id"));
-
+            List<Servico> servicos = servicoDao.findByOrcamento(id);
             resposta.setResult(servicos);
 
         }catch(Exception e){
@@ -235,13 +324,20 @@ public class OrcamentoController {
 
         try {
 
-            Integer id = (Integer) params.get("id");
+            Integer id = (Integer) params.get("idServico");
+            if(id==null){
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Serviço inválido");
+            }
 
             ServicoDao dao = new  ServicoDao();
             dao.delete(id);
 
+            recalcularValorOrcamento((Integer) params.get("idOrcamento"));
+
         }catch(Exception e){
-            System.out.println(e);
+            e.printStackTrace();
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Houve um problema, tente novamente mais tarde");
@@ -259,6 +355,13 @@ public class OrcamentoController {
         try {
 
             List<?> paramsServicos = (ArrayList) params.get("servicos");
+
+            if(!(paramsServicos instanceof List)){
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Serviços inválidos");
+            }
+
             ServicoDao servicoDao = new ServicoDao();
 
             for(int i=0;i<paramsServicos.size();i++){
@@ -267,11 +370,30 @@ public class OrcamentoController {
 
                 LinkedHashMap ob = (LinkedHashMap) paramsServicos.get(i);
 
-                servico.setDescricao((String) ob.get("descricao"));
+                String descricao = (String) ob.get("descricao");
 
-                Object valor = ob.get("valor");
+                if(descricao==null || descricao.isEmpty()){
+                    return ResponseEntity
+                            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                            .body("Descrição do serviço Nº"+(i+1)+" inválido");
+                }
 
-                servico.setValor(new BigDecimal(valor.toString()));
+                Object paramValor = ob.get("valor");
+                if(paramValor==null){
+                    return ResponseEntity
+                            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                            .body("Valor do serviço Nº"+i+" inválido");
+                }
+
+                servico.setDescricao(descricao);
+                BigDecimal valorServico = new BigDecimal(paramValor.toString());
+                if(valorServico.compareTo(new BigDecimal("0")) <= 0){
+                    return ResponseEntity
+                            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                            .body("Valor do serviço Nº"+(i+1)+" inválido");
+                }
+
+                servico.setValor(valorServico);
                 servico.setId((Integer) ob.get("id"));
 
                 if(servico.getId()!=null){
@@ -286,6 +408,8 @@ public class OrcamentoController {
 
             }
 
+            recalcularValorOrcamento((Integer) params.get("id"));
+
         }catch (Exception e){
             e.printStackTrace();
             return ResponseEntity
@@ -296,6 +420,27 @@ public class OrcamentoController {
 
     }
 
+    public void recalcularValorOrcamento(Integer id) throws Exception{
 
+        OrcamentoDao orcamentoDao = new OrcamentoDao();
+        ServicoDao   servicoDao   = new ServicoDao();
+
+        Orcamento orcamento = orcamentoDao.get(id);
+
+        List<Servico> servicos = servicoDao.findByOrcamento(orcamento.getId());
+
+        BigDecimal valor = new BigDecimal("0");
+
+        for(Servico servico : servicos){
+
+            valor = valor.add(servico.getValor());
+
+        }
+
+        orcamento.setValor(valor);
+
+        orcamentoDao.update(orcamento);
+
+    }
 
 }

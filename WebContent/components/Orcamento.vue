@@ -29,10 +29,13 @@
             </select>
           </div>
 
-          <a @click="adicionarServico"><i></i>Adicionar Serviço</a>
+          <div class="card-body">
+            <button @click="adicionarServico" class="btn-default btn-success rounded" type="button" style="height: 40px;"><font-awesome-icon :icon="['fa', 'plus-circle']"/>Adicionar Serviço</button>
+          </div>
 
-          <div class="card-body" v-for="servico in servicos" :key="servico.descricao">
-            <input v-model="servico.descricao" type="text" class="form-control" style="width: 120px;" placeholder="Descrição"><input v-model="servico.valor" @change="atualizarValor()" class="form-control" style="width: 60px;" placeholder="valor">
+          <div class="card-body" v-for="servico in servicos" :key="servico">
+              <label style="display: block;">Serviço #{{ servico.position }}</label>
+              <input v-model="servico.descricao" class="form-control" style="width: 150px; display: inline;" placeholder="Descrição"><input v-model="servico.valor" @change="atualizarValor()" class="form-control" style="margin-left:15px;width: 60px;display: inline;" placeholder="valor">
           </div>
 
           <div class="card-body">
@@ -73,11 +76,17 @@
       </b-modal>
       <b-modal ref="servicos" hide-footer onclose="reload()" title="Editar Servicos">
         <form class="col-12">
-          <a @click="adicionarServico"><i></i>Adicionar Serviço</a>
-          <div class="card-body" v-for="servico in servicos" :key="servico.descricao">
-            <input v-model="servico.descricao" type="text" class="form-control" style="width: 120px;" placeholder="Descrição"><input v-model="servico.valor" class="form-control" style="width: 60px;" placeholder="valor">
-            <button @click="excluirServico(servico.id)" class="btn-sm btn-danger float-left" type="button">Excluir</button>
+
+          <div class="card-body">
+            <button @click="adicionarServico" class="btn-default btn-success rounded" type="button" style="height: 40px;"><font-awesome-icon :icon="['fa', 'plus-circle']"/>Adicionar Serviço</button>
           </div>
+
+          <div class="card-body" v-for="servico in servicos" :key="servico">
+            <label style="display: block;">Serviço #{{ servico.id }}</label>
+            <input v-model="servico.descricao" class="form-control" style="width: 150px; display: inline;" placeholder="Descrição"><input v-model="servico.valor" @change="atualizarValor()" class="form-control" style="margin-left:15px;width: 60px;display: inline;" placeholder="valor">
+            <button @click="excluirServico(servico.id)" style="margin-left: 15px;height: 38px;" class="btn-danger rounded" type="button">Excluir</button>
+          </div>
+
           <div class="card-body">
             <button @click="salvarServicos()" type="button" class="btn btn-success float-right">Salvar</button>
           </div>
@@ -96,7 +105,7 @@ export default {
     return {
       valor:0,
       clientes:[],
-      horasPrevistas:0,
+      horasPrevistas:null,
       responsaveis:[],
       servicos:[],
       responsavel:null,
@@ -122,8 +131,8 @@ export default {
         url: "http://localhost:8080/criarOrcamento",
         contentType: 'application/json',
         dataType: 'json',
-        data: JSON.stringify({horasPrevistas:ref.horasPrevistas,cliente:ref.cliente.id,
-          responsavel:ref.responsavel.id,servicos:ref.servicos,valor:ref.valor}),
+        data: JSON.stringify({horasPrevistas:ref.horasPrevistas,cliente:ref.cliente?.id,
+          responsavel:ref.responsavel?.id,servicos:ref.servicos,valor:ref.valor}),
         success: function (result) {
 
           alert("Orçamento criado com sucesso!")
@@ -189,6 +198,7 @@ export default {
       });
     },
     showModal: function(modaiId,acao) {
+
       var ref = this
       if(acao=='reload'){
         ref.reload();
@@ -197,9 +207,13 @@ export default {
       ref.$refs[modaiId].show()
 
     },
-    hideModal: function(modaiId) {
+    hideModal: function(modaiId,acao) {
 
-      this.$refs[modaiId].hide()
+      var ref = this
+      if(acao=='reload'){
+        ref.reload();
+      }
+      ref.$refs[modaiId].hide()
 
     },
     abrirPopupEditar: function(orcamento){
@@ -220,7 +234,12 @@ export default {
 
       var ref = this;
       ref.$refs.tabelaAjax.request();
-
+      ref.id = null
+      ref.horasPrevistas = null
+      ref.responsavel = null
+      ref.cliente = null
+      ref.servicos = []
+      ref.valor = 0
 
     },
 
@@ -268,7 +287,7 @@ export default {
 
       var ref = this
 
-      ref.servicos.push({descricao:"",valor:0})
+      ref.servicos.push({descricao:null,valor:0,position:ref.servicos.length+1})
 
     },
 
@@ -328,10 +347,11 @@ export default {
         url: "http://localhost:8080/excluirServico",
         contentType: 'application/json',
         dataType: 'json',
-        data: JSON.stringify({id:id}),
+        data: JSON.stringify({idServico:id,idOrcamento:ref.id}),
         success: function (result) {
 
           ref.carregarServicos()
+          ref.hideModal('servicos','reload')
           alert("Excluido com sucesso bro!")
 
         },
@@ -359,6 +379,7 @@ export default {
         success: function (result) {
 
           alert("Salvo com sucesso bro")
+          ref.hideModal('servicos','reload')
 
         },
         error: function (result) {

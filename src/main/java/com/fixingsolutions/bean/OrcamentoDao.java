@@ -13,7 +13,7 @@ public class OrcamentoDao implements Dao<Orcamento>{
 
     @Override
     public Orcamento get(int id) throws SQLException {
-        String comando = "select * from orcamento orc join funcionario fun on fun.idCargo = orc.idFuncionario join cargo on fun.idCargo = cargo.id join cliente cli on or.idCliente = cli.id where orc.id = ?";
+        String comando = "select * from orcamento orc join funcionario fun on fun.id = orc.idFuncionario join cargo on fun.idCargo = cargo.id join cliente cli on orc.idCliente = cli.id where orc.id = ?";
         Orcamento orcamento = new Orcamento();
 
         Connection dbConenection = conexao.abrirConexao();
@@ -151,16 +151,15 @@ public class OrcamentoDao implements Dao<Orcamento>{
 
     @Override
     public void update(Orcamento orcamento) throws SQLException{
-        String comando = "update orcamento set data = ?,valor = ?,horasPrevistas = ?,idFuncionario = ?,idCliente = ?  where id = ?";
+        String comando = "update orcamento set valor = ?,horasPrevistas = ?,idFuncionario = ?,idCliente = ?  where id = ?";
 
         Connection dbConenection = conexao.abrirConexao();
         PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
-        preparedStatement.setDate(1,new java.sql.Date(orcamento.getData().getTime()));
-        preparedStatement.setBigDecimal(2,orcamento.getValor());
-        preparedStatement.setInt(3,orcamento.getHorasPrevistas());
-        preparedStatement.setInt(4,orcamento.getFuncionario().getId());
-        preparedStatement.setInt(5,orcamento.getCliente().getId());
-        preparedStatement.setInt(6,orcamento.getId());
+        preparedStatement.setBigDecimal(1,orcamento.getValor());
+        preparedStatement.setInt(2,orcamento.getHorasPrevistas());
+        preparedStatement.setInt(3,orcamento.getFuncionario().getId());
+        preparedStatement.setInt(4,orcamento.getCliente().getId());
+        preparedStatement.setInt(5,orcamento.getId());
 
         Integer rs = preparedStatement.executeUpdate();
 
@@ -171,6 +170,8 @@ public class OrcamentoDao implements Dao<Orcamento>{
     @Override
     public void delete(Integer id) throws SQLException{
         String comando = "delete from orcamento where id = ?";
+
+        deleteFromMm(id);
 
         Connection dbConenection = conexao.abrirConexao();
         PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
@@ -206,6 +207,18 @@ public class OrcamentoDao implements Dao<Orcamento>{
         dbConenection.close();
 
         return id;
+
+    }
+
+    public void deleteFromMm(Integer id) throws SQLException{
+        String comando = "delete from tiposervico_orcamento where idOrcamento = ?";
+
+        Connection dbConenection = conexao.abrirConexao();
+        PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
+        preparedStatement.setInt(1,id);
+
+        int rs = preparedStatement.executeUpdate();
+        dbConenection.close();
 
     }
 

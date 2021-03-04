@@ -3,20 +3,33 @@
     <Header></Header>
     <div style="height: 100vh;" :style="{ backgroundImage: 'url(' + require('../assets/backgroundImage.jpg') + ')' }"  class="d-flex justify-content-center">
       <!--      style="background: dodgerblue;height: 100vh;"-->
-      <div v-if="!cliente&&!funcionario&&!orcamento"  style="background-color: white;height: 44%;width: 50%;display: block;" class="align-self-center rounded">
-        <div style="margin-left: 5%;margin-top: 5%;display: block;">
-          <button style="width: 30%;height:90px;" class="btn-default bg-info rounded btn-sm">OS</button>
-          <button style="width: 30%;height:90px;margin-left: 2%;" class="btn-default bg-info rounded btn-sm" @click="abrirCliente()">Clientes</button>
-          <button style="width: 30%;height:90px;margin-left: 2%;"  class="btn-default bg-info rounded btn-sm" @click="abrirOrcamento()">Orçamento</button>
+
+      <transition name="slide-fade">
+        <div v-if="!cliente&&!funcionario&&!orcamento"  style="background-color: white;height: 44%;width: 50%;display: block;" class="align-self-center rounded">
+          <div style="margin-left: 5%;margin-top: 5%;display: block;">
+            <button style="width: 30%;height:90px;" class="btn-default bg-info rounded btn-sm">OS</button>
+            <button style="width: 30%;height:90px;margin-left: 2%;" class="btn-default bg-info rounded btn-sm" @click="abrirCliente()">Clientes</button>
+            <button style="width: 30%;height:90px;margin-left: 2%;"  class="btn-default bg-info rounded btn-sm" @click="abrirOrcamento()">Orçamento</button>
+          </div>
+          <div style="margin-left: 5%;margin-top: 5%;display: block;">
+            <button style="width: 30%;height:90px;" class="btn-default bg-info rounded btn-sm" @click="abrirFuncionario()">Funcionários</button>
+            <button style="width: 30%;margin-left: 2%;height:90px;" class="btn-default bg-info rounded btn-sm">Relatórios</button>
+          </div>
         </div>
-        <div style="margin-left: 5%;margin-top: 5%;display: block;">
-          <button style="width: 30%;height:90px;" class="btn-default bg-info rounded btn-sm" @click="abrirFuncionario()">Funcionários</button>
-          <button style="width: 30%;margin-left: 2%;height:90px;" class="btn-default bg-info rounded btn-sm">Relatórios</button>
-        </div>
-      </div>
-      <Cliente v-if="cliente"></Cliente>
-      <Funcionario v-if="funcionario"></Funcionario>
-      <Orcamento v-if="orcamento"></Orcamento>
+      </transition>
+
+      <transition name="slide-fade">
+        <Cliente v-if="cliente"></Cliente>
+      </transition>
+
+      <transition name="slide-fade">
+        <Funcionario v-if="funcionario"></Funcionario>
+      </transition>
+
+      <transition name="slide-fade">
+        <Orcamento v-if="orcamento"></Orcamento>
+      </transition>
+
     </div>
     <Footer></Footer>
   </div>
@@ -111,3 +124,13 @@ export default {
   }
 }
 </script>
+
+<style>
+.slide-fade-enter-active {
+  transition: all .3s ease;
+}
+.slide-fade-enter, .slide-fade-leave-to {
+  transform: translateX(10px);
+  opacity: 0;
+}
+</style>
