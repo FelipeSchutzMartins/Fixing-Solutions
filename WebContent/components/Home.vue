@@ -5,9 +5,9 @@
       <!--      style="background: dodgerblue;height: 100vh;"-->
 
       <transition name="slide-fade">
-        <div v-if="!cliente&&!funcionario&&!orcamento"  style="background-color: white;height: 44%;width: 50%;display: block;" class="align-self-center rounded">
+        <div v-if="!cliente&&!funcionario&&!orcamento&&!ordemServico"  style="background-color: white;height: 44%;width: 50%;display: block;" class="align-self-center rounded">
           <div style="margin-left: 5%;margin-top: 5%;display: block;">
-            <button style="width: 30%;height:90px;" class="btn-default bg-info rounded btn-sm">OS</button>
+            <button style="width: 30%;height:90px;" class="btn-default bg-info rounded btn-sm" @click="abrirOrdemServico()">OS</button>
             <button style="width: 30%;height:90px;margin-left: 2%;" class="btn-default bg-info rounded btn-sm" @click="abrirCliente()">Clientes</button>
             <button style="width: 30%;height:90px;margin-left: 2%;"  class="btn-default bg-info rounded btn-sm" @click="abrirOrcamento()">Orçamento</button>
           </div>
@@ -30,6 +30,10 @@
         <Orcamento v-if="orcamento"></Orcamento>
       </transition>
 
+      <transition name="slide-fade">
+        <OrdemServico v-if="ordemServico"></OrdemServico>
+      </transition>
+
     </div>
     <Footer></Footer>
   </div>
@@ -41,6 +45,7 @@ import Footer from "./Footer";
 import Cliente from "./Cliente";
 import Funcionario from "./Funcionario";
 import Orcamento from "./Orcamento";
+import OrdemServico from "./OrdemServico.vue";
 
 export default {
   name: "Home",
@@ -48,6 +53,7 @@ export default {
     Funcionario,
     Cliente,
     Orcamento,
+    OrdemServico,
     Header,
     Footer
   },
@@ -55,7 +61,8 @@ export default {
     return {
       cliente:false,
       funcionario:false,
-      orcamento:false
+      orcamento:false,
+      ordemServico:false
     }
   },
   props: {
@@ -91,6 +98,7 @@ export default {
       ref.cliente = true
       ref.funcionario = false
       ref.orcamento = false
+      ref.ordemServico = false
 
     },
 
@@ -101,6 +109,7 @@ export default {
       ref.funcionario = true
       ref.cliente = false
       ref.orcamento = false
+      ref.ordemServico = false
 
     },
 
@@ -110,6 +119,7 @@ export default {
       ref.cliente = false
       ref.funcionario = false
       ref.orcamento = false
+      ref.ordemServico = false
 
     },
 
@@ -119,8 +129,21 @@ export default {
         ref.cliente = false
         ref.funcionario = false
         ref.orcamento = true
+        ref.ordemServico = false
+
+    },
+
+    abrirOrdemServico: function (){
+
+      var ref = this
+      ref.cliente = false
+      ref.funcionario = false
+      ref.orcamento = false
+      ref.ordemServico = true
+
 
     }
+
   }
 }
 </script>
