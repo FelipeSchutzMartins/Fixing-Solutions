@@ -125,7 +125,7 @@ public class OsDao implements Dao<Os> {
     @Override
     public void save(Os os) throws SQLException {
 
-        String comando = "insert into ordemServico(status,titulo,dataInicio,dataUltimaAtualizacao,idOrcamento) values()";
+        String comando = "insert into ordemServico(status,titulo,dataInicio,dataUltimaAtualizacao,idOrcamento) values(?,?,?,?,?)";
 
         Connection dbConenection = conexao.abrirConexao();
         PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);

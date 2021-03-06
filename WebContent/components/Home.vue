@@ -1,8 +1,8 @@
 <template>
   <div>
     <Header></Header>
-    <div style="height: 100vh;" :style="{ backgroundImage: 'url(' + require('../assets/backgroundImage.jpg') + ')' }"  class="d-flex justify-content-center">
-      <!--      style="background: dodgerblue;height: 100vh;"-->
+<!--    <div style="height: 100vh;" :style="{ backgroundImage: 'url(' + require('../assets/backgroundImage.jpg') + ')' }"  class="d-flex justify-content-center">-->
+    <div style="background: dodgerblue;height: 100vh;"  class="d-flex justify-content-center">
 
       <transition name="slide-fade">
         <div v-if="!cliente&&!funcionario&&!orcamento&&!ordemServico"  style="background-color: white;height: 44%;width: 50%;display: block;" class="align-self-center rounded">
