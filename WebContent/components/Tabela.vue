@@ -10,16 +10,18 @@
       <tbody>
         <transition name="slide-fade">
           <tr v-for="dado in dados" :key="dado.id" v-show="!dadosFiltrados.length>0&&(filtro == null || filtro == '')">
-            <td scope="row" v-show="key!='id'&&key!='servicos'" v-for="(value , key) in dado" :key="key">{{ valorExibido(value) }}</td>
+            <td scope="row" v-show="key!='id'&&key!='servicos'&&key!='orcamento'" v-for="(value , key) in dado" :key="key">{{ valorExibido(value) }}</td>
             <td v-show="dado.servicos!=undefined"><button type="button" class="btn-sm btn-primary btn-rounded" @click="verServico(dado)">Ver serviços</button></td>
+            <td v-show="dado.orcamento!=undefined"><button type="button" class="btn-sm btn-primary btn-rounded" @click="verDetalhes(dado)">Ver detalhes</button></td>
             <td><button type="button" class="btn-sm btn-primary btn-rounded" @click="editar(dado)">Editar</button></td>
             <td><button @click="excluir(dado.id)" class="btn-sm btn-danger float-left" type="button">Excluir</button></td>
           </tr>
         </transition>
         <transition name="slide-fade">
           <tr v-for="dado in dadosFiltrados" :key="dado.id" v-show="dadosFiltrados.length>0||(filtro != null || filtro != '')">
-            <td scope="row" v-show="key!='id'&&key!='servicos'" v-for="(value , key) in dado" :key="key">{{ valorExibido(value) }}</td>
+            <td scope="row" v-show="key!='id'&&key!='servicos'&&key!='orcamento'" v-for="(value , key) in dado" :key="key">{{ valorExibido(value) }}</td>
             <td v-show="dado.servicos!=undefined"><button type="button" class="btn-sm btn-primary btn-rounded" @click="verServico(dado)">Ver serviços</button></td>
+            <td v-show="dado.orcamento!=undefined"><button type="button" class="btn-sm btn-primary btn-rounded" @click="verDetalhes(dado)">Ver detalhes</button></td>
             <td><button type="button" class="btn-sm btn-primary btn-rounded" @click="editar(dado)">Editar</button></td>
             <td><button @click="excluir(dado.id)" class="btn-sm btn-danger float-left" type="button">Excluir</button></td>
           </tr>
@@ -61,7 +63,7 @@ export default {
         success: function (result) {
 
           ref.dados = result.result
-
+          console.log(ref.dados);
           var keys = Object.keys(result.result[0])
           for(var i=0;i<keys.length;i++){
 
@@ -109,12 +111,12 @@ export default {
       return false
 
     },
-    valorExibido: function(value){
+    valorExibido: function(value) {
 
       var valor;
-      if(value?.email!=undefined){
+      if (value?.email != undefined) {
         valor = value.email
-      }else if(value?.descricao!=undefined){
+      } else if (value?.descricao != undefined) {
         valor = value.descricao
       }else{
         valor = value
@@ -126,6 +128,11 @@ export default {
     verServico(value){
 
       this.$parent.abrirPopupServicos(value);
+
+    },
+    verDetalhes(value){
+
+      this.$parent.abrirPopupDetalhes(value.orcamento);
 
     }
   },

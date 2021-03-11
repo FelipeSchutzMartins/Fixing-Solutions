@@ -29,6 +29,54 @@
 
         </form>
       </b-modal>
+
+      <b-modal ref="verDetalhesOrcamento" hide-footer onClose="reload">
+
+        <form class="col-12">
+          <div class="card-body">
+            <label>Horas Previstas</label>
+            <input v-model="horasPrevistas" class="form-control">
+          </div>
+          <div class="card-body">
+            <label>Responsável</label>
+            <select v-model="responsavel" class="form-control">
+              <option v-for="responsavel in responsaveis" :value="responsavel" :key="responsavel.id">
+                {{ responsavel.email }}
+              </option>
+            </select>
+          </div>
+          <div class="card-body">
+            <label>Cliente</label>
+            <select v-model="cliente" class="form-control">
+              <option v-for="cliente in clientes" :value="cliente" :key="cliente.id">
+                {{ cliente.email }}
+              </option>
+            </select>
+          </div>
+        </form>
+
+        <div class="card-body">
+          <button @click="adicionarServico" class="btn-default btn-success rounded" type="button" style="height: 40px;"><font-awesome-icon :icon="['fa', 'plus-circle']" style="margin-right: 5px;"/>Adicionar Serviço</button>
+        </div>
+
+        <div class="card-body" v-for="servico in servicos" :key="servico">
+          <label style="display: block;">Serviço #{{ servico.id }}</label>
+          <input v-model="servico.descricao" class="form-control" style="width: 150px; display: inline;" placeholder="Descrição"><input v-model="servico.valor" @change="atualizarValor()" class="form-control" style="margin-left:15px;width: 60px;display: inline;" placeholder="valor">
+          <button @click="excluirServico(servico.id)" style="margin-left: 15px;height: 38px;" class="btn-danger rounded" type="button">Excluir</button>
+        </div>
+
+        <div class="card-body">
+          <button @click="alterarOrcamento()" type="button" class="btn btn-success float-right">Salvar</button>
+        </div>
+
+      </b-modal>
+
+      <b-modal ref="editar" hide-footer onClose="reload">
+
+
+
+      </b-modal>
+
     </div>
   </div>
 </template>
@@ -42,7 +90,14 @@ export default {
     return {
       orcamento:null,
       orcamentos:null,
-      titulo:null
+      orcamentoId:null,
+      titulo:null,
+      clientes:[],
+      horasPrevistas:null,
+      responsaveis:[],
+      servicos:[],
+      responsavel:null,
+      cliente:null,
     }
   },
   methods:{
@@ -52,13 +107,19 @@ export default {
       if(acao=='reload'){
         ref.reload();
       }
-      ref.carregarDados();
-      ref.$refs[modaiId].show()
+
+      ref.$refs.[modaiId].show()
 
     },
-    hideModal: function(modaiId) {
+    hideModal: function(modaiId,acao) {
 
-      this.$refs[modaiId].hide()
+      var ref = this
+
+      if(acao=='reload'){
+        ref.reload();
+      }
+
+      ref.$refs.[modaiId].hide()
 
     },
 
@@ -116,6 +177,136 @@ export default {
 
         }
       });
+
+    },
+    abrirPopupDetalhes(value){
+
+      var ref = this
+      ref.orcamentoId    = value.id;
+      ref.responsavel    = value.funcionario;
+      ref.cliente        = value.cliente;
+      ref.horasPrevistas = value.horasPrevistas
+
+      window.$.ajax({
+        method: "GET",
+        url: "http://localhost:8080/buscarCliente",
+        contentType: 'application/json',
+        dataType: 'json',
+        success: function (result) {
+
+          ref.clientes = result.result
+
+        },
+        error: function (result) {
+
+          alert(result.responseText)
+
+        }
+      });
+
+      window.$.ajax({
+        method: "GET",
+        url: "http://localhost:8080/buscarResponsaveis",
+        contentType: 'application/json',
+        dataType: 'json',
+        success: function (result) {
+
+          ref.responsaveis = result.result
+
+        },
+        error: function (result) {
+
+          alert(result.responseText)
+
+        }
+      });
+
+      window.$.ajax({
+        method: "PUT",
+        url: "http://localhost:8080/buscarServicos",
+        contentType: 'application/json',
+        dataType: 'json',
+        data: JSON.stringify({id:ref.orcamentoId}),
+        success: function (result) {
+
+          ref.servicos = result.result
+
+        },
+        error: function (result) {
+
+          alert(result.responseText)
+
+        }
+      });
+
+      ref.showModal('verDetalhesOrcamento');
+
+    },
+
+    excluirServico:function (id) {
+      var ref = this;
+
+      window.$.ajax({
+        method: "DELETE",
+        url: "http://localhost:8080/excluirServico",
+        contentType: 'application/json',
+        dataType: 'json',
+        data: JSON.stringify({idServico: id, idOrcamento: ref.orcamentoId}),
+        success: function (result) {
+
+          ref.reload();
+          ref.hideModal('verDetalhesOrcamento', )
+          alert("Excluido com sucesso bro!")
+
+        },
+        error: function (result) {
+
+          alert(result.responseText)
+
+        }
+      });
+
+    },
+
+    alterarOrcamento: function(){
+
+      var ref = this;
+
+      window.$.ajax({
+        method: "POST",
+        url: "http://localhost:8080/alterarOrcamento",
+        contentType: 'application/json',
+        dataType: 'json',
+        data: JSON.stringify({servicos:ref.servicos,horasPrevistas:ref.horasPrevistas,cliente:ref.cliente.id,
+          responsavel:ref.responsavel.id,valor:ref.valor,id:ref.orcamentoId}),
+        success: function (result) {
+
+          alert("Salvo com sucesso bro")
+          ref.hideModal('verDetalhesOrcamento','reload')
+
+        },
+        error: function (result) {
+
+          alert(result.responseText)
+
+        }
+      });
+
+    },
+
+    adicionarServico(){
+
+      var ref = this
+
+      ref.servicos.push({descricao:null,valor:0,position:ref.servicos.length+1})
+
+    },
+
+    abrirPopupEditar(){
+
+      var ref = this
+
+      ref.showModal('editar');
 
     }
 

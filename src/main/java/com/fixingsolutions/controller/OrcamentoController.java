@@ -334,7 +334,7 @@ public class OrcamentoController {
             ServicoDao dao = new  ServicoDao();
             dao.delete(id);
 
-            recalcularValorOrcamento((Integer) params.get("idOrcamento"));
+            Os.recalcularValorOrcamento((Integer) params.get("idOrcamento"));
 
         }catch(Exception e){
             e.printStackTrace();
@@ -408,7 +408,7 @@ public class OrcamentoController {
 
             }
 
-            recalcularValorOrcamento((Integer) params.get("id"));
+            Os.recalcularValorOrcamento((Integer) params.get("id"));
 
         }catch (Exception e){
             e.printStackTrace();
@@ -417,29 +417,6 @@ public class OrcamentoController {
                     .body("Houve um problema, tente novamente mais tarde");
         }
         return ResponseEntity.ok(resposta);
-
-    }
-
-    public void recalcularValorOrcamento(Integer id) throws Exception{
-
-        OrcamentoDao orcamentoDao = new OrcamentoDao();
-        ServicoDao   servicoDao   = new ServicoDao();
-
-        Orcamento orcamento = orcamentoDao.get(id);
-
-        List<Servico> servicos = servicoDao.findByOrcamento(orcamento.getId());
-
-        BigDecimal valor = new BigDecimal("0");
-
-        for(Servico servico : servicos){
-
-            valor = valor.add(servico.getValor());
-
-        }
-
-        orcamento.setValor(valor);
-
-        orcamentoDao.update(orcamento);
 
     }
 
