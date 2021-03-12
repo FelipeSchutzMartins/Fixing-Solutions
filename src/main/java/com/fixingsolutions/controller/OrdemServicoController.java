@@ -206,4 +206,68 @@ public class OrdemServicoController {
 
     }
 
+    @DeleteMapping(value = "/deletarOrdemServico",consumes = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<?> deletarOrdemServico(@RequestBody Map<String,Object> params){
+
+        AjaxResponseBody resposta = new AjaxResponseBody();
+
+        try {
+
+            Integer id = (Integer) params.get("id");
+            if(id==null){
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Orçamento inválido");
+            }
+
+            OsDao dao = new  OsDao();
+            dao.delete(id);
+
+        }catch(Exception e){
+            e.printStackTrace();
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Houve um problema, tente novamente mais tarde");
+        }
+        return ResponseEntity.ok(resposta);
+
+    }
+    @PostMapping(value = "/editarOs",consumes = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<?> editarOs(@RequestBody Map<String,Object> params){
+
+        AjaxResponseBody resposta = new AjaxResponseBody();
+
+        try {
+            Integer id = (Integer) params.get("id");
+            if(id==null){
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Orcamento inválido");
+            }
+
+            String titulo = (String) params.get("titulo");
+            if(titulo==null||titulo==""){
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Titulo inválido");
+            }
+
+            OsDao dao = new OsDao();
+
+            Os ordemServico = dao.get(id);
+            ordemServico.setTitulo(titulo);
+            dao.update(ordemServico);
+
+
+        }catch(Exception e){
+            e.printStackTrace();
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Houve um problema, tente novamente mais tarde");
+        }
+        return ResponseEntity.ok(resposta);
+
+    }
+
+
 }

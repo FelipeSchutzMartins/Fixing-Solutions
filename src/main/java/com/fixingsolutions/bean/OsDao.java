@@ -164,7 +164,7 @@ public class OsDao implements Dao<Os> {
     @Override
     public void delete(Integer id) throws SQLException {
 
-        String comando = "delete from os where id = ?";
+        String comando = "delete from ordemservico where id = ?";
 
         Connection dbConenection = conexao.abrirConexao();
         PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);

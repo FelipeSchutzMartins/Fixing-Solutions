@@ -6,10 +6,10 @@ import jQuery from "jquery";
 import VueTheMask from 'vue-the-mask'
 //import { } from '@fortawesome/free-brands-svg-icons'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faUserSecret,faPlusCircle } from '@fortawesome/free-solid-svg-icons'
+import { faUserSecret,faPlusCircle,faCogs } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-library.add(faUserSecret,faPlusCircle)
+library.add(faUserSecret,faPlusCircle,faCogs)
 
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'

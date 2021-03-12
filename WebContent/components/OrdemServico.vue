@@ -3,7 +3,9 @@
     <button @click="showModal('criarOs','reload')" style="height: 45px;" class="btn-default btn-success rounded">Criar ordem de serviço</button>
     <div style="height: auto;width: auto;display: block;margin-top: 15px;text-align: center;" class="rounded">
       <div style="background-color: white;height: 86%;width: 100%;display: block;" class="align-self-center rounded">
-        <Tabela :url="'http://localhost:8080/buscarOs'" ref="tabelaAjax"></Tabela>
+        <Tabela :url="'http://localhost:8080/buscarOs'" :exibir-menu="true" ref="tabelaAjax">
+
+        </Tabela>
       </div>
       <b-modal ref="criarOs" hide-footer title="Criar ordem de serviço">
         <form class="col-12">
@@ -22,11 +24,6 @@
           <div class="card-body">
             <button @click="criarOs()" type="button" class="btn btn-success float-right">Criar</button>
           </div>
-        </form>
-      </b-modal>
-      <b-modal ref="editar" hide-footer onclose="reload()" title="">
-        <form class="col-12">
-
         </form>
       </b-modal>
 
@@ -73,7 +70,18 @@
 
       <b-modal ref="editar" hide-footer onClose="reload">
 
+        <form class="col-12">
 
+          <div class="card-body">
+            <label>titulo</label>
+            <input v-model="titulo" class="form-control">
+          </div>
+
+          <div class="card-body">
+            <button @click="editar()" type="button" class="btn btn-success float-right">Salvar</button>
+          </div>
+
+        </form>
 
       </b-modal>
 
@@ -88,10 +96,13 @@ export default {
   components: {Tabela},
   data: function(){
     return {
+      id:null,
       orcamento:null,
       orcamentos:null,
-      orcamentoId:null,
       titulo:null,
+      status:null,
+      /*coisas do orcamento*/
+      orcamentoId:null,
       clientes:[],
       horasPrevistas:null,
       responsaveis:[],
@@ -126,8 +137,60 @@ export default {
     reload: function (){
 
       var ref = this;
+      ref.carregarDados()
       ref.$refs.tabelaAjax.request();
 
+
+    },
+
+    editar(){
+
+      var ref = this
+
+      window.$.ajax({
+        method: "POST",
+        url: "http://localhost:8080/editarOs",
+        contentType: 'application/json',
+        dataType: 'json',
+        data: JSON.stringify({id:ref.id,titulo:ref.titulo}),
+        success: function (result) {
+
+          alert("Orçamento editado com sucesso!")
+          ref.reload();
+          ref.hideModal('editar')
+
+        },
+        error: function (result) {
+
+          alert(result.responseText)
+
+        }
+      });
+
+    },
+
+    excluir(id){
+
+      var ref = this
+
+      window.$.ajax({
+        method: "DELETE",
+        url: "http://localhost:8080/deletarOrdemServico",
+        contentType: 'application/json',
+        dataType: 'json',
+        data: JSON.stringify({id:id}),
+        success: function (result) {
+
+          alert("Orçamento excluido com sucesso!")
+          ref.reload();
+
+        },
+        error: function (result) {
+
+          alert(result.responseText)
+
+        }
+      });
 
     },
 
@@ -302,9 +365,13 @@ export default {
 
     },
 
-    abrirPopupEditar(){
+    abrirPopupEditar(ordemServico){
 
       var ref = this
+
+      ref.titulo = ordemServico.titulo
+      ref.status = ordemServico.status
+      ref.id     = ordemServico.id
 
       ref.showModal('editar');
 
