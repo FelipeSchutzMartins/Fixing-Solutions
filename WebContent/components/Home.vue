@@ -5,7 +5,7 @@
     <div style="background: dodgerblue;height: 100vh;"  class="d-flex justify-content-center">
 
       <transition name="slide-fade">
-        <div v-if="!cliente&&!funcionario&&!orcamento&&!ordemServico"  style="background-color: white;height: 44%;width: 50%;display: block;" class="align-self-center rounded">
+        <div v-if="!cliente&&!funcionario&&!orcamento&&!ordemServico&&!relatorio"  style="background-color: white;height: 44%;width: 50%;display: block;" class="align-self-center rounded">
           <div style="margin-left: 5%;margin-top: 5%;display: block;">
             <button style="width: 30%;height:90px;" class="btn-default bg-info rounded btn-sm" @click="abrirOrdemServico()">OS</button>
             <button style="width: 30%;height:90px;margin-left: 2%;" class="btn-default bg-info rounded btn-sm" @click="abrirCliente()">Clientes</button>
@@ -13,7 +13,7 @@
           </div>
           <div style="margin-left: 5%;margin-top: 5%;display: block;">
             <button style="width: 30%;height:90px;" class="btn-default bg-info rounded btn-sm" @click="abrirFuncionario()">Funcionários</button>
-            <button style="width: 30%;margin-left: 2%;height:90px;" class="btn-default bg-info rounded btn-sm">Relatórios</button>
+            <button style="width: 30%;margin-left: 2%;height:90px;" class="btn-default bg-info rounded btn-sm" @click="abrirRelatorio()">Relatórios</button>
           </div>
         </div>
       </transition>
@@ -34,6 +34,10 @@
         <OrdemServico v-if="ordemServico"></OrdemServico>
       </transition>
 
+      <transition name="slide-fade">
+        <Relatorio v-if="relatorio"></Relatorio>
+      </transition>
+
     </div>
     <Footer></Footer>
   </div>
@@ -46,10 +50,12 @@ import Cliente from "./Cliente";
 import Funcionario from "./Funcionario";
 import Orcamento from "./Orcamento";
 import OrdemServico from "./OrdemServico.vue";
+import Relatorio from "./Relatorio";
 
 export default {
   name: "Home",
   components:{
+    Relatorio,
     Funcionario,
     Cliente,
     Orcamento,
@@ -62,7 +68,8 @@ export default {
       cliente:false,
       funcionario:false,
       orcamento:false,
-      ordemServico:false
+      ordemServico:false,
+      relatorio:false
     }
   },
   props: {
@@ -110,6 +117,7 @@ export default {
       ref.cliente = false
       ref.orcamento = false
       ref.ordemServico = false
+      ref.relatorio = false
 
     },
 
@@ -120,6 +128,7 @@ export default {
       ref.funcionario = false
       ref.orcamento = false
       ref.ordemServico = false
+      ref.relatorio = false
 
     },
 
@@ -130,6 +139,7 @@ export default {
         ref.funcionario = false
         ref.orcamento = true
         ref.ordemServico = false
+        ref.relatorio = false
 
     },
 
@@ -140,9 +150,21 @@ export default {
       ref.funcionario = false
       ref.orcamento = false
       ref.ordemServico = true
+      ref.relatorio = false
 
+    },
+
+    abrirRelatorio: function (){
+
+      var ref = this
+      ref.cliente = false
+      ref.funcionario = false
+      ref.orcamento = false
+      ref.ordemServico = false
+      ref.relatorio = true
 
     }
+
 
   }
 }
