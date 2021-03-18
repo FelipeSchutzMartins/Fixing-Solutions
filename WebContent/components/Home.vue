@@ -106,6 +106,7 @@ export default {
       ref.funcionario = false
       ref.orcamento = false
       ref.ordemServico = false
+      ref.relatorio = false
 
     },
 

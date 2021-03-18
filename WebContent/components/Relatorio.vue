@@ -1,114 +1,21 @@
 <template>
   <div class="d-flex justify-content-center">
     <transition name="slide-fade">
-      <div style="background-color: white;height: 44%;width: 50%;display: block;" class="align-self-center rounded">
-        <form class="col-12">
+      <div style="background-color: white;height: 30%;width: 380px;display: block;" class="d-flex align-self-center justify-content-center rounded">
+        <form class="col-12 form-inline align-self-center">
 
-          <div class="card-body">
-            <select v-model="tipo" class="form-control">
-              <option v-for="item in itens" :value="item" :key="item">
-                {{ item }}
-              </option>
-            </select>
+          <div class="form-group">
+            <label for="dataIniPeriodo">Data início do periodo</label>
+            <input type="date" id="dataIniPeriodo" v-model="dataIniPeriodo" class="form-control" style="margin-left:10px;">
           </div>
 
-          <div v-if="tipo">
-
-            <div v-if="tipo=='Funcionario'">
-
-              <div class="card-body">
-                <label>Email</label>
-                <input v-model="email" placeholder="seuemail@emailless.com" class="form-control">
-              </div>
-
-              <div class="card-body">
-                <label>Nome</label>
-                <input v-model="nome" placeholder="seuemail@emailless.com" class="form-control">
-              </div>
-
-              <div class="card-body">
-                <label>Senha</label>
-                <input v-model="senha" :type="'password'" class="form-control">
-              </div>
-
-              <div class="card-body">
-                <label>Cargo</label>
-                <select v-model="cargoSelecionado" class="form-control">
-                  <option v-for="cargo in cargos" :value="cargo" :key="cargo.id">
-                    {{ cargo.descricao }}
-                  </option>
-                </select>
-              </div>
-
-            </div>
-
-            <div v-if="tipo=='Cliente'">
-
-              <div class="card-body">
-                <label>Nome</label>
-                <input v-model="nome" class="form-control">
-              </div>
-              <div class="card-body">
-                <label>Email</label>
-                <input v-model="email" placeholder="seuemail@emailless.com" class="form-control">
-              </div>
-              <div class="card-body">
-                <label>CPF</label>
-                <input v-model="cpf" v-mask="'###.###.###-##'" class="form-control">
-              </div>
-              <div class="card-body">
-                <label>Telefone</label>
-                <input v-model="telefone" v-mask="'(##) #####-####'" class="form-control">
-              </div>
-
-            </div>
-
-            <div v-if="tipo=='Orçamentos'">
-
-              <div class="card-body">
-                <label>Horas Previstas</label>
-                <input v-model="horasPrevistas" class="form-control">
-              </div>
-              <div class="card-body">
-                <label>Responsável</label>
-                <select v-model="responsavel" class="form-control">
-                  <option v-for="responsavel in responsaveis" :value="responsavel" :key="responsavel.id">
-                    {{ responsavel.email }}
-                  </option>
-                </select>
-              </div>
-              <div class="card-body">
-                <label>Cliente</label>
-                <select v-model="cliente" class="form-control">
-                  <option v-for="cliente in clientes" :value="cliente" :key="cliente.id">
-                    {{ cliente.email }}
-                  </option>
-                </select>
-              </div>
-
-              <div class="card-body">
-                <label>Valor</label>
-                <input v-model="valor" class="form-control" style="width: 60px;" disabled>
-              </div>
-
-              <div class="card-body">
-                <label>Data de criação</label>
-                <input v-model="valor" class="form-control" style="width: 60px;" disabled>
-              </div>
-
-            </div>
-
-            <div v-if="tipo=='Ordens de serviço'">
-
-
-
-            </div>
-
+          <div class="form-group" style="margin-top: 20px;">
+            <label>Data fim do periodo</label>
+            <input style="margin-left:25px;" type="date" v-model="dataFimPeriodo" class="form-control">
           </div>
 
-          <div class="card-body">
-            <button @click="gerarRelatorio" type="button" class="btn btn-success float-right">Gerar relatorio BIRRRL!!!</button>
-          </div>
+          <button type="button" @click="gerarRelatorio" class="btn btn-success" style="margin-top:15px;margin-left: 220px;">Gerar relatório</button>
+
         </form>
       </div>
     </transition>
@@ -120,34 +27,34 @@ export default {
   name: "Relatorio",
   data: function(){
     return {
-      itens:["Funcionario","Cliente","Orçamentos","Ordens de serviço"],
-      tipo:null,
-      cargos:[]
+      dataFimPeriodo:null,
+      dataIniPeriodo:null
     }
   },
   methods: {
     gerarRelatorio(){
 
-    },
-    buscarCargos(){
       var ref = this
 
       window.$.ajax({
-        method: "GET",
-        url: "http://localhost:8080/buscarCargos",
-        contentType: "application/json",
+        method: "POST",
+        url: "http://localhost:8080/relatorio",
+        contentType: 'application/json',
+        dataType: 'json',
+        data: JSON.stringify({dataFimPeriodo:ref.dataFimPeriodo,dataIniPeriodo:ref.dataIniPeriodo}),
         success: function (result) {
 
-          ref.cargos = result.result
+          window.open(require('../static/Relatorio.pdf'), '_blank')
 
         },
-        error: function (result){
+        error: function (result) {
 
           alert(result.responseText)
 
         }
       });
-    }
+
+    },
   }
 }
 </script>
