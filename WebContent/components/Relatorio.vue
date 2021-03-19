@@ -44,7 +44,7 @@ export default {
         data: JSON.stringify({dataFimPeriodo:ref.dataFimPeriodo,dataIniPeriodo:ref.dataIniPeriodo}),
         success: function (result) {
 
-          window.open(require('../static/Relatorio.pdf'), '_blank')
+          window.open(require('../static/'+result.result[0].fileName), '_blank')
 
         },
         error: function (result) {
@@ -54,7 +54,7 @@ export default {
         }
       });
 
-    },
+    }
   }
 }
 </script>

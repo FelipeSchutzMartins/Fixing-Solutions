@@ -27,8 +27,10 @@ public class RelatorioController {
 
         try{
 
+            String fileName = "Relatorio.pdf";
+
             Document document = new Document();
-            PdfWriter.getInstance(document, new FileOutputStream("WebContent/static/Relatorio.pdf"));
+            PdfWriter.getInstance(document, new FileOutputStream("WebContent/static/"+fileName));
 
             document.open();
             Font font = FontFactory.getFont(FontFactory.COURIER, 16, BaseColor.BLACK);
@@ -37,7 +39,10 @@ public class RelatorioController {
             document.add(chunk);
             document.close();
 
-            resposta.setResult(Collections.singletonList(""));
+            List<Map> retorno = new ArrayList<Map>();
+            retorno.add(Collections.singletonMap("fileName",fileName));
+
+            resposta.setResult(retorno);
 
         }catch (Exception e){
 
