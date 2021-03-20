@@ -1,24 +1,22 @@
 package com.fixingsolutions.bean;
 
-import com.fixingsolutions.domain.Cliente;
-import com.fixingsolutions.domain.Conexao;
-import com.fixingsolutions.domain.Funcionario;
+import com.fixingsolutions.domain.*;
 import com.fixingsolutions.repository.Dao;
-
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ClienteDao implements Dao<Cliente> {
-
-    private static Conexao conexao = new Conexao();
-
     @Override
     public Cliente get(int id) throws SQLException {
         String comando = "select * from Cliente where id = ?";
         Cliente cliente = new Cliente();
 
-        Connection dbConenection = conexao.abrirConexao();
+        Connection dbConenection = connection.abrirConexao();
         PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
         preparedStatement.setInt(1,id);
         ResultSet rs = preparedStatement.executeQuery();
@@ -45,7 +43,7 @@ public class ClienteDao implements Dao<Cliente> {
         Cliente cliente = null;
         String comando = "select * from cliente";
 
-        Connection dbConenection = conexao.abrirConexao();
+        java.sql.Connection dbConenection = connection.abrirConexao();
         Statement stmt = dbConenection.createStatement();
         ResultSet rs = stmt.executeQuery(comando);
 
@@ -69,7 +67,7 @@ public class ClienteDao implements Dao<Cliente> {
     public void save(Cliente cliente) throws SQLException{
 
         String comando = "insert into cliente(nome,email,cpf,telefone) values (?,?,?,?)";
-        Connection dbConenection = conexao.abrirConexao();
+        java.sql.Connection dbConenection = connection.abrirConexao();
         PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
         preparedStatement.setString(1,cliente.getNome());
         preparedStatement.setString(2,cliente.getEmail());
@@ -86,7 +84,7 @@ public class ClienteDao implements Dao<Cliente> {
     public void update(Cliente cliente) throws SQLException{
         String comando = "update cliente set nome = ?,email = ?,cpf = ?, telefone = ?  where id = ?";
 
-        Connection dbConenection = conexao.abrirConexao();
+        Connection dbConenection = connection.abrirConexao();
         PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
         preparedStatement.setString(1,cliente.getNome());
         preparedStatement.setString(2,cliente.getEmail());
@@ -104,7 +102,7 @@ public class ClienteDao implements Dao<Cliente> {
     public void delete(Integer id) throws SQLException{
         String comando = "delete from cliente where id = ?";
 
-        Connection dbConenection = conexao.abrirConexao();
+        Connection dbConenection = connection.abrirConexao();
         PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
         preparedStatement.setInt(1,id);
 

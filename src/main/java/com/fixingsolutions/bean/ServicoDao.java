@@ -1,28 +1,32 @@
 package com.fixingsolutions.bean;
 
-import com.fixingsolutions.domain.Cargo;
-import com.fixingsolutions.domain.Conexao;
-import com.fixingsolutions.domain.Servico;
+import com.fixingsolutions.domain.*;
 import com.fixingsolutions.repository.Dao;
-
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ServicoDao implements Dao<Servico> {
 
-    private Conexao conexao = new Conexao();
-
     @Override
     public Servico get(int id) throws SQLException {
-        String comando = "select * from tiposervico where id = ?";
-        Servico servico = new Servico();
 
-        Connection dbConenection = conexao.abrirConexao();
-        PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
+        StringBuilder comando = new StringBuilder();
+        comando.append("SELECT \n");
+        comando.append(" * \n");
+        comando.append("FROM tiposervico");
+        comando.append("WHERE id = ? \n");
+
+        Connection dbConenection = connection.abrirConexao();
+        PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando.toString());
         preparedStatement.setInt(1,id);
         ResultSet rs = preparedStatement.executeQuery();
 
+        Servico servico = new Servico();
         if(rs.next()){
 
             servico.setId(rs.getInt("id"));
@@ -30,6 +34,7 @@ public class ServicoDao implements Dao<Servico> {
             servico.setDescricao(rs.getString("descricao"));
 
         }
+
         dbConenection.close();
         return servico;
     }
@@ -37,12 +42,17 @@ public class ServicoDao implements Dao<Servico> {
     @Override
     public List<Servico> getAll() throws SQLException{
 
-        List<Servico> servicos = new ArrayList<Servico>();
-        Servico servico = null;
-        String comando = "select * from tiposervico";
-        Connection dbConenection = conexao.abrirConexao();
+        StringBuilder comando = new StringBuilder();
+        comando.append("SELECT \n");
+        comando.append(" * \n");
+        comando.append("FROM tiposervico");
+
+        Connection dbConenection = connection.abrirConexao();
         Statement stmt = dbConenection.createStatement();
-        ResultSet rs = stmt.executeQuery(comando);
+        ResultSet rs = stmt.executeQuery(comando.toString());
+
+        List<Servico> servicos = new ArrayList<Servico>();
+        Servico servico;
 
         while(rs.next()) {
             servico = new Servico();
@@ -60,14 +70,18 @@ public class ServicoDao implements Dao<Servico> {
 
     @Override
     public void save(Servico servico) throws SQLException{
-        String comando = "insert into tiposervico(descricao,valor) values (?,?)";
 
-        Connection dbConenection = conexao.abrirConexao();
-        PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
+        StringBuilder comando = new StringBuilder();
+        comando.append("INSERT INTO tiposervico(descricao,valor) \n");
+        comando.append("VALUES(?,?)");
+
+        Connection dbConenection = connection.abrirConexao();
+        PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando.toString());
         preparedStatement.setString(1, servico.getDescricao());
         preparedStatement.setBigDecimal(2, servico.getValor());
 
-        int rs = preparedStatement.executeUpdate();
+        executarUpdate(preparedStatement);
+
         dbConenection.close();
 
     }
@@ -78,29 +92,37 @@ public class ServicoDao implements Dao<Servico> {
 
         servico.setId(findByDescricao(servico.getDescricao()).getId());
 
-        String comando = "insert into tiposervico_orcamento(idTipoServico,idOrcamento) values (?,?)";
+        StringBuilder comando = new StringBuilder();
+        comando.append("INSERT INTO tiposervico_orcamento(idTipoServico,idOrcamento) \n");
+        comando.append("VALUES(?,?)");
 
-        Connection dbConenection = conexao.abrirConexao();
-        PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
+        Connection dbConenection = connection.abrirConexao();
+        PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando.toString());
         preparedStatement.setInt(1, servico.getId());
         preparedStatement.setInt(2, idOrcamento);
 
-        int rs = preparedStatement.executeUpdate();
+        executarUpdate(preparedStatement);
+
         dbConenection.close();
 
     }
 
     @Override
     public void update(Servico servico) throws SQLException {
-        String comando = "update tiposervico set descricao = ?,valor = ? where id = ?";
 
-        Connection dbConenection = conexao.abrirConexao();
-        PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
+        StringBuilder comando = new StringBuilder();
+        comando.append("UPDATE tiposervico\n");
+        comando.append("SET descricao = ?,\n");
+        comando.append("    valor = ?,\n");
+        comando.append("WHERE id = ?");
+
+        Connection dbConenection = connection.abrirConexao();
+        PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando.toString());
         preparedStatement.setString(1, servico.getDescricao());
         preparedStatement.setBigDecimal(2, servico.getValor());
         preparedStatement.setInt(3, servico.getId());
 
-        int rs = preparedStatement.executeUpdate();
+        executarUpdate(preparedStatement);
 
         dbConenection.close();
 
@@ -108,15 +130,20 @@ public class ServicoDao implements Dao<Servico> {
 
     @Override
     public void delete(Integer id) throws SQLException{
-        String comando = "delete from tiposervico where id = ?";
 
         deleteFromMm(id);
 
-        Connection dbConenection = conexao.abrirConexao();
-        PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
+        StringBuilder comando = new StringBuilder();
+        comando.append("DELETE\n");
+        comando.append("FROM tiposervico\n");
+        comando.append("WHERE id = ?");
+
+        Connection dbConenection = connection.abrirConexao();
+        PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando.toString());
         preparedStatement.setInt(1,id);
 
-        int rs = preparedStatement.executeUpdate();
+        executarUpdate(preparedStatement);
+
         dbConenection.close();
 
     }
@@ -125,7 +152,7 @@ public class ServicoDao implements Dao<Servico> {
         String comando = "select * from tiposervico where descricao = ?";
         Servico servico = new Servico();
 
-        Connection dbConenection = conexao.abrirConexao();
+        java.sql.Connection dbConenection = connection.abrirConexao();
         PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
         preparedStatement.setString(1,descricao);
         ResultSet rs = preparedStatement.executeQuery();
@@ -146,7 +173,7 @@ public class ServicoDao implements Dao<Servico> {
         List<Servico> servicos = new ArrayList<Servico>();
         Servico servico = null;
         String comando = "select * from tiposervico ts join tiposervico_orcamento tsc on tsc.idTipoServico = ts.id where tsc.idOrcamento = ?";
-        Connection dbConenection = conexao.abrirConexao();
+        java.sql.Connection dbConenection = connection.abrirConexao();
         PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
         preparedStatement.setInt(1,idOrcamento);
         ResultSet rs = preparedStatement.executeQuery();
@@ -168,7 +195,7 @@ public class ServicoDao implements Dao<Servico> {
     public void deleteFromMm(Integer id) throws SQLException{
         String comando = "delete from tiposervico_orcamento where idTipoServico = ?";
 
-        Connection dbConenection = conexao.abrirConexao();
+        java.sql.Connection dbConenection = connection.abrirConexao();
         PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
         preparedStatement.setInt(1,id);
 

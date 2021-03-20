@@ -4,6 +4,7 @@ import com.fixingsolutions.bean.OsDao;
 import com.fixingsolutions.domain.AjaxResponseBody;
 import com.fixingsolutions.domain.Os;
 import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -11,10 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.FileOutputStream;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 public class RelatorioController {
@@ -34,9 +34,34 @@ public class RelatorioController {
 
             document.open();
             Font font = FontFactory.getFont(FontFactory.COURIER, 16, BaseColor.BLACK);
-            Chunk chunk = new Chunk("Hello World", font);
 
-            document.add(chunk);
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            Date dataFin = formatter.parse((String) params.get("dataFimPeriodo"));
+            Date dataIni = formatter.parse((String) params.get("dataIniPeriodo"));
+
+            List<Os> ordemServicos = OsDao.findWhereDateCriacaoBetween(dataIni,dataFin);
+
+            PdfPTable table = new PdfPTable(6);
+            table.addCell("Id");
+            table.addCell("Status");
+            table.addCell("Valor");
+            table.addCell("Data de criação");
+            table.addCell("Data da ultima atualização");
+            table.addCell("Responsável");
+
+            for(Os ordemServico : ordemServicos){
+
+                table.addCell(ordemServico.getId().toString());
+                table.addCell(ordemServico.getStatus().toString());
+                table.addCell(ordemServico.getOrcamento().getValor().toString());
+                table.addCell(ordemServico.getDataCriacao().toString());
+                table.addCell(ordemServico.getDataUltimaAtualizacao().toString());
+                table.addCell(ordemServico.getOrcamento().getFuncionario().getEmail().toString());
+
+            }
+
+
+            document.add(table);
             document.close();
 
             List<Map> retorno = new ArrayList<Map>();

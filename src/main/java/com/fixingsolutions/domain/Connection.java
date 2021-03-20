@@ -1,20 +1,17 @@
 package com.fixingsolutions.domain;
+public class Connection {
 
-import java.sql.Connection;
+    private Connection connection;
 
-public class Conexao {
-
-    private Connection conexao;
-
-    public Connection abrirConexao() {
+    public java.sql.Connection abrirConexao() {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
-            conexao = java.sql.DriverManager.getConnection("jdbc:mysql://localhost:3306/fixing_solutions?"
+            connection = java.sql.DriverManager.getConnection("jdbc:mysql://localhost:3306/fixing_solutions?"
                     +"user=root&password=root&useTimezone=true&serverTimezone=UTC");
         }catch(Exception e) {
             e.printStackTrace();
         }
-        return conexao;
+        return connection;
     }
 
 }

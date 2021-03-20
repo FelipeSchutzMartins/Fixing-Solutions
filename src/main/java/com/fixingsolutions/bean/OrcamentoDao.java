@@ -1,6 +1,7 @@
 package com.fixingsolutions.bean;
 
 import com.fixingsolutions.domain.*;
+import com.fixingsolutions.domain.Connection;
 import com.fixingsolutions.repository.Dao;
 
 import java.sql.*;
@@ -9,14 +10,14 @@ import java.util.List;
 
 public class OrcamentoDao implements Dao<Orcamento>{
 
-    private Conexao conexao = new Conexao();
+    private Connection connection = new Connection();
 
     @Override
     public Orcamento get(int id) throws SQLException {
         String comando = "select * from orcamento orc join funcionario fun on fun.id = orc.idFuncionario join cargo on fun.idCargo = cargo.id join cliente cli on orc.idCliente = cli.id where orc.id = ?";
         Orcamento orcamento = new Orcamento();
 
-        Connection dbConenection = conexao.abrirConexao();
+        java.sql.Connection dbConenection = connection.abrirConexao();
         PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
         preparedStatement.setInt(1,id);
         ResultSet rs = preparedStatement.executeQuery();
@@ -63,7 +64,7 @@ public class OrcamentoDao implements Dao<Orcamento>{
         List<Orcamento> orcamentos = new ArrayList<Orcamento>();
         String comando = "select * from orcamento orc join funcionario fun on fun.id = orc.idFuncionario join cargo on fun.idCargo = cargo.id join cliente cli on orc.idCliente = cli.id";
 
-        Connection dbConenection = conexao.abrirConexao();
+        java.sql.Connection dbConenection = connection.abrirConexao();
         Statement stmt = dbConenection.createStatement();
         ResultSet rs = stmt.executeQuery(comando);
 
@@ -111,7 +112,7 @@ public class OrcamentoDao implements Dao<Orcamento>{
 
         String comando = "insert into orcamento(data,valor,horasPrevistas,idFuncionario,idCliente) values (?,?,?,?,?)";
 
-        Connection dbConenection = conexao.abrirConexao();
+        java.sql.Connection dbConenection = connection.abrirConexao();
         PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
         preparedStatement.setDate(1,new java.sql.Date(orcamento.getData().getTime()));
         preparedStatement.setBigDecimal(2,orcamento.getValor());
@@ -153,7 +154,7 @@ public class OrcamentoDao implements Dao<Orcamento>{
     public void update(Orcamento orcamento) throws SQLException{
         String comando = "update orcamento set valor = ?,horasPrevistas = ?,idFuncionario = ?,idCliente = ?  where id = ?";
 
-        Connection dbConenection = conexao.abrirConexao();
+        java.sql.Connection dbConenection = connection.abrirConexao();
         PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
         preparedStatement.setBigDecimal(1,orcamento.getValor());
         preparedStatement.setInt(2,orcamento.getHorasPrevistas());
@@ -173,7 +174,7 @@ public class OrcamentoDao implements Dao<Orcamento>{
 
         deleteFromMm(id);
 
-        Connection dbConenection = conexao.abrirConexao();
+        java.sql.Connection dbConenection = connection.abrirConexao();
         PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
         preparedStatement.setInt(1,id);
 
@@ -187,7 +188,7 @@ public class OrcamentoDao implements Dao<Orcamento>{
 
         String comando = "select * from orcamento where data = ? and valor = ? and horasPrevistas = ? and idFuncionario = ? and idCliente = ?";
 
-        Connection dbConenection = conexao.abrirConexao();
+        java.sql.Connection dbConenection = connection.abrirConexao();
         PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
         preparedStatement.setDate(1, new java.sql.Date(orcamento.getData().getTime()));
         preparedStatement.setBigDecimal(2, orcamento.getValor());
@@ -213,7 +214,7 @@ public class OrcamentoDao implements Dao<Orcamento>{
     public void deleteFromMm(Integer id) throws SQLException{
         String comando = "delete from tiposervico_orcamento where idOrcamento = ?";
 
-        Connection dbConenection = conexao.abrirConexao();
+        java.sql.Connection dbConenection = connection.abrirConexao();
         PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
         preparedStatement.setInt(1,id);
 

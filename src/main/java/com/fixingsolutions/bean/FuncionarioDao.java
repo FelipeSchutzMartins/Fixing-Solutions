@@ -1,26 +1,25 @@
 package com.fixingsolutions.bean;
 
-import com.fixingsolutions.domain.Cargo;
-import com.fixingsolutions.domain.Conexao;
-import com.fixingsolutions.domain.Token;
+import com.fixingsolutions.domain.*;
 import com.fixingsolutions.repository.Dao;
-import com.fixingsolutions.domain.Funcionario;
-
-import java.nio.charset.Charset;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.nio.charset.Charset;
 import java.util.Random;
 
 public class FuncionarioDao implements Dao<Funcionario> {
-  private static Conexao conexao = new Conexao();
 
   @Override
   public Funcionario get(int id) throws SQLException{
     String comando = "select * from funcionario fun join cargo car on fun.idCargo = car.id where fun.id = ?";
     Funcionario funcionario = new Funcionario();
 
-    Connection dbConenection = conexao.abrirConexao();
+    Connection dbConenection = connection.abrirConexao();
     PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
     preparedStatement.setInt(1,id);
     ResultSet rs = preparedStatement.executeQuery();
@@ -51,7 +50,7 @@ public class FuncionarioDao implements Dao<Funcionario> {
     Funcionario funcionario = null;
     String comando = "select * from funcionario fun join cargo car on fun.idCargo = car.id ";
 
-    Connection dbConenection = conexao.abrirConexao();
+    Connection dbConenection = connection.abrirConexao();
     Statement stmt = dbConenection.createStatement();
     ResultSet rs = stmt.executeQuery(comando);
 
@@ -81,7 +80,7 @@ public class FuncionarioDao implements Dao<Funcionario> {
   public void save(Funcionario funcionario) throws SQLException{
 
     String comando = "insert into funcionario(nome,email,password,idCargo) values (?,?,?,?)";
-    Connection dbConenection = conexao.abrirConexao();
+    Connection dbConenection = connection.abrirConexao();
     PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
     preparedStatement.setString(1,funcionario.getNome());
     preparedStatement.setString(2,funcionario.getEmail());
@@ -98,7 +97,7 @@ public class FuncionarioDao implements Dao<Funcionario> {
   public void update(Funcionario funcionario) throws SQLException{
     String comando = "update funcionario set nome = ?,email = ?,password = ?, idCargo = ?  where id = ?";
 
-    Connection dbConenection = conexao.abrirConexao();
+    Connection dbConenection = connection.abrirConexao();
     PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
     preparedStatement.setString(1,funcionario.getNome());
     preparedStatement.setString(2,funcionario.getEmail());
@@ -116,7 +115,7 @@ public class FuncionarioDao implements Dao<Funcionario> {
   public void delete(Integer id) throws SQLException{
     String comando = "delete from funcionario where id = ?";
 
-    Connection dbConenection = conexao.abrirConexao();
+    Connection dbConenection = connection.abrirConexao();
     PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
     preparedStatement.setInt(1,id);
 
@@ -131,7 +130,7 @@ public class FuncionarioDao implements Dao<Funcionario> {
     String comando = "select * from funcionario fun join cargo car on fun.idCargo = car.id where fun.email = ? and fun.password   = ?";
     Funcionario funcionario = new Funcionario();
 
-    Connection dbConenection = conexao.abrirConexao();
+    Connection dbConenection = connection.abrirConexao();
     PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
     preparedStatement.setString(1,email);
     preparedStatement.setString(2,senha);
@@ -161,7 +160,7 @@ public class FuncionarioDao implements Dao<Funcionario> {
   public void gerarToken(Integer id) throws SQLException {
 
     String comando = "insert into token(code,user_id) values (?,?)";
-    Connection dbConenection = conexao.abrirConexao();
+    Connection dbConenection = connection.abrirConexao();
     PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
 
     byte[] array = new byte[10];
@@ -183,7 +182,7 @@ public class FuncionarioDao implements Dao<Funcionario> {
 
     String comando = "select * from token";
 
-    Connection dbConenection = conexao.abrirConexao();
+    Connection dbConenection = connection.abrirConexao();
     PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
     ResultSet rs = preparedStatement.executeQuery();
 
