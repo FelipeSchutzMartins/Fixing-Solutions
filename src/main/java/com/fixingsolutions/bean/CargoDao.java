@@ -12,15 +12,19 @@ import java.util.List;
 
 public class CargoDao implements Dao<Cargo> {
 
-    private Connection connection = new Connection();
-
     @Override
     public Cargo get(int id) throws SQLException {
-        String comando = "select * from cargo where id = ?";
+
+        StringBuilder comando = new StringBuilder();
+        comando.append("SELECT \n");
+        comando.append(" * \n");
+        comando.append("FROM cargo\n");
+        comando.append("WHERE id = ? \n");
+
         Cargo cargo = new Cargo();
 
-        java.sql.Connection dbConenection = connection.abrirConexao();
-        PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
+        Connection dbConenection = connection.abrirConexao();
+        PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando.toString());
         preparedStatement.setInt(1,id);
         ResultSet rs = preparedStatement.executeQuery();
 
@@ -38,11 +42,16 @@ public class CargoDao implements Dao<Cargo> {
     public List<Cargo> getAll() throws SQLException{
 
         List<Cargo> cargos = new ArrayList<Cargo>();
-        Cargo cargo = null;
-        String comando = "select * from cargo";
-        java.sql.Connection dbConenection = connection.abrirConexao();
+        Cargo cargo;
+
+        StringBuilder comando = new StringBuilder();
+        comando.append("SELECT \n");
+        comando.append(" * \n");
+        comando.append("FROM cargo\n");
+
+        Connection dbConenection = connection.abrirConexao();
         Statement stmt = dbConenection.createStatement();
-        ResultSet rs = stmt.executeQuery(comando);
+        ResultSet rs = stmt.executeQuery(comando.toString());
 
         while(rs.next()) {
             cargo = new Cargo();
@@ -59,26 +68,33 @@ public class CargoDao implements Dao<Cargo> {
 
     @Override
     public void save(Cargo cargo) throws SQLException{
-        String comando = "insert into cargo(descricao) values ?";
 
-        java.sql.Connection dbConenection = connection.abrirConexao();
-        PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
+        StringBuilder comando = new StringBuilder();
+        comando.append("INSERT INTO cargo(descricao) \n");
+        comando.append("VALUES ?");
+
+        Connection dbConenection = connection.abrirConexao();
+        PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando.toString());
         preparedStatement.setString(1, cargo.getDescricao());
 
-        ResultSet rs = preparedStatement.executeQuery();
+        executarUpdate(preparedStatement);
         dbConenection.close();
 
     }
 
     @Override
     public void update(Cargo cargo) throws SQLException {
-        String comando = "update cargo set descricao = ? where id = ?";
 
-        java.sql.Connection dbConenection = connection.abrirConexao();
-        PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
+        StringBuilder comando = new StringBuilder();
+        comando.append("UPDATE cargo\n");
+        comando.append("SET descricao = ?,\n");
+        comando.append("WHERE id = ?");
+
+        Connection dbConenection = connection.abrirConexao();
+        PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando.toString());
         preparedStatement.setString(1, cargo.getDescricao());
 
-        ResultSet rs = preparedStatement.executeQuery();
+        executarUpdate(preparedStatement);
 
         dbConenection.close();
 
@@ -86,13 +102,18 @@ public class CargoDao implements Dao<Cargo> {
 
     @Override
     public void delete(Integer id) throws SQLException{
-        String comando = "delete from cargo where id = ?";
 
-        java.sql.Connection dbConenection = connection.abrirConexao();
-        PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
+        StringBuilder comando = new StringBuilder();
+        comando.append("DELETE\n");
+        comando.append("FROM cargo\n");
+        comando.append("WHERE id = ?");
+
+        Connection dbConenection = connection.abrirConexao();
+        PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando.toString());
         preparedStatement.setInt(1,id);
 
-        ResultSet rs = preparedStatement.executeQuery();
+        executarUpdate(preparedStatement);
+
         dbConenection.close();
 
 

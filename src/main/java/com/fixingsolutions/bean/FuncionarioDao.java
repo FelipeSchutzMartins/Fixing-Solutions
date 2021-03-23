@@ -16,11 +16,18 @@ public class FuncionarioDao implements Dao<Funcionario> {
 
   @Override
   public Funcionario get(int id) throws SQLException{
-    String comando = "select * from funcionario fun join cargo car on fun.idCargo = car.id where fun.id = ?";
+
+    StringBuilder comando = new StringBuilder();
+    comando.append("SELECT \n");
+    comando.append(" * \n");
+    comando.append("FROM funcionario fun \n");
+    comando.append("JOIN cargo ON fun.idCargo = cargo.id \n");
+    comando.append("WHERE fun.id = ? \n");
+
     Funcionario funcionario = new Funcionario();
 
     Connection dbConenection = connection.abrirConexao();
-    PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
+    PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando.toString());
     preparedStatement.setInt(1,id);
     ResultSet rs = preparedStatement.executeQuery();
 
@@ -32,8 +39,8 @@ public class FuncionarioDao implements Dao<Funcionario> {
       funcionario.setNome(rs.getString("fun.nome"));
 
       Cargo cargo = new Cargo();
-      cargo.setId(rs.getInt("car.id"));
-      cargo.setDescricao(rs.getString("car.descricao"));
+      cargo.setId(rs.getInt("cargo.id"));
+      cargo.setDescricao(rs.getString("cargo.descricao"));
 
       funcionario.setCargo(cargo);
     }
@@ -47,18 +54,22 @@ public class FuncionarioDao implements Dao<Funcionario> {
   public List<Funcionario> getAll() throws SQLException {
 
     List<Funcionario> funcionarios = new ArrayList<Funcionario>();
-    Funcionario funcionario = null;
-    String comando = "select * from funcionario fun join cargo car on fun.idCargo = car.id ";
+    Funcionario funcionario;
+    StringBuilder comando = new StringBuilder();
+    comando.append("SELECT \n");
+    comando.append(" * \n");
+    comando.append("FROM funcionario fun \n");
+    comando.append("JOIN cargo ON fun.idCargo = cargo.id \n");
 
     Connection dbConenection = connection.abrirConexao();
     Statement stmt = dbConenection.createStatement();
-    ResultSet rs = stmt.executeQuery(comando);
+    ResultSet rs = stmt.executeQuery(comando.toString());
 
     while(rs.next()) {
 
         Cargo cargo = new Cargo();
-        cargo.setId(rs.getInt("car.id"));
-        cargo.setDescricao(rs.getString("car.descricao"));
+        cargo.setId(rs.getInt("cargo.id"));
+        cargo.setDescricao(rs.getString("cargo.descricao"));
 
         funcionario = new Funcionario();
         funcionario.setId(rs.getInt("fun.id"));
@@ -79,15 +90,18 @@ public class FuncionarioDao implements Dao<Funcionario> {
   @Override
   public void save(Funcionario funcionario) throws SQLException{
 
-    String comando = "insert into funcionario(nome,email,password,idCargo) values (?,?,?,?)";
+    StringBuilder comando = new StringBuilder();
+    comando.append("INSERT INTO funcionario(nome,email,password,idCargo) \n");
+    comando.append("VALUES(?,?,?,?)");
+
     Connection dbConenection = connection.abrirConexao();
-    PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
+    PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando.toString());
     preparedStatement.setString(1,funcionario.getNome());
     preparedStatement.setString(2,funcionario.getEmail());
     preparedStatement.setString(3,funcionario.getSenha());
     preparedStatement.setInt(4,funcionario.getCargo().getId());
 
-    int rs = preparedStatement.executeUpdate();
+    executarUpdate(preparedStatement);
 
     dbConenection.close();
 
@@ -95,17 +109,24 @@ public class FuncionarioDao implements Dao<Funcionario> {
 
   @Override
   public void update(Funcionario funcionario) throws SQLException{
-    String comando = "update funcionario set nome = ?,email = ?,password = ?, idCargo = ?  where id = ?";
+
+    StringBuilder comando = new StringBuilder();
+    comando.append("UPDATE funcionario\n");
+    comando.append("SET nome = ?,\n");
+    comando.append("    email = ?,\n");
+    comando.append("    password = ?,\n");
+    comando.append("    idCargo = ?\n");
+    comando.append("WHERE id = ?");
 
     Connection dbConenection = connection.abrirConexao();
-    PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
+    PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando.toString());
     preparedStatement.setString(1,funcionario.getNome());
     preparedStatement.setString(2,funcionario.getEmail());
     preparedStatement.setString(3,funcionario.getSenha());
     preparedStatement.setInt(4,funcionario.getCargo().getId());
     preparedStatement.setInt(5,funcionario.getId());
 
-    Integer rs = preparedStatement.executeUpdate();
+    executarUpdate(preparedStatement);
 
     dbConenection.close();
 
@@ -113,13 +134,17 @@ public class FuncionarioDao implements Dao<Funcionario> {
 
   @Override
   public void delete(Integer id) throws SQLException{
-    String comando = "delete from funcionario where id = ?";
+
+    StringBuilder comando = new StringBuilder();
+    comando.append("DELETE\n");
+    comando.append("FROM funcionario\n");
+    comando.append("WHERE id = ?");
 
     Connection dbConenection = connection.abrirConexao();
-    PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
+    PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando.toString());
     preparedStatement.setInt(1,id);
 
-    int rs = preparedStatement.executeUpdate();
+    executarUpdate(preparedStatement);
 
     dbConenection.close();
 
@@ -127,11 +152,18 @@ public class FuncionarioDao implements Dao<Funcionario> {
 
   public Funcionario findByEmailSenha(String email,String senha) throws SQLException{
 
-    String comando = "select * from funcionario fun join cargo car on fun.idCargo = car.id where fun.email = ? and fun.password   = ?";
+    StringBuilder comando = new StringBuilder();
+    comando.append("SELECT \n");
+    comando.append(" * \n");
+    comando.append("FROM funcionario fun \n");
+    comando.append("JOIN cargo ON fun.idCargo = cargo.id \n");
+    comando.append("WHERE fun.email = ? \n");
+    comando.append("AND fun.password = ?");
+
     Funcionario funcionario = new Funcionario();
 
     Connection dbConenection = connection.abrirConexao();
-    PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
+    PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando.toString());
     preparedStatement.setString(1,email);
     preparedStatement.setString(2,senha);
     ResultSet rs = preparedStatement.executeQuery();
@@ -143,8 +175,8 @@ public class FuncionarioDao implements Dao<Funcionario> {
       gerarToken(funcionario.getId());
 
       Cargo cargo = new Cargo();
-      cargo.setId(rs.getInt("car.id"));
-      cargo.setDescricao(rs.getString("car.descricao"));
+      cargo.setId(rs.getInt("cargo.id"));
+      cargo.setDescricao(rs.getString("cargo.descricao"));
 
       funcionario.setCargo(cargo);
       funcionario.setEmail(rs.getString("email"));
@@ -159,9 +191,12 @@ public class FuncionarioDao implements Dao<Funcionario> {
 
   public void gerarToken(Integer id) throws SQLException {
 
-    String comando = "insert into token(code,user_id) values (?,?)";
+    StringBuilder comando = new StringBuilder();
+    comando.append("INSERT INTO token(code,user_id) \n");
+    comando.append("VALUES(?,?)");
+
     Connection dbConenection = connection.abrirConexao();
-    PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
+    PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando.toString());
 
     byte[] array = new byte[10];
     new Random().nextBytes(array);
@@ -170,7 +205,7 @@ public class FuncionarioDao implements Dao<Funcionario> {
     preparedStatement.setString(1,code);
     preparedStatement.setInt(2,id);
 
-    int rs = preparedStatement.executeUpdate();
+    executarUpdate(preparedStatement);
 
     dbConenection.close();
 
@@ -179,11 +214,13 @@ public class FuncionarioDao implements Dao<Funcionario> {
   public static Token findToken() throws SQLException {
 
     Token token = new Token();
-
-    String comando = "select * from token";
+    StringBuilder comando = new StringBuilder();
+    comando.append("SELECT \n");
+    comando.append(" * \n");
+    comando.append("FROM token\n");
 
     Connection dbConenection = connection.abrirConexao();
-    PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
+    PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando.toString());
     ResultSet rs = preparedStatement.executeQuery();
 
     if(rs.next()){

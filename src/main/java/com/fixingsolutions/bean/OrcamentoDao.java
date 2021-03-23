@@ -1,24 +1,33 @@
 package com.fixingsolutions.bean;
 
 import com.fixingsolutions.domain.*;
-import com.fixingsolutions.domain.Connection;
 import com.fixingsolutions.repository.Dao;
-
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 public class OrcamentoDao implements Dao<Orcamento>{
 
-    private Connection connection = new Connection();
-
     @Override
     public Orcamento get(int id) throws SQLException {
-        String comando = "select * from orcamento orc join funcionario fun on fun.id = orc.idFuncionario join cargo on fun.idCargo = cargo.id join cliente cli on orc.idCliente = cli.id where orc.id = ?";
+
+        StringBuilder comando = new StringBuilder();
+        comando.append("SELECT \n");
+        comando.append(" * \n");
+        comando.append("FROM orcamento orc \n");
+        comando.append("JOIN funcionario fun ON fun.id = orc.idFuncionario \n");
+        comando.append("JOIN cargo ON fun.idCargo = cargo.id \n");
+        comando.append("JOIN cliente cli ON orc.idCliente = cli.id \n");
+        comando.append("WHERE orc.id = ? \n");
+
         Orcamento orcamento = new Orcamento();
 
-        java.sql.Connection dbConenection = connection.abrirConexao();
-        PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
+        Connection dbConenection = connection.abrirConexao();
+        PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando.toString());
         preparedStatement.setInt(1,id);
         ResultSet rs = preparedStatement.executeQuery();
 
@@ -62,11 +71,17 @@ public class OrcamentoDao implements Dao<Orcamento>{
     public List<Orcamento> getAll() throws SQLException {
 
         List<Orcamento> orcamentos = new ArrayList<Orcamento>();
-        String comando = "select * from orcamento orc join funcionario fun on fun.id = orc.idFuncionario join cargo on fun.idCargo = cargo.id join cliente cli on orc.idCliente = cli.id";
+        StringBuilder comando = new StringBuilder();
+        comando.append("SELECT \n");
+        comando.append(" * \n");
+        comando.append("FROM orcamento orc \n");
+        comando.append("JOIN funcionario fun ON fun.id = orc.idFuncionario \n");
+        comando.append("JOIN cargo ON fun.idCargo = cargo.id \n");
+        comando.append("JOIN cliente cli ON orc.idCliente = cli.id \n");
 
-        java.sql.Connection dbConenection = connection.abrirConexao();
+        Connection dbConenection = connection.abrirConexao();
         Statement stmt = dbConenection.createStatement();
-        ResultSet rs = stmt.executeQuery(comando);
+        ResultSet rs = stmt.executeQuery(comando.toString());
 
         while(rs.next()) {
             Orcamento orcamento = new Orcamento();
@@ -110,19 +125,19 @@ public class OrcamentoDao implements Dao<Orcamento>{
     @Override
     public void save(Orcamento orcamento) throws SQLException{
 
-        String comando = "insert into orcamento(data,valor,horasPrevistas,idFuncionario,idCliente) values (?,?,?,?,?)";
+        StringBuilder comando = new StringBuilder();
+        comando.append("INSERT INTO orcamento(data,valor,horasPrevistas,idFuncionario,idCliente) \n");
+        comando.append("VALUES(?,?,?,?,?)");
 
-        java.sql.Connection dbConenection = connection.abrirConexao();
-        PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
+        Connection dbConenection = connection.abrirConexao();
+        PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando.toString());
         preparedStatement.setDate(1,new java.sql.Date(orcamento.getData().getTime()));
         preparedStatement.setBigDecimal(2,orcamento.getValor());
         preparedStatement.setInt(3,orcamento.getHorasPrevistas());
         preparedStatement.setInt(4,orcamento.getFuncionario().getId());
         preparedStatement.setInt(5,orcamento.getCliente().getId());
 
-        int rs = preparedStatement.executeUpdate();
-
-
+        executarUpdate(preparedStatement);
 
         if(orcamento.getServicos() != null){
 
@@ -152,17 +167,24 @@ public class OrcamentoDao implements Dao<Orcamento>{
 
     @Override
     public void update(Orcamento orcamento) throws SQLException{
-        String comando = "update orcamento set valor = ?,horasPrevistas = ?,idFuncionario = ?,idCliente = ?  where id = ?";
 
-        java.sql.Connection dbConenection = connection.abrirConexao();
-        PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
+        StringBuilder comando = new StringBuilder();
+        comando.append("UPDATE orcamento\n");
+        comando.append("SET valor  = ?,\n");
+        comando.append("    horasPrevistas = ?,\n");
+        comando.append("    idFuncionario = ?,\n");
+        comando.append("    idCliente = ?\n");
+        comando.append("WHERE id = ?");
+
+        Connection dbConenection = connection.abrirConexao();
+        PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando.toString());
         preparedStatement.setBigDecimal(1,orcamento.getValor());
         preparedStatement.setInt(2,orcamento.getHorasPrevistas());
         preparedStatement.setInt(3,orcamento.getFuncionario().getId());
         preparedStatement.setInt(4,orcamento.getCliente().getId());
         preparedStatement.setInt(5,orcamento.getId());
 
-        Integer rs = preparedStatement.executeUpdate();
+        executarUpdate(preparedStatement);
 
         dbConenection.close();
 
@@ -170,15 +192,19 @@ public class OrcamentoDao implements Dao<Orcamento>{
 
     @Override
     public void delete(Integer id) throws SQLException{
-        String comando = "delete from orcamento where id = ?";
+
+        StringBuilder comando = new StringBuilder();
+        comando.append("DELETE\n");
+        comando.append("FROM orcamento\n");
+        comando.append("WHERE id = ?");
 
         deleteFromMm(id);
 
-        java.sql.Connection dbConenection = connection.abrirConexao();
-        PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
+        Connection dbConenection = connection.abrirConexao();
+        PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando.toString());
         preparedStatement.setInt(1,id);
 
-        int rs = preparedStatement.executeUpdate();
+        executarUpdate(preparedStatement);
 
         dbConenection.close();
 
@@ -186,10 +212,18 @@ public class OrcamentoDao implements Dao<Orcamento>{
 
     public Integer findIdByObject(Orcamento orcamento) throws SQLException {
 
-        String comando = "select * from orcamento where data = ? and valor = ? and horasPrevistas = ? and idFuncionario = ? and idCliente = ?";
+        StringBuilder comando = new StringBuilder();
+        comando.append("SELECT \n");
+        comando.append(" * \n");
+        comando.append("FROM orcamento \n");
+        comando.append("WHERE data = ? \n");
+        comando.append("AND valor = ? \n");
+        comando.append("AND horasPrevistas = ? \n");
+        comando.append("AND idFuncionario = ? \n");
+        comando.append("AND idCliente = ? \n");
 
-        java.sql.Connection dbConenection = connection.abrirConexao();
-        PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
+        Connection dbConenection = connection.abrirConexao();
+        PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando.toString());
         preparedStatement.setDate(1, new java.sql.Date(orcamento.getData().getTime()));
         preparedStatement.setBigDecimal(2, orcamento.getValor());
         preparedStatement.setInt(3, orcamento.getHorasPrevistas());
@@ -212,13 +246,18 @@ public class OrcamentoDao implements Dao<Orcamento>{
     }
 
     public void deleteFromMm(Integer id) throws SQLException{
-        String comando = "delete from tiposervico_orcamento where idOrcamento = ?";
 
-        java.sql.Connection dbConenection = connection.abrirConexao();
-        PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
+        StringBuilder comando = new StringBuilder();
+        comando.append("DELETE\n");
+        comando.append("FROM tiposervico_orcamento\n");
+        comando.append("WHERE idOrcamento = ?");
+
+        Connection dbConenection = connection.abrirConexao();
+        PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando.toString());
         preparedStatement.setInt(1,id);
 
-        int rs = preparedStatement.executeUpdate();
+        executarUpdate(preparedStatement);
+
         dbConenection.close();
 
     }

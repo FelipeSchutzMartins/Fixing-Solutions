@@ -13,11 +13,17 @@ import java.util.List;
 public class ClienteDao implements Dao<Cliente> {
     @Override
     public Cliente get(int id) throws SQLException {
-        String comando = "select * from Cliente where id = ?";
+
+        StringBuilder comando = new StringBuilder();
+        comando.append("SELECT \n");
+        comando.append(" * \n");
+        comando.append("FROM Cliente\n");
+        comando.append("WHERE id = ? \n");
+
         Cliente cliente = new Cliente();
 
         Connection dbConenection = connection.abrirConexao();
-        PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
+        PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando.toString());
         preparedStatement.setInt(1,id);
         ResultSet rs = preparedStatement.executeQuery();
 
@@ -40,12 +46,16 @@ public class ClienteDao implements Dao<Cliente> {
     public List<Cliente> getAll() throws SQLException {
 
         List<Cliente> clientes = new ArrayList<Cliente>();
-        Cliente cliente = null;
-        String comando = "select * from cliente";
+        Cliente cliente;
 
-        java.sql.Connection dbConenection = connection.abrirConexao();
+        StringBuilder comando = new StringBuilder();
+        comando.append("SELECT \n");
+        comando.append(" * \n");
+        comando.append("FROM Cliente\n");
+
+        Connection dbConenection = connection.abrirConexao();
         Statement stmt = dbConenection.createStatement();
-        ResultSet rs = stmt.executeQuery(comando);
+        ResultSet rs = stmt.executeQuery(comando.toString());
 
         while(rs.next()) {
             cliente = new Cliente();
@@ -66,15 +76,18 @@ public class ClienteDao implements Dao<Cliente> {
     @Override
     public void save(Cliente cliente) throws SQLException{
 
-        String comando = "insert into cliente(nome,email,cpf,telefone) values (?,?,?,?)";
-        java.sql.Connection dbConenection = connection.abrirConexao();
-        PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
+        StringBuilder comando = new StringBuilder();
+        comando.append("INSERT INTO cliente(nome,email,cpf,telefone)\n");
+        comando.append("VALUES(?,?,?,?)");
+
+        Connection dbConenection = connection.abrirConexao();
+        PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando.toString());
         preparedStatement.setString(1,cliente.getNome());
         preparedStatement.setString(2,cliente.getEmail());
         preparedStatement.setString(3,cliente.getCpf());
         preparedStatement.setString(4,cliente.getTelefone());
 
-        int rs = preparedStatement.executeUpdate();
+        executarUpdate(preparedStatement);
 
         dbConenection.close();
 
@@ -82,17 +95,24 @@ public class ClienteDao implements Dao<Cliente> {
 
     @Override
     public void update(Cliente cliente) throws SQLException{
-        String comando = "update cliente set nome = ?,email = ?,cpf = ?, telefone = ?  where id = ?";
+
+        StringBuilder comando = new StringBuilder();
+        comando.append("UPDATE cliente\n");
+        comando.append("SET nome = ?,\n");
+        comando.append("    email = ?,\n");
+        comando.append("    cpf = ?,\n");
+        comando.append("    telefone = ?\n");
+        comando.append("WHERE id = ?");
 
         Connection dbConenection = connection.abrirConexao();
-        PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
+        PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando.toString());
         preparedStatement.setString(1,cliente.getNome());
         preparedStatement.setString(2,cliente.getEmail());
         preparedStatement.setString(3,cliente.getCpf());
         preparedStatement.setString(4,cliente.getTelefone());
         preparedStatement.setInt(5,cliente.getId());
 
-        Integer rs = preparedStatement.executeUpdate();
+        executarUpdate(preparedStatement);
 
         dbConenection.close();
 
@@ -100,13 +120,17 @@ public class ClienteDao implements Dao<Cliente> {
 
     @Override
     public void delete(Integer id) throws SQLException{
-        String comando = "delete from cliente where id = ?";
+
+        StringBuilder comando = new StringBuilder();
+        comando.append("DELETE\n");
+        comando.append("FROM cliente\n");
+        comando.append("WHERE id = ?");
 
         Connection dbConenection = connection.abrirConexao();
-        PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
+        PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando.toString());
         preparedStatement.setInt(1,id);
 
-        int rs = preparedStatement.executeUpdate();
+        executarUpdate(preparedStatement);
 
         dbConenection.close();
 

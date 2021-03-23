@@ -1,7 +1,7 @@
 package com.fixingsolutions.domain;
 public class Connection {
 
-    private Connection connection;
+    private java.sql.Connection connection;
 
     public java.sql.Connection abrirConexao() {
         try {

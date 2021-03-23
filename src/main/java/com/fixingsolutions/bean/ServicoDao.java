@@ -113,7 +113,7 @@ public class ServicoDao implements Dao<Servico> {
         StringBuilder comando = new StringBuilder();
         comando.append("UPDATE tiposervico\n");
         comando.append("SET descricao = ?,\n");
-        comando.append("    valor = ?,\n");
+        comando.append("    valor = ?\n");
         comando.append("WHERE id = ?");
 
         Connection dbConenection = connection.abrirConexao();
@@ -149,11 +149,17 @@ public class ServicoDao implements Dao<Servico> {
     }
 
     public Servico findByDescricao(String descricao) throws SQLException {
-        String comando = "select * from tiposervico where descricao = ?";
+
+        StringBuilder comando = new StringBuilder();
+        comando.append("SELECT \n");
+        comando.append(" * \n");
+        comando.append("FROM tiposervico \n");
+        comando.append("WHERE descricao = ?");
+
         Servico servico = new Servico();
 
-        java.sql.Connection dbConenection = connection.abrirConexao();
-        PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
+        Connection dbConenection = connection.abrirConexao();
+        PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando.toString());
         preparedStatement.setString(1,descricao);
         ResultSet rs = preparedStatement.executeQuery();
 
@@ -171,10 +177,17 @@ public class ServicoDao implements Dao<Servico> {
     public List<Servico> findByOrcamento(Integer idOrcamento) throws SQLException{
 
         List<Servico> servicos = new ArrayList<Servico>();
-        Servico servico = null;
-        String comando = "select * from tiposervico ts join tiposervico_orcamento tsc on tsc.idTipoServico = ts.id where tsc.idOrcamento = ?";
-        java.sql.Connection dbConenection = connection.abrirConexao();
-        PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
+        Servico servico;
+
+        StringBuilder comando = new StringBuilder();
+        comando.append("SELECT \n");
+        comando.append(" * \n");
+        comando.append("FROM tiposervico ts \n");
+        comando.append("JOIN tiposervico_orcamento tsc on tsc.idTipoServico = ts.id \n");
+        comando.append("WHERE tsc.idOrcamento = ?");
+
+        Connection dbConenection = connection.abrirConexao();
+        PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando.toString());
         preparedStatement.setInt(1,idOrcamento);
         ResultSet rs = preparedStatement.executeQuery();
 
@@ -193,10 +206,14 @@ public class ServicoDao implements Dao<Servico> {
     }
 
     public void deleteFromMm(Integer id) throws SQLException{
-        String comando = "delete from tiposervico_orcamento where idTipoServico = ?";
 
-        java.sql.Connection dbConenection = connection.abrirConexao();
-        PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando);
+        StringBuilder comando = new StringBuilder();
+        comando.append("DELETE\n");
+        comando.append("FROM tiposervico_orcamento\n");
+        comando.append("WHERE idTipoServico = ?");
+
+        Connection dbConenection = connection.abrirConexao();
+        PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando.toString());
         preparedStatement.setInt(1,id);
 
         int rs = preparedStatement.executeUpdate();
