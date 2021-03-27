@@ -211,11 +211,11 @@ public class OsDao implements Dao<Os> {
         StringBuilder comando = new StringBuilder();
         comando.append("SELECT \n");
         comando.append(" * \n");
-        comando.append("FROM ordemServico os");
-        comando.append("JOIN orcamento orc ON os.idOrcamento = orc.id");
-        comando.append("JOIN funcionario fun ON fun.id = orc.idFuncionario");
-        comando.append("JOIN cargo ON fun.idCargo = cargo.id");
-        comando.append("JOIN cliente cli ON orc.idCliente = cli.id");
+        comando.append("FROM ordemServico os\n");
+        comando.append("JOIN orcamento orc ON os.idOrcamento = orc.id\n");
+        comando.append("JOIN funcionario fun ON fun.id = orc.idFuncionario\n");
+        comando.append("JOIN cargo ON fun.idCargo = cargo.id\n");
+        comando.append("JOIN cliente cli ON orc.idCliente = cli.id\n");
         comando.append("WHERE os.dataInicio BETWEEN ? AND ?");
 
         Connection dbConenection = connection.abrirConexao();
