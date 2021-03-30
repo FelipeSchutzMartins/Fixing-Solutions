@@ -27,72 +27,78 @@ public class OrcamentoController {
             List<Servico> servicos = new ArrayList<>();
             List<?> paramsServicos = (ArrayList) params.get("servicos");
 
-            if(paramsServicos==null){
+            if (paramsServicos == null) {
                 return ResponseEntity
                         .status(HttpStatus.INTERNAL_SERVER_ERROR)
                         .body("Serviços inválidos");
             }
 
-            if(!(paramsServicos instanceof List)){
+            if (!(paramsServicos instanceof List)) {
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Serviços inválidos");
+            }
+
+            if(paramsServicos.isEmpty()){
                 return ResponseEntity
                         .status(HttpStatus.INTERNAL_SERVER_ERROR)
                         .body("Serviços inválidos");
             }
 
             Integer idCliente = (Integer) params.get("cliente");
-            if(idCliente==null){
+            if (idCliente == null) {
                 return ResponseEntity
                         .status(HttpStatus.INTERNAL_SERVER_ERROR)
                         .body("Cliente inválido");
             }
 
             Integer idFuncionario = (Integer) params.get("responsavel");
-            if(idFuncionario==null){
+            if (idFuncionario == null) {
                 return ResponseEntity
                         .status(HttpStatus.INTERNAL_SERVER_ERROR)
                         .body("Responsável inválido");
             }
 
-            Object horasPrevistas = params.get("horasPrevistas");
-            if(horasPrevistas==null || horasPrevistas.toString().isEmpty()){
+            Integer horasPrevistas = Integer.parseInt((String) params.get("horasPrevistas"));
+            if (horasPrevistas == null) {
                 return ResponseEntity
                         .status(HttpStatus.INTERNAL_SERVER_ERROR)
                         .body("Horas prevístas inválida");
             }
 
-            Number valor = (Number) params.get("valor");
-            if(valor==null || valor.doubleValue() <= 0){
+            Double valor = Double.parseDouble((String)params.get("valor"));
+            if (valor == null || valor <= 0) {
                 return ResponseEntity
                         .status(HttpStatus.INTERNAL_SERVER_ERROR)
                         .body("Valor inválido");
             }
 
 
-            for(int i=0;i<paramsServicos.size();i++){
+            for (int i = 0; i < paramsServicos.size(); i++) {
 
                 Servico servico = new Servico();
 
                 LinkedHashMap ob = (LinkedHashMap) paramsServicos.get(i);
 
                 String descricao = (String) ob.get("descricao");
-                if(descricao==null || descricao.isEmpty()){
+                if (descricao == null || descricao.isEmpty()) {
                     return ResponseEntity
                             .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                            .body("Descrição do serviço #"+(i+1)+" inválido");
+                            .body("Descrição do serviço #" + (i + 1) + " inválido");
                 }
 
-                Object paramValor = ob.get("valor");
-                if(paramValor==null){
+                String paramValor = (String) ob.get("valor");
+                if (paramValor == null) {
                     return ResponseEntity
                             .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                            .body("Valor do serviço #"+(i+1)+" inválido");
+                            .body("Valor do serviço #" + (i + 1) + " inválido");
                 }
 
-                BigDecimal valorServico = new BigDecimal(paramValor.toString());
-                if(valorServico.compareTo(new BigDecimal("0")) <= 0){
+                BigDecimal valorServico = new BigDecimal(paramValor);
+                if (valorServico.compareTo(new BigDecimal("0")) <= 0) {
                     return ResponseEntity
                             .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                            .body("Valor do serviço #"+(i+1)+" inválido");
+                            .body("Valor do serviço #" + (i + 1) + " inválido");
                 }
 
                 servico.setDescricao(descricao);
@@ -115,10 +121,15 @@ public class OrcamentoController {
             orcamento.setData(new Date());
 
             orcamento.setValor(new BigDecimal(valor.toString()));
-            orcamento.setHorasPrevistas(new Integer(horasPrevistas.toString()));
+            orcamento.setHorasPrevistas(horasPrevistas);
             orcamento.setServicos(servicos.toArray());
 
             orcamentoDao.save(orcamento);
+        }catch (NumberFormatException e){
+
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Horas prevístas inválida");
 
         }catch (Exception e){
             e.printStackTrace();
@@ -210,8 +221,8 @@ public class OrcamentoController {
                         .body("Responsável inválido");
             }
 
-            Object horasPrevistas = params.get("horasPrevistas");
-            if(horasPrevistas==null || horasPrevistas.toString().isEmpty()){
+            Integer horasPrevistas = Integer.parseInt((String) params.get("horasPrevistas"));
+            if(horasPrevistas==null){
                 return ResponseEntity
                         .status(HttpStatus.INTERNAL_SERVER_ERROR)
                         .body("Horas prevístas inválida");
@@ -228,7 +239,7 @@ public class OrcamentoController {
             orcamento.setCliente(cliente);
             orcamento.setFuncionario(funcionario);
             orcamento.setId(id);
-            orcamento.setHorasPrevistas(new Integer(horasPrevistas.toString()));
+            orcamento.setHorasPrevistas(horasPrevistas);
 
             orcamentoDao.update(orcamento);
 
@@ -362,6 +373,12 @@ public class OrcamentoController {
                         .body("Serviços inválidos");
             }
 
+            if(paramsServicos.isEmpty()){
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Serviços inválidos");
+            }
+
             ServicoDao servicoDao = new ServicoDao();
 
             for(int i=0;i<paramsServicos.size();i++){
@@ -378,7 +395,7 @@ public class OrcamentoController {
                             .body("Descrição do serviço Nº"+(i+1)+" inválido");
                 }
 
-                Object paramValor = ob.get("valor");
+                String paramValor = (String) ob.get("valor");
                 if(paramValor==null){
                     return ResponseEntity
                             .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -386,7 +403,7 @@ public class OrcamentoController {
                 }
 
                 servico.setDescricao(descricao);
-                BigDecimal valorServico = new BigDecimal(paramValor.toString());
+                BigDecimal valorServico = new BigDecimal(paramValor);
                 if(valorServico.compareTo(new BigDecimal("0")) <= 0){
                     return ResponseEntity
                             .status(HttpStatus.INTERNAL_SERVER_ERROR)

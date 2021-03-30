@@ -113,6 +113,11 @@ export default {
 
           ref.keys = keys
 
+        },
+        error: function (result){
+
+          alert(result.responseText)
+
         }
       });
 

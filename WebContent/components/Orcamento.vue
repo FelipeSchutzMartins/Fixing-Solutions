@@ -1,12 +1,19 @@
 <template>
   <div class="align-self-center">
-    <button @click="showModal('criarOrcamento','reload')" style="height: 45px;" class="btn-default btn-success rounded">Criar Orçamento</button>
+    <button @click="showModal('criarOrcamento')" style="height: 45px;" class="btn-default btn-success rounded">Criar Orçamento</button>
 
     <div style="height: auto;width: auto;display: block;margin-top: 15px;text-align: center;" class="rounded">
       <div style="background-color: white;height: 86%;width: 100%;display: block;" class="align-self-center rounded">
         <Tabela :url="'http://localhost:8080/buscarOrcamentos'" ref="tabelaAjax"></Tabela>
       </div>
-      <b-modal ref="criarOrcamento" hide-footer title="Criar Orçamento">
+      <b-modal ref="criarOrcamento" @hide="reload()" hide-footer>
+
+        <template #modal-header>
+          <div class="mx-auto">
+            <h5>Criar Orçamento</h5>
+          </div>
+        </template>
+
         <form class="col-12">
           <div class="card-body">
             <label>Horas Previstas</label>
@@ -43,11 +50,18 @@
             <input v-model="valor" class="form-control" style="width: 60px;" disabled>
           </div>
           <div class="card-body">
-            <button @click="criarOrcamento()" type="button" class="btn btn-success float-right">Criar</button>
+            <button @click="hideModal('criarOrcamento')" type="button" class="btn btn-secondary float-left">Fechar</button><button @click="criarOrcamento()" type="button" class="btn btn-success float-right">Criar</button>
           </div>
         </form>
       </b-modal>
-      <b-modal ref="editar" hide-footer onclose="reload()" title="Editar Orçamento">
+      <b-modal ref="editar" hide-footer onclose="reload()">
+
+        <template #modal-header>
+          <div class="mx-auto">
+            <h5>Editar Orçamento</h5>
+          </div>
+        </template>
+
         <form class="col-12">
           <div class="card-body">
             <label>Horas Previstas</label>
@@ -70,11 +84,18 @@
             </select>
           </div>
           <div class="card-body">
-            <button @click="editar()" type="button" class="btn btn-success float-right">Salvar</button>
+            <button @click="hideModal('editar')" type="button" class="btn btn-secondary float-left">Fechar</button><button @click="editar()" type="button" class="btn btn-success float-right">Salvar</button>
           </div>
         </form>
       </b-modal>
-      <b-modal ref="servicos" hide-footer onclose="reload()" title="Editar Servicos">
+      <b-modal ref="servicos" hide-footer onclose="reload()">
+
+        <template #modal-header>
+          <div class="mx-auto">
+            <h5>Editar Servicos</h5>
+          </div>
+        </template>
+
         <form class="col-12">
 
           <div class="card-body">
@@ -88,7 +109,7 @@
           </div>
 
           <div class="card-body">
-            <button @click="salvarServicos()" type="button" class="btn btn-success float-right">Salvar</button>
+            <button @click="hideModal('servicos')" type="button" class="btn btn-secondary float-left">Fechar</button><button @click="salvarServicos()" type="button" class="btn btn-success float-right">Salvar</button>
           </div>
         </form>
       </b-modal>
@@ -132,7 +153,7 @@ export default {
         contentType: 'application/json',
         dataType: 'json',
         data: JSON.stringify({horasPrevistas:ref.horasPrevistas,cliente:ref.cliente?.id,
-          responsavel:ref.responsavel?.id,servicos:ref.servicos,valor:ref.valor}),
+          responsavel:ref.responsavel?.id,servicos:ref.servicos,valor:ref.valor.toString()}),
         success: function (result) {
 
           alert("Orçamento criado com sucesso!")
@@ -158,7 +179,7 @@ export default {
         contentType: 'application/json',
         dataType: 'json',
         data: JSON.stringify({horasPrevistas:ref.horasPrevistas,cliente:ref.cliente.id,
-          responsavel:ref.responsavel.id,valor:ref.valor,id:ref.id}),
+          responsavel:ref.responsavel.id,id:ref.id}),
         success: function (result) {
 
           alert("Orcamento atualizado com sucesso!")

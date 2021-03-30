@@ -1,13 +1,20 @@
 <template>
   <div class="align-self-center">
-    <button @click="showModal('criarOs','reload')" style="height: 45px;" class="btn-default btn-success rounded">Criar ordem de serviço</button>
+    <button @click="showModal('criarOs')" style="height: 45px;" class="btn-default btn-success rounded">Criar ordem de serviço</button>
     <div style="height: auto;width: auto;display: block;margin-top: 15px;text-align: center;" class="rounded">
       <div style="background-color: white;height: 86%;width: 100%;display: block;" class="align-self-center rounded">
         <Tabela :url="'http://localhost:8080/buscarOs'" :exibir-menu="true" ref="tabelaAjax">
 
         </Tabela>
       </div>
-      <b-modal ref="criarOs" hide-footer title="Criar ordem de serviço">
+      <b-modal ref="criarOs" @hide="reload()" hide-footer>
+
+        <template #modal-header>
+          <div class="mx-auto">
+            <h5>Criar ordem de serviço</h5>
+          </div>
+        </template>
+
         <form class="col-12">
           <div class="card-body">
             <label>Titulo</label>
@@ -22,12 +29,18 @@
             </select>
           </div>
           <div class="card-body">
-            <button @click="criarOs()" type="button" class="btn btn-success float-right">Criar</button>
+            <button @click="hideModal('criarOs')" type="button" class="btn btn-secondary float-left">Fechar</button><button @click="criarOs()" type="button" class="btn btn-success float-right">Criar</button>
           </div>
         </form>
       </b-modal>
 
       <b-modal ref="verDetalhesOrcamento" hide-footer onClose="reload">
+
+        <template #modal-header>
+          <div class="mx-auto">
+            <h5>Detalhes</h5>
+          </div>
+        </template>
 
         <form class="col-12">
           <div class="card-body">
@@ -63,12 +76,18 @@
         </div>
 
         <div class="card-body">
-          <button @click="alterarOrcamento()" type="button" class="btn btn-success float-right">Salvar</button>
+          <button @click="hideModal('verDetalhesOrcamento')" type="button" class="btn btn-secondary float-left">Fechar</button><button @click="alterarOrcamento()" type="button" class="btn btn-success float-right">Salvar</button>
         </div>
 
       </b-modal>
 
       <b-modal ref="editar" hide-footer onClose="reload">
+
+        <template #modal-header>
+          <div class="mx-auto">
+            <h5>Editar OS</h5>
+          </div>
+        </template>
 
         <form class="col-12">
 
@@ -78,7 +97,7 @@
           </div>
 
           <div class="card-body">
-            <button @click="editar()" type="button" class="btn btn-success float-right">Salvar</button>
+            <button @click="hideModal('editar')" type="button" class="btn btn-secondary float-left">Fechar</button><button @click="editar()" type="button" class="btn btn-success float-right">Salvar</button>
           </div>
 
         </form>

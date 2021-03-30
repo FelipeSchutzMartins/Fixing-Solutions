@@ -4,18 +4,11 @@ import com.fixingsolutions.bean.FuncionarioDao;
 import com.fixingsolutions.domain.AjaxResponseBody;
 import com.fixingsolutions.domain.Funcionario;
 import com.fixingsolutions.domain.Token;
+import com.fixingsolutions.service.InputValidationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import javax.servlet.http.HttpSession;
 
 import java.util.Map;
 
@@ -34,14 +27,14 @@ public class LoginController {
         try {
 
             String email = (String) params.get("email");
-            if(email == null || email.isEmpty() || !email.contains("@")){
+            if(!InputValidationService.isValidStringInput(email) || !email.contains("@") || !email.contains("mail")){
                 return ResponseEntity
                         .status(HttpStatus.INTERNAL_SERVER_ERROR)
                         .body("Email inválido");
             }
 
             String senha = (String) params.get("senha");
-            if(senha == null || senha.isEmpty()){
+            if(!InputValidationService.isValidStringInput(senha)){
                 return ResponseEntity
                         .status(HttpStatus.INTERNAL_SERVER_ERROR)
                         .body("Senha inválida");
@@ -55,7 +48,7 @@ public class LoginController {
             }
 
         }catch (Exception e){
-            System.out.println("Erro ao fazer login ||e:"+e);
+            e.printStackTrace();
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Houve um problema, tente nvoamente mais tarde");
@@ -81,7 +74,7 @@ public class LoginController {
             }
 
         }catch(Exception e){
-
+            e.printStackTrace();
         }
 
         return ResponseEntity.ok(result);

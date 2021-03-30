@@ -2,6 +2,7 @@ package com.fixingsolutions.controller;
 
 import com.fixingsolutions.bean.*;
 import com.fixingsolutions.domain.*;
+import com.fixingsolutions.service.InputValidationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -58,7 +59,7 @@ public class OrdemServicoController {
             }
 
             String titulo = (String) params.get("titulo");
-            if(titulo==null||titulo==""){
+            if(!InputValidationService.isValidStringInput(titulo)){
                 return ResponseEntity
                         .status(HttpStatus.INTERNAL_SERVER_ERROR)
                         .body("Titulo inválido");
@@ -69,8 +70,7 @@ public class OrdemServicoController {
 
             Os ordemServico = new Os();
             ordemServico.setOrcamento(orcamento);
-            ordemServico.setTitulo(titulo
-            );
+            ordemServico.setTitulo(titulo);
             ordemServico.setStatus(1);
             ordemServico.setDataCriacao(new Date());
             ordemServico.setDataUltimaAtualizacao(new Date());
@@ -125,8 +125,8 @@ public class OrdemServicoController {
                         .body("Responsável inválido");
             }
 
-            Object horasPrevistas = params.get("horasPrevistas");
-            if(horasPrevistas==null || horasPrevistas.toString().isEmpty()){
+            Integer horasPrevistas = Integer.parseInt((String) params.get("horasPrevistas"));
+            if (horasPrevistas == null) {
                 return ResponseEntity
                         .status(HttpStatus.INTERNAL_SERVER_ERROR)
                         .body("Horas prevístas inválida");
@@ -143,7 +143,7 @@ public class OrdemServicoController {
             orcamento.setCliente(cliente);
             orcamento.setFuncionario(funcionario);
             orcamento.setId(id);
-            orcamento.setHorasPrevistas(new Integer(horasPrevistas.toString()));
+            orcamento.setHorasPrevistas(horasPrevistas);
 
             orcamentoDao.update(orcamento);
 
@@ -163,7 +163,7 @@ public class OrdemServicoController {
                             .body("Descrição do serviço Nº"+(i+1)+" inválido");
                 }
 
-                Object paramValor = ob.get("valor");
+                String paramValor = (String) ob.get("valor");
                 if(paramValor==null){
                     return ResponseEntity
                             .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -171,7 +171,7 @@ public class OrdemServicoController {
                 }
 
                 servico.setDescricao(descricao);
-                BigDecimal valorServico = new BigDecimal(paramValor.toString());
+                BigDecimal valorServico = new BigDecimal(paramValor);
                 if(valorServico.compareTo(new BigDecimal("0")) <= 0){
                     return ResponseEntity
                             .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -194,6 +194,12 @@ public class OrdemServicoController {
             }
 
             Os.recalcularValorOrcamento((Integer) params.get("id"));
+
+        }catch (NumberFormatException e){
+
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Horas prevístas inválida");
 
         }catch (Exception e){
             e.printStackTrace();
@@ -246,7 +252,7 @@ public class OrdemServicoController {
             }
 
             String titulo = (String) params.get("titulo");
-            if(titulo==null||titulo==""){
+            if(!InputValidationService.isValidStringInput(titulo)){
                 return ResponseEntity
                         .status(HttpStatus.INTERNAL_SERVER_ERROR)
                         .body("Titulo inválido");
@@ -257,7 +263,6 @@ public class OrdemServicoController {
             Os ordemServico = dao.get(id);
             ordemServico.setTitulo(titulo);
             dao.update(ordemServico);
-
 
         }catch(Exception e){
             e.printStackTrace();

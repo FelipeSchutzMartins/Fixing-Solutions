@@ -12,7 +12,7 @@
           <input v-model="senha" :type="'password'" class="form-control">
         </div>
         <div class="card-body">
-          <button @click="$router.push({ name:'criarConta'})" class="btn btn-primary">Criar Conta</button><button @click="fazerLogin()" type="button" class="btn btn-success float-right">Login</button>
+          <button @click="$router.push({ name:'criarConta'})" type="button" class="btn btn-primary">Criar Conta</button><button @click="fazerLogin()" type="button" class="btn btn-success float-right">Login</button>
         </div>
       </form>
     </div>

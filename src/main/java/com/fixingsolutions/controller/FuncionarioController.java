@@ -4,6 +4,7 @@ import com.fixingsolutions.bean.FuncionarioDao;
 import com.fixingsolutions.domain.AjaxResponseBody;
 import com.fixingsolutions.domain.Cargo;
 import com.fixingsolutions.domain.Funcionario;
+import com.fixingsolutions.service.InputValidationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -48,26 +49,27 @@ public class FuncionarioController {
         Funcionario funcionario = new Funcionario();
         try {
 
+            String nome = (String) params.get("nome");
+            if(!InputValidationService.isValidStringInput(nome)){
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Nome inválido");
+            }
+
             String email = (String) params.get("email");
-            if(email == null || email.isEmpty()){
+            if(!InputValidationService.isValidStringInput(email) || !email.contains("@") || !email.contains("mail")){
                 return ResponseEntity
                         .status(HttpStatus.INTERNAL_SERVER_ERROR)
                         .body("Email inválido");
             }
 
             String senha = (String) params.get("senha");
-
-            if(senha == null || senha.isEmpty()){
+            if(!InputValidationService.isValidStringInput(senha)){
                 return ResponseEntity
                         .status(HttpStatus.INTERNAL_SERVER_ERROR)
                         .body("Senha inválido");
             }
-            String nome = (String) params.get("nome");
-            if(nome == null || nome.isEmpty()){
-                return ResponseEntity
-                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body("Nome inválido");
-            }
+
             Integer idCargo = (Integer) params.get("cargo");
             if(idCargo == null){
                 return ResponseEntity
@@ -87,7 +89,7 @@ public class FuncionarioController {
             dao.save(funcionario);
 
         }catch (Exception e){
-            System.out.println("Houve um problema a criar conta || e: "+e);
+            e.printStackTrace();
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Houve um problema, tente novamente mais tarde");
@@ -110,6 +112,7 @@ public class FuncionarioController {
             }
             resposta.setResult(funcionarios);
         }catch(Exception e){
+            e.printStackTrace();
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Houve um problema, tente novamente mais tarde");
@@ -127,13 +130,11 @@ public class FuncionarioController {
 
             Integer id = (Integer) params.get("id");
 
-
             FuncionarioDao dao = new  FuncionarioDao();
             dao.delete(id);
 
-
         }catch(Exception e){
-            System.out.println(e);
+            e.printStackTrace();
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Houve um problema, tente novamente mais tarde");
@@ -152,26 +153,27 @@ public class FuncionarioController {
 
             Integer id = (Integer) params.get("id");
 
+            String nome = (String) params.get("nome");
+            if(!InputValidationService.isValidStringInput(nome)){
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Nome inválido");
+            }
+
             String email = (String) params.get("email");
-            if(email == null || email.isEmpty()){
+            if(!InputValidationService.isValidStringInput(email) || !email.contains("@") || !email.contains("mail")){
                 return ResponseEntity
                         .status(HttpStatus.INTERNAL_SERVER_ERROR)
                         .body("Email inválido");
             }
 
             String senha = (String) params.get("senha");
-
-            if(senha == null || senha.isEmpty()){
+            if(!InputValidationService.isValidStringInput(senha)){
                 return ResponseEntity
                         .status(HttpStatus.INTERNAL_SERVER_ERROR)
                         .body("Senha inválido");
             }
-            String nome = (String) params.get("nome");
-            if(nome == null || nome.isEmpty()){
-                return ResponseEntity
-                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body("Nome inválido");
-            }
+
             Integer idCargo = (Integer) params.get("cargo");
             if(idCargo == null){
                 return ResponseEntity
@@ -193,7 +195,7 @@ public class FuncionarioController {
 
 
         }catch(Exception e){
-            System.out.println(e);
+            e.printStackTrace();
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Houve um problema, tente novamente mais tarde");

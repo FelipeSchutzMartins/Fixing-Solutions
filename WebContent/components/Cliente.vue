@@ -1,11 +1,18 @@
 <template>
   <div class="align-self-center">
-    <button @click="showModal('criarCliente','reload')" style="height: 45px;" class="btn-default btn-success rounded">Criar Cliente</button>
+    <button @click="showModal('criarCliente')" style="height: 45px;" class="btn-default btn-success rounded">Criar Cliente</button>
     <div style="height: auto;width: auto;display: block;margin-top: 15px;text-align: center;" class="rounded">
       <div style="background-color: white;height: 86%;width: 100%;display: block;" class="align-self-center rounded">
         <Tabela :url="'http://localhost:8080/buscarClientes'" ref="tabelaAjax"></Tabela>
       </div>
-      <b-modal ref="criarCliente" hide-footer title="Criar Cliente">
+      <b-modal ref="criarCliente" @hide="reload()" hide-footer>
+
+        <template #modal-header>
+          <div class="mx-auto">
+            <h5>Criar Cliente</h5>
+          </div>
+        </template>
+
           <form class="col-12">
             <div class="card-body">
               <label>Nome</label>
@@ -24,11 +31,18 @@
               <input v-model="telefone" v-mask="'(##) #####-####'" class="form-control">
             </div>
             <div class="card-body">
-              <button @click="criarCliente()" type="button" class="btn btn-success float-right">Criar</button>
+              <button @click="hideModal('criarCliente')" type="button" class="btn btn-secondary float-left">Fechar</button><button @click="criarCliente()" type="button" class="btn btn-success float-right">Criar</button>
             </div>
           </form>
       </b-modal>
-      <b-modal ref="editar" hide-footer onclose="reload()" title="Criar Cliente">
+      <b-modal ref="editar" hide-footer onclose="reload()" title="Editar Cliente">
+
+        <template #modal-header>
+          <div class="mx-auto">
+            <h5>Editar Cliente</h5>
+          </div>
+        </template>
+
         <form class="col-12">
           <div class="card-body">
             <label>Nome</label>
@@ -47,7 +61,7 @@
             <input v-model="telefone" v-mask="'(##) #####-####'" class="form-control">
           </div>
           <div class="card-body">
-            <button @click="editar()" type="button" class="btn btn-success float-right">Salvar</button>
+            <button @click="hideModal('editar')" type="button" class="btn btn-secondary float-left">Fechar</button><button @click="editar()" type="button" class="btn btn-success float-right">Salvar</button>
           </div>
         </form>
       </b-modal>
