@@ -3,7 +3,7 @@
     <button @click="showModal('criarOs')" style="height: 45px;" class="btn-default btn-success rounded">Criar ordem de serviço</button>
     <div style="height: auto;width: auto;display: block;margin-top: 15px;text-align: center;" class="rounded">
       <div style="background-color: white;height: 86%;width: 100%;display: block;" class="align-self-center rounded">
-        <Tabela :url="'http://localhost:8080/buscarOs'" :exibir-menu="true" ref="tabelaAjax">
+        <Tabela :url="'http://localhost:8080/buscarOs'" @ingressar="ingressar($event)" @alterarStatus="alterarStatus($event)" :exibir-menu-os="true" ref="tabelaAjax">
 
         </Tabela>
       </div>
@@ -394,9 +394,42 @@ export default {
 
       ref.showModal('editar');
 
+    },
+
+    ingressar: function (id){
+
+
+
+    },
+
+    alterarStatus: function (id){
+
+
+
     }
 
-  }
+  },
+  mounted() {
+    var ref = this
+    window.$.ajax({
+      method: "GET",
+      url: "http://localhost:8080/verificarlogin",
+      contentType: 'application/json',
+      dataType: 'json',
+      success: function (result) {
+
+
+
+      },
+      error: function (result){
+
+        alert(result.responseText)
+        ref.$router.push({ name:'login'})
+
+      }
+    });
+
+  },
 }
 </script>
 

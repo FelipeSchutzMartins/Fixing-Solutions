@@ -143,7 +143,7 @@ export default {
 
     }
   },
-  methods:{
+  methods: {
     criarOrcamento: function () {
       var ref = this
 
@@ -152,8 +152,10 @@ export default {
         url: "http://localhost:8080/criarOrcamento",
         contentType: 'application/json',
         dataType: 'json',
-        data: JSON.stringify({horasPrevistas:ref.horasPrevistas,cliente:ref.cliente?.id,
-          responsavel:ref.responsavel?.id,servicos:ref.servicos,valor:ref.valor.toString()}),
+        data: JSON.stringify({
+          horasPrevistas: ref.horasPrevistas, cliente: ref.cliente?.id,
+          responsavel: ref.responsavel?.id, servicos: ref.servicos, valor: ref.valor.toString()
+        }),
         success: function (result) {
 
           alert("Orçamento criado com sucesso!")
@@ -161,7 +163,7 @@ export default {
           ref.reload();
 
         },
-        error: function (result){
+        error: function (result) {
 
           alert(result.responseText)
 
@@ -169,7 +171,7 @@ export default {
       });
 
     },
-    editar:function (){
+    editar: function () {
 
       var ref = this
 
@@ -178,8 +180,10 @@ export default {
         url: "http://localhost:8080/editarOrcamento",
         contentType: 'application/json',
         dataType: 'json',
-        data: JSON.stringify({horasPrevistas:ref.horasPrevistas,cliente:ref.cliente.id,
-          responsavel:ref.responsavel.id,id:ref.id}),
+        data: JSON.stringify({
+          horasPrevistas: ref.horasPrevistas, cliente: ref.cliente.id,
+          responsavel: ref.responsavel.id, id: ref.id
+        }),
         success: function (result) {
 
           alert("Orcamento atualizado com sucesso!")
@@ -187,7 +191,7 @@ export default {
           ref.reload();
 
         },
-        error: function (result){
+        error: function (result) {
 
           alert(result.responseText)
 
@@ -204,7 +208,7 @@ export default {
         url: "http://localhost:8080/deletarOrcamento",
         contentType: 'application/json',
         dataType: 'json',
-        data: JSON.stringify({id:id}),
+        data: JSON.stringify({id: id}),
         success: function (result) {
 
           alert("Orçamento excluido com sucesso!")
@@ -218,40 +222,40 @@ export default {
         }
       });
     },
-    showModal: function(modaiId,acao) {
+    showModal: function (modaiId, acao) {
 
       var ref = this
-      if(acao=='reload'){
+      if (acao == 'reload') {
         ref.reload();
       }
       ref.carregarDados();
       ref.$refs[modaiId].show()
 
     },
-    hideModal: function(modaiId,acao) {
+    hideModal: function (modaiId, acao) {
 
       var ref = this
-      if(acao=='reload'){
+      if (acao == 'reload') {
         ref.reload();
       }
       ref.$refs[modaiId].hide()
 
     },
-    abrirPopupEditar: function(orcamento){
+    abrirPopupEditar: function (orcamento) {
 
       var ref = this
 
-      ref.id             = orcamento.id
+      ref.id = orcamento.id
       ref.horasPrevistas = orcamento.horasPrevistas
-      ref.valor          = orcamento.valor
-      ref.responsavel    = orcamento.funcionario
-      ref.cliente        = orcamento.cliente
+      ref.valor = orcamento.valor
+      ref.responsavel = orcamento.funcionario
+      ref.cliente = orcamento.cliente
 
       ref.carregarDados()
       ref.showModal('editar');
 
     },
-    reload: function (){
+    reload: function () {
 
       var ref = this;
       ref.$refs.tabelaAjax.request();
@@ -264,7 +268,7 @@ export default {
 
     },
 
-    carregarDados(){
+    carregarDados() {
 
       var ref = this
 
@@ -304,21 +308,21 @@ export default {
 
     },
 
-    adicionarServico(){
+    adicionarServico() {
 
       var ref = this
 
-      ref.servicos.push({descricao:null,valor:0,position:ref.servicos.length+1})
+      ref.servicos.push({descricao: null, valor: 0, position: ref.servicos.length + 1})
 
     },
 
-    atualizarValor(){
+    atualizarValor() {
 
       var ref = this
 
       ref.valor = 0
 
-      for(var i=0;i<ref.servicos.length;i++){
+      for (var i = 0; i < ref.servicos.length; i++) {
 
         ref.valor = Number(ref.valor) + Number(ref.servicos[i].valor)
 
@@ -326,7 +330,7 @@ export default {
 
     },
 
-    abrirPopupServicos: function (value){
+    abrirPopupServicos: function (value) {
 
       var ref = this;
 
@@ -336,7 +340,7 @@ export default {
       ref.showModal('servicos');
 
     },
-    carregarServicos:function (){
+    carregarServicos: function () {
 
       var ref = this;
 
@@ -345,7 +349,7 @@ export default {
         url: "http://localhost:8080/buscarServicos",
         contentType: 'application/json',
         dataType: 'json',
-        data: JSON.stringify({id:ref.id}),
+        data: JSON.stringify({id: ref.id}),
         success: function (result) {
 
           ref.servicos = result.result
@@ -360,7 +364,7 @@ export default {
 
     },
 
-    excluirServico:function (id){
+    excluirServico: function (id) {
       var ref = this;
 
       window.$.ajax({
@@ -368,11 +372,11 @@ export default {
         url: "http://localhost:8080/excluirServico",
         contentType: 'application/json',
         dataType: 'json',
-        data: JSON.stringify({idServico:id,idOrcamento:ref.id}),
+        data: JSON.stringify({idServico: id, idOrcamento: ref.id}),
         success: function (result) {
 
           ref.carregarServicos()
-          ref.hideModal('servicos','reload')
+          ref.hideModal('servicos', 'reload')
           alert("Excluido com sucesso bro!")
 
         },
@@ -384,10 +388,9 @@ export default {
       });
 
 
-
     },
 
-    salvarServicos: function(){
+    salvarServicos: function () {
 
       var ref = this;
 
@@ -396,11 +399,11 @@ export default {
         url: "http://localhost:8080/salvarServicos",
         contentType: 'application/json',
         dataType: 'json',
-        data: JSON.stringify({servicos:ref.servicos,id:ref.id}),
+        data: JSON.stringify({servicos: ref.servicos, id: ref.id}),
         success: function (result) {
 
           alert("Salvo com sucesso bro")
-          ref.hideModal('servicos','reload')
+          ref.hideModal('servicos', 'reload')
 
         },
         error: function (result) {
@@ -411,7 +414,6 @@ export default {
       });
 
     }
-
   }
 }
 </script>
