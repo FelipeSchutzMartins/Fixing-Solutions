@@ -437,4 +437,35 @@ public class OrcamentoController {
 
     }
 
+    @PostMapping(value = "/aprovar",consumes = {MediaType.APPLICATION_JSON_VALUE })
+    @ResponseBody
+    public ResponseEntity<?> aprovar(@RequestBody Map<String,Object> params){
+
+        AjaxResponseBody resposta = new AjaxResponseBody();
+
+        try {
+
+            Integer id = (Integer) params.get("id");
+            if(id==null){
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Orçamento inválido");
+            }
+
+            OrcamentoDao orcamentoDao = new OrcamentoDao();
+
+            Orcamento orcamento = orcamentoDao.get(id);
+            orcamento.setAprovado(true);
+            orcamentoDao.update(orcamento);
+
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Houve um problema, tente novamente mais tarde");
+        }
+        return ResponseEntity.ok(resposta);
+
+    }
+
 }

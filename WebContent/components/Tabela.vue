@@ -6,7 +6,7 @@
           <th v-for="chave in keys" v-show="chave!='Id'" :key="chave" scope="col">{{ chave }}</th>
           <th></th>
           <th></th>
-          <th v-if="exibirMenuOs"></th>
+          <th v-if="exibirMenuOs||exibirMenuOrcamento"></th>
         </tr>
       </thead>
       <tbody>
@@ -25,7 +25,20 @@
                 </template>
 
                 <b-dropdown-item @click="$emit('ingressar',dado.id)">Ingressar</b-dropdown-item>
-                <b-dropdown-item @click="$emit('alterarStatus')">Alterar Status</b-dropdown-item>
+                <b-dropdown-item @click="$emit('abrirPopupAlterarStatus',dado.id)">Alterar Status</b-dropdown-item>
+
+              </b-dropdown>
+            </div>
+          </td>
+          <td v-if="exibirMenuOrcamento">
+            <div>
+              <b-dropdown>
+
+                <template #button-content>
+                  <font-awesome-icon :icon="['fa', 'cogs']"/>
+                </template>
+
+                <b-dropdown-item @click="$emit('abrirPopupAprovar',dado.id)">Aprovar</b-dropdown-item>
 
               </b-dropdown>
             </div>
@@ -37,19 +50,32 @@
           <td v-show="dado.orcamento!=undefined"><button type="button" class="btn-sm btn-primary btn-rounded" @click="verDetalhes(dado)">Ver detalhes</button></td>
           <td><button type="button" class="btn-sm btn-primary btn-rounded" @click="editar(dado)">Editar</button></td>
           <td><button @click="excluir(dado.id)" class="btn-sm btn-danger float-left" type="button">Excluir</button></td>
-          <td v-if="exibirMenu">
+          <td v-if="exibirMenuOs">
+            <div>
+              <b-dropdown>
 
-            <b-dropdown>
+                <template #button-content>
+                  <font-awesome-icon :icon="['fa', 'cogs']"/>
+                </template>
 
-              <template #button-content>
-                <font-awesome-icon :icon="['fa', 'cogs']"/>
-              </template>
+                <b-dropdown-item @click="$emit('ingressar',dado.id)">Ingressar</b-dropdown-item>
+                <b-dropdown-item @click="$emit('abrirPopupAlterarStatus',dado.id)">Alterar Status</b-dropdown-item>
 
-              <b-dropdown-item>An item</b-dropdown-item>
-              <b-dropdown-item>Another item</b-dropdown-item>
+              </b-dropdown>
+            </div>
+          </td>
+          <td v-if="exibirMenuOrcamento">
+            <div>
+              <b-dropdown>
 
-            </b-dropdown>
+                <template #button-content>
+                  <font-awesome-icon :icon="['fa', 'cogs']"/>
+                </template>
 
+                <b-dropdown-item @click="$emit('abrirPopupAprovar',dado.id)">Aprovar</b-dropdown-item>
+
+              </b-dropdown>
+            </div>
           </td>
         </tr>
       </tbody>

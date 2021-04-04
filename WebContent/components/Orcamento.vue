@@ -4,7 +4,7 @@
 
     <div style="height: auto;width: auto;display: block;margin-top: 15px;text-align: center;" class="rounded">
       <div style="background-color: white;height: 86%;width: 100%;display: block;" class="align-self-center rounded">
-        <Tabela :url="'http://localhost:8080/buscarOrcamentos'" ref="tabelaAjax"></Tabela>
+        <Tabela :url="'http://localhost:8080/buscarOrcamentos'" @abrirPopupAprovar="abrirPopupAprovar($event)" :exibir-menu-orcamento="true" ref="tabelaAjax"></Tabela>
       </div>
       <b-modal ref="criarOrcamento" @hide="reload()" hide-footer>
 
@@ -113,6 +113,28 @@
           </div>
         </form>
       </b-modal>
+
+      <b-modal ref="aprovar" hide-footer>
+
+        <template #modal-header>
+          <div class="mx-auto">
+            <h5>Confirmar</h5>
+          </div>
+        </template>
+
+        <form class="col-12">
+
+          <div class="card-body">
+            Tem certeza que deseja aprovar o orçamento?
+          </div>
+
+          <div class="card-body">
+            <button @click="hideModal('aprovar')" type="button" class="btn btn-secondary float-left">Fechar</button><button @click="aprovar()" type="button" class="btn btn-success float-right">Confirmar</button>
+          </div>
+
+        </form>
+      </b-modal>
+
     </div>
   </div>
 </template>
@@ -404,6 +426,39 @@ export default {
 
           alert("Salvo com sucesso bro")
           ref.hideModal('servicos', 'reload')
+
+        },
+        error: function (result) {
+
+          alert(result.responseText)
+
+        }
+      });
+
+    },
+
+    abrirPopupAprovar(id){
+
+      var ref = this
+      ref.id = id
+      ref.showModal("aprovar")
+
+    },
+
+    aprovar(){
+
+      var ref = this
+
+      window.$.ajax({
+        method: "POST",
+        url: "http://localhost:8080/aprovar",
+        contentType: 'application/json',
+        dataType: 'json',
+        data: JSON.stringify({id: ref.id}),
+        success: function (result) {
+
+          alert("Aprovado com sucesso!")
+          ref.hideModal('aprovar', 'reload')
 
         },
         error: function (result) {

@@ -3,9 +3,7 @@
     <button @click="showModal('criarOs')" style="height: 45px;" class="btn-default btn-success rounded">Criar ordem de serviço</button>
     <div style="height: auto;width: auto;display: block;margin-top: 15px;text-align: center;" class="rounded">
       <div style="background-color: white;height: 86%;width: 100%;display: block;" class="align-self-center rounded">
-        <Tabela :url="'http://localhost:8080/buscarOs'" @ingressar="ingressar($event)" @alterarStatus="alterarStatus($event)" :exibir-menu-os="true" ref="tabelaAjax">
-
-        </Tabela>
+        <Tabela :url="'http://localhost:8080/buscarOs'" @ingressar="ingressar($event)" @abrirPopupAlterarStatus="abrirPopupAlterarStatus($event)" :exibir-menu-os="true" ref="tabelaAjax"></Tabela>
       </div>
       <b-modal ref="criarOs" @hide="reload()" hide-footer>
 
@@ -101,6 +99,37 @@
           </div>
 
         </form>
+
+      </b-modal>
+
+      <b-modal ref="alterarStatus" hide-footer>
+
+        <template #modal-header>
+          <div class="mx-auto">
+            <h5>Alterar Status</h5>
+          </div>
+        </template>
+
+        <form class="col-12">
+          <div class="card-body">
+            <label>Status</label>
+            <select v-model="status" class="form-control">
+              <option :value="1">
+                Em espera
+              </option>
+              <option :value="2">
+                Em Andamento
+              </option>
+              <option :value="3">
+                Finalizada
+              </option>
+            </select>
+          </div>
+        </form>
+
+        <div class="card-body">
+          <button @click="hideModal('alterarStatus')" type="button" class="btn btn-secondary float-left">Fechar</button><button @click="alterarStatus()" type="button" class="btn btn-success float-right">Confirmar</button>
+        </div>
 
       </b-modal>
 
@@ -398,38 +427,64 @@ export default {
 
     ingressar: function (id){
 
+      var ref = this;
 
+      window.$.ajax({
+        method: "POST",
+        url: "http://localhost:8080/ingressar",
+        contentType: 'application/json',
+        dataType: 'json',
+        data: JSON.stringify({id:id}),
+        success: function (result) {
+
+          alert("Você se tornou o responsável pela ordem de serviço!")
+
+        },
+        error: function (result) {
+
+          alert(result.responseText)
+
+        }
+      });
 
     },
 
-    alterarStatus: function (id){
+    abrirPopupAlterarStatus: function (id){
 
+      var ref = this
 
+      ref.id = id
+      ref.showModal('alterarStatus')
+
+    },
+
+    alterarStatus: function (){
+
+      var ref = this
+
+      window.$.ajax({
+        method: "POST",
+        url: "http://localhost:8080/alterarStatus",
+        contentType: 'application/json',
+        dataType: 'json',
+        data: JSON.stringify({id:ref.id,status:ref.status}),
+        success: function (result) {
+
+          alert("Status alterado com sucesso!")
+          ref.hideModal('alterarStatus')
+          ref.reload();
+
+        },
+        error: function (result) {
+
+          alert(result.responseText)
+
+        }
+      });
 
     }
 
-  },
-  mounted() {
-    var ref = this
-    window.$.ajax({
-      method: "GET",
-      url: "http://localhost:8080/verificarlogin",
-      contentType: 'application/json',
-      dataType: 'json',
-      success: function (result) {
-
-
-
-      },
-      error: function (result){
-
-        alert(result.responseText)
-        ref.$router.push({ name:'login'})
-
-      }
-    });
-
-  },
+  }
 }
 </script>
 

@@ -12,6 +12,7 @@ public class Orcamento {
     private BigDecimal valor;
     private Funcionario funcionario;
     private Cliente cliente;
+    private Boolean aprovado;
     private Object[] servicos = {};
 
     public Integer getId() {
@@ -68,5 +69,13 @@ public class Orcamento {
 
     public void setServicos(Object[] servicos) {
         this.servicos = servicos;
+    }
+
+    public Boolean getAprovado() {
+        return aprovado;
+    }
+
+    public void setAprovado(Boolean aprovado) {
+        this.aprovado = aprovado;
     }
 }

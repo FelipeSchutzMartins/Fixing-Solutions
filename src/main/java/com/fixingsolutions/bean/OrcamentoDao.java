@@ -37,6 +37,11 @@ public class OrcamentoDao implements Dao<Orcamento>{
             orcamento.setData(rs.getDate("orc.data"));
             orcamento.setValor(rs.getBigDecimal("orc.valor"));
             orcamento.setHorasPrevistas(rs.getInt("orc.horasPrevistas"));
+            if(rs.getInt("orc.aprovado")>0){
+                orcamento.setAprovado(true);
+            }else{
+                orcamento.setAprovado(false);
+            }
 
             Funcionario funcionario = new Funcionario();
             funcionario.setId(rs.getInt("fun.id"));
@@ -89,6 +94,11 @@ public class OrcamentoDao implements Dao<Orcamento>{
             orcamento.setData(rs.getDate("orc.data"));
             orcamento.setValor(rs.getBigDecimal("orc.valor"));
             orcamento.setHorasPrevistas(rs.getInt("orc.horasPrevistas"));
+            if(rs.getInt("orc.aprovado")>0){
+                orcamento.setAprovado(true);
+            }else{
+                orcamento.setAprovado(false);
+            }
 
             Funcionario funcionario = new Funcionario();
             funcionario.setId(rs.getInt("fun.id"));
@@ -173,7 +183,8 @@ public class OrcamentoDao implements Dao<Orcamento>{
         comando.append("SET valor  = ?,\n");
         comando.append("    horasPrevistas = ?,\n");
         comando.append("    idFuncionario = ?,\n");
-        comando.append("    idCliente = ?\n");
+        comando.append("    idCliente = ?,\n");
+        comando.append("    aprovado = ?\n");
         comando.append("WHERE id = ?");
 
         Connection dbConenection = connection.abrirConexao();
@@ -183,6 +194,11 @@ public class OrcamentoDao implements Dao<Orcamento>{
         preparedStatement.setInt(3,orcamento.getFuncionario().getId());
         preparedStatement.setInt(4,orcamento.getCliente().getId());
         preparedStatement.setInt(5,orcamento.getId());
+        if(orcamento.getAprovado()){
+
+            preparedStatement.setInt(6,1);
+
+        }
 
         executarUpdate(preparedStatement);
 

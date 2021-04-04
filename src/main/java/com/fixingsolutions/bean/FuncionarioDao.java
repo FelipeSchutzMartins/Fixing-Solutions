@@ -205,6 +205,8 @@ public class FuncionarioDao implements Dao<Funcionario> {
     preparedStatement.setString(1,code);
     preparedStatement.setInt(2,id);
 
+    deletarToken();
+
     executarUpdate(preparedStatement);
 
     dbConenection.close();
@@ -230,6 +232,23 @@ public class FuncionarioDao implements Dao<Funcionario> {
       token.setCode(rs.getString("code"));
 
     }
+
+    dbConenection.close();
+
+    return token;
+  }
+
+  public Token deletarToken() throws SQLException {
+
+    Token token = new Token();
+    StringBuilder comando = new StringBuilder();
+    comando.append("delete \n");
+    comando.append("FROM token\n");
+
+    Connection dbConenection = connection.abrirConexao();
+    PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando.toString());
+
+    executarUpdate(preparedStatement);
 
     dbConenection.close();
 

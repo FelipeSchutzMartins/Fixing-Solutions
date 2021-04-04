@@ -274,5 +274,81 @@ public class OrdemServicoController {
 
     }
 
+    @PostMapping(value = "/ingressar",consumes = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<?> ingressar(@RequestBody Map<String,Object> params){
+
+        AjaxResponseBody resposta = new AjaxResponseBody();
+
+        try {
+            Integer id = (Integer) params.get("id");
+            if(id==null){
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Orcamento inválido");
+            }
+
+            OsDao osDao = new OsDao();
+            FuncionarioDao funcionarioDao = new FuncionarioDao();
+            OrcamentoDao orcamentoDao = new OrcamentoDao();
+
+            Token token = FuncionarioDao.findToken();
+            Funcionario funcionario = funcionarioDao.get(token.getUserId());
+
+            Os ordemServico = osDao.get(id);
+            Orcamento orcamento = ordemServico.getOrcamento();
+            orcamento.setFuncionario(funcionario);
+            orcamentoDao.update(orcamento);
+
+        }catch(Exception e){
+            e.printStackTrace();
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Houve um problema, tente novamente mais tarde");
+        }
+        return ResponseEntity.ok(resposta);
+
+    }
+
+    @PostMapping(value = "/alterarStatus",consumes = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<?> alterarStatus(@RequestBody Map<String,Object> params){
+
+        AjaxResponseBody resposta = new AjaxResponseBody();
+
+        try {
+            Integer id = (Integer) params.get("id");
+            if(id==null){
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Orcamento inválido");
+            }
+
+            Integer status = (Integer) params.get("status");
+            if(status==null){
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Status inválido");
+            }
+
+            if(status<0 || status>3){
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Status inválido");
+            }
+
+            OsDao osDao = new OsDao();
+            Os ordemServico = osDao.get(id);
+            ordemServico.setStatus(status);
+            osDao.update(ordemServico);
+
+        }catch(Exception e){
+            e.printStackTrace();
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Houve um problema, tente novamente mais tarde");
+        }
+        return ResponseEntity.ok(resposta);
+
+    }
+
 
 }
