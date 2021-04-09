@@ -6,7 +6,7 @@ import java.util.List;
 public class AjaxResponseBody {
 
     private String msg;
-    private List<?> result = new ArrayList<Object>();
+    private List<Object> result = new ArrayList<Object>();
 
     public String getMsg() {
         return msg;
@@ -20,8 +20,12 @@ public class AjaxResponseBody {
         return result;
     }
 
-    public void setResult(List<?> result) {
+    public void setResult(List result) {
         this.result = result;
+    }
+
+    public void setResult(Object obj){
+        this.result.add(obj);
     }
 
 }

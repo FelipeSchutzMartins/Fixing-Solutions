@@ -1,6 +1,6 @@
 <template>
-  <div style="background: dodgerblue;height: 100vh;" class="d-flex justify-content-center">
-        <div class="card align-self-center rounded" style="width: 400px;">
+  <div style="background: white;height: 100vh;" class="d-flex justify-content-center">
+        <div class="card align-self-center rounded" style="width: 400px;border:1px;border-style:inset;border-color:#ff0000;border-radius: 3px;">
           <form class="col-12">
             <div class="card-body">
               <label>Nome</label>

@@ -1,6 +1,6 @@
 <template>
   <div class="align-self-center">
-    <button @click="showModal('criarOrcamento')" style="height: 45px;" class="btn-default btn-success rounded">Criar Orçamento</button>
+    <button @click="showModal('criarOrcamento')" style="height: 45px;" class="btn-default btn-primary rounded">Criar Orçamento</button>
 
     <div style="height: auto;width: auto;display: block;margin-top: 15px;text-align: center;" class="rounded">
       <div style="background-color: white;height: 86%;width: 100%;display: block;" class="align-self-center rounded">

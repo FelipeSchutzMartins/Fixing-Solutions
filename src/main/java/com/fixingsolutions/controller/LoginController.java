@@ -15,6 +15,7 @@ import java.util.Map;
 @RestController
 
 public class LoginController {
+    FuncionarioDao dao = new FuncionarioDao();
 
     @PostMapping(value = "/login",consumes = {MediaType.APPLICATION_JSON_VALUE })
     @ResponseBody
@@ -22,8 +23,6 @@ public class LoginController {
 
         AjaxResponseBody result = new AjaxResponseBody();
 
-
-        FuncionarioDao dao = new FuncionarioDao();
         try {
 
             String email = (String) params.get("email");
@@ -72,6 +71,10 @@ public class LoginController {
                         .status(HttpStatus.INTERNAL_SERVER_ERROR)
                         .body("Login inválido");
             }
+
+            Funcionario funcionario = dao.get(token.getUserId());
+
+            result.setResult(funcionario);
 
         }catch(Exception e){
             e.printStackTrace();

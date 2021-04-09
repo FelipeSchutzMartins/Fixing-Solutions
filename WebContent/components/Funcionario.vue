@@ -1,6 +1,6 @@
 <template>
   <div class="align-self-center">
-    <button @click="showModal('criarFuncionario')" style="height: 45px;" class="btn-default btn-success rounded">Criar Funcionario</button>
+    <button @click="showModal('criarFuncionario')" style="height: 45px;" class="btn-default btn-primary rounded">Criar Funcionario</button>
 
     <div style="height: auto;width: auto;display: block;margin-top: 15px;text-align: center;" class="rounded">
       <div style="background-color: white;height: 86%;width: 100%;display: block;" class="align-self-center rounded">

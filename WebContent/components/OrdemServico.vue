@@ -1,6 +1,6 @@
 <template>
   <div class="align-self-center">
-    <button @click="showModal('criarOs')" style="height: 45px;" class="btn-default btn-success rounded">Criar ordem de serviço</button>
+    <button @click="showModal('criarOs')" style="height: 45px;" class="btn-default btn-primary rounded">Criar ordem de serviço</button>
     <div style="height: auto;width: auto;display: block;margin-top: 15px;text-align: center;" class="rounded">
       <div style="background-color: white;height: 86%;width: 100%;display: block;" class="align-self-center rounded">
         <Tabela :url="'http://localhost:8080/buscarOs'" @ingressar="ingressar($event)" @abrirPopupAlterarStatus="abrirPopupAlterarStatus($event)" :exibir-menu-os="true" ref="tabelaAjax"></Tabela>

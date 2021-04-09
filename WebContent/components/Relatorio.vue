@@ -1,7 +1,7 @@
 <template>
   <div class="d-flex justify-content-center">
     <transition name="slide-fade">
-      <div style="background-color: white;height: 30%;width: 380px;display: block;" class="d-flex align-self-center justify-content-center rounded">
+      <div style="border:1px;border-style:inset;border-color:#ff0000;border-radius: 3px;height: 30%;width: 380px;display: block;" class="d-flex align-self-center justify-content-center rounded">
         <form class="col-12 form-inline align-self-center">
 
           <div class="form-group">
@@ -14,7 +14,7 @@
             <input style="margin-left:25px;" type="date" v-model="dataFimPeriodo" class="form-control">
           </div>
 
-          <button type="button" @click="gerarRelatorio" class="btn btn-success" style="margin-top:15px;margin-left: 220px;">Gerar relatório</button>
+          <button type="button" @click="gerarRelatorio" class="btn btn-primary" style="margin-top:15px;margin-left: 220px;">Gerar relatório</button>
 
         </form>
       </div>

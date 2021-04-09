@@ -1,19 +1,19 @@
 <template>
   <div>
-    <Header></Header>
+    <Header :permissoes-admin="permissoesAdmin"></Header>
 <!--    <div style="height: 100vh;" :style="{ backgroundImage: 'url(' + require('../assets/backgroundImage.jpg') + ')' }"  class="d-flex justify-content-center">-->
-    <div style="background: dodgerblue;height: 100vh;"  class="d-flex justify-content-center">
+    <div style="background: white;height: 100vh;"  class="d-flex justify-content-center">
 
       <transition name="slide-fade">
-        <div v-if="!cliente&&!funcionario&&!orcamento&&!ordemServico&&!relatorio"  style="background-color: white;height: 44%;width: 50%;display: block;" class="align-self-center rounded">
+        <div v-if="!cliente&&!funcionario&&!orcamento&&!ordemServico&&!relatorio" style="border:1px;border-style:inset;border-color:#ff0000;border-radius: 3px; height: 44%;width: 50%;display: block;" class="align-self-center">
           <div style="margin-left: 5%;margin-top: 5%;display: block;">
             <button style="width: 30%;height:90px;" class="btn-default bg-info rounded btn-sm" @click="abrirOrdemServico()">OS</button>
             <button style="width: 30%;height:90px;margin-left: 2%;" class="btn-default bg-info rounded btn-sm" @click="abrirCliente()">Clientes</button>
             <button style="width: 30%;height:90px;margin-left: 2%;"  class="btn-default bg-info rounded btn-sm" @click="abrirOrcamento()">Orçamento</button>
           </div>
           <div style="margin-left: 5%;margin-top: 5%;display: block;">
-            <button style="width: 30%;height:90px;" class="btn-default bg-info rounded btn-sm" @click="abrirFuncionario()">Funcionários</button>
-            <button style="width: 30%;margin-left: 2%;height:90px;" class="btn-default bg-info rounded btn-sm" @click="abrirRelatorio()">Relatórios</button>
+            <button style="width: 30%;height:90px;" class="btn-default bg-info rounded btn-sm" @click="abrirFuncionario()" :disabled="!permissoesAdmin">Funcionários</button>
+            <button style="width: 30%;margin-left: 2%;height:90px;" class="btn-default bg-info rounded btn-sm" @click="abrirRelatorio()" :disabled="!permissoesAdmin">Relatórios</button>
           </div>
         </div>
       </transition>
@@ -69,7 +69,8 @@ export default {
       funcionario:false,
       orcamento:false,
       ordemServico:false,
-      relatorio:false
+      relatorio:false,
+      permissoesAdmin:false
     }
   },
   props: {
@@ -83,8 +84,14 @@ export default {
            contentType: 'application/json',
            dataType: 'json',
            success: function (result) {
+             console.log(result.result[0].cargo.descricao)
+             if(result.result[0].cargo.descricao == "Administrador"){
 
+               ref.permissoesAdmin = true
 
+             }else{
+               ref.permissoesAdmin = false
+             }
 
            },
            error: function (result){
