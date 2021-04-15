@@ -28,7 +28,23 @@ public class OrdemServicoController {
                         .body("Orcamentos não encontrados");
             }
 
-            resposta.setResult(ordemServico);
+            List<Map> list = new ArrayList<Map>();
+
+            for(int i=0;i<ordemServico.size();i++){
+
+                Map<String,Object> map = new HashMap<String, Object>();
+                map.put("id",ordemServico.get(i).getId());
+                map.put("titulo",ordemServico.get(i).getTitulo());
+                map.put("status",ordemServico.get(i).getStatus());
+                map.put("dataUltimaAtualizacao",ordemServico.get(i).getDataUltimaAtualizacao());
+                map.put("dataCriacao",ordemServico.get(i).getDataCriacao());
+                map.put("orcamento",ordemServico.get(i).getOrcamento());
+
+                list.add(map);
+
+            }
+
+            resposta.setResult(list);
 
         }catch (Exception e){
 

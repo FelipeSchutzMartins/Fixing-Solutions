@@ -66,6 +66,28 @@
         </form>
       </b-modal>
     </div>
+
+    <b-modal ref="confirmacaoExclusaoCliente" hide-footer>
+
+      <template #modal-header>
+        <div class="mx-auto">
+          <h5>Confirmar</h5>
+        </div>
+      </template>
+
+      <form class="col-12">
+
+        <div class="card-body">
+          Tem certeza que deseja excluir o cliente?
+        </div>
+
+        <div class="card-body">
+          <button @click="hideModal('confirmacaoExclusaoCliente')" type="button" class="btn btn-secondary float-left">Fechar</button><button @click="excluirCliente()" type="button" class="btn btn-success float-right">Confirmar</button>
+        </div>
+
+      </form>
+    </b-modal>
+
   </div>
 </template>
 
@@ -136,26 +158,9 @@ export default {
     excluir: function (id) {
 
       var ref = this
+      ref.id = id
+      ref.showModal('confirmacaoExclusaoCliente')
 
-      window.$.ajax({
-        method: "DELETE",
-        url: "http://localhost:8080/deletarCliente",
-        contentType: 'application/json',
-        dataType: 'json',
-        data: JSON.stringify({id: id}),
-        success: function (result) {
-
-          alert("Cliente excluido com sucesso!")
-          ref.hideModal('editar')
-          ref.reload();
-
-        },
-        error: function (result) {
-
-          alert(result.responseText)
-
-        }
-      });
     },
     showModal: function(modaiId,acao) {
       var ref = this
@@ -191,7 +196,34 @@ export default {
       ref.cpf = null
       ref.email = null
 
-    }
+    },
+
+    excluirCliente: function () {
+
+      var ref = this
+
+      window.$.ajax({
+        method: "DELETE",
+        url: "http://localhost:8080/deletarCliente",
+        contentType: 'application/json',
+        dataType: 'json',
+        data: JSON.stringify({id: ref.id}),
+        success: function (result) {
+
+          alert("Cliente excluido com sucesso!")
+          ref.hideModal('editar')
+          ref.hideModal('confirmacaoExclusaoCliente')
+          ref.reload();
+
+        },
+        error: function (result) {
+
+          alert(result.responseText)
+
+        }
+      });
+    },
+
   }
 }
 </script>

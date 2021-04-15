@@ -1,6 +1,6 @@
 <template>
   <div class="align-self-center">
-    <button @click="showModal('criarOs')" style="height: 45px;" class="btn-default btn-primary rounded">Criar ordem de serviço</button>
+    <button @click="showModal('criarOs','reload')" style="height: 45px;" class="btn-default btn-primary rounded">Criar ordem de serviço</button>
     <div style="height: auto;width: auto;display: block;margin-top: 15px;text-align: center;" class="rounded">
       <div style="background-color: white;height: 86%;width: 100%;display: block;" class="align-self-center rounded">
         <Tabela :url="'http://localhost:8080/buscarOs'" @ingressar="ingressar($event)" @abrirPopupAlterarStatus="abrirPopupAlterarStatus($event)" :exibir-menu-os="true" ref="tabelaAjax"></Tabela>
@@ -21,9 +21,7 @@
           <div class="card-body">
             <label>Orçamento</label>
             <select v-model="orcamento" class="form-control">
-              <option v-for="orcamento in orcamentos" :value="orcamento" :key="orcamento.id">
-                {{ orcamento.id }}
-              </option>
+              <option v-for="orcamento in orcamentos" :value="orcamento" :key="orcamento.id">{{ valorOrcamento(orcamento) }}</option>
             </select>
           </div>
           <div class="card-body">
@@ -134,6 +132,28 @@
       </b-modal>
 
     </div>
+
+    <b-modal ref="confirmacaoExclusaoOs" hide-footer>
+
+      <template #modal-header>
+        <div class="mx-auto">
+          <h5>Confirmar</h5>
+        </div>
+      </template>
+
+      <form class="col-12">
+
+        <div class="card-body">
+          Tem certeza que deseja excluir a ordem de serviço?
+        </div>
+
+        <div class="card-body">
+          <button @click="hideModal('confirmacaoExclusaoOs')" type="button" class="btn btn-secondary float-left">Fechar</button><button @click="excluirOs()" type="button" class="btn btn-success float-right">Confirmar</button>
+        </div>
+
+      </form>
+    </b-modal>
+
   </div>
 </template>
 
@@ -221,24 +241,8 @@ export default {
 
       var ref = this
 
-      window.$.ajax({
-        method: "DELETE",
-        url: "http://localhost:8080/deletarOrdemServico",
-        contentType: 'application/json',
-        dataType: 'json',
-        data: JSON.stringify({id:id}),
-        success: function (result) {
-
-          alert("Orçamento excluido com sucesso!")
-          ref.reload();
-
-        },
-        error: function (result) {
-
-          alert(result.responseText)
-
-        }
-      });
+      ref.id = id
+      ref.showModal('confirmacaoExclusaoOs')
 
     },
 
@@ -481,6 +485,42 @@ export default {
 
         }
       });
+
+    },
+    excluirOs(){
+
+      var ref = this
+
+      window.$.ajax({
+        method: "DELETE",
+        url: "http://localhost:8080/deletarOrdemServico",
+        contentType: 'application/json',
+        dataType: 'json',
+        data: JSON.stringify({id:ref.id}),
+        success: function (result) {
+
+          alert("Orçamento excluido com sucesso!")
+          ref.hideModal('confirmacaoExclusaoOs')
+          ref.reload();
+
+        },
+        error: function (result) {
+
+          alert(result.responseText)
+
+        }
+      });
+
+    },
+
+    valorOrcamento: function (value){
+
+      var valor;
+
+      console.log(value)
+      valor = value.id+", "+value.cliente.email+", "+value.data
+
+      return valor;
 
     }
 

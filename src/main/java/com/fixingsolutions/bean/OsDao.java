@@ -25,53 +25,56 @@ public class OsDao implements Dao<Os> {
         comando.append("JOIN cargo ON fun.idCargo = cargo.id \n");
         comando.append("JOIN cliente cli ON orc.idCliente = cli.id \n");
         comando.append("WHERE orc.id = ? \n");
-
-        Connection dbConenection = connection.abrirConexao();
-        PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando.toString());
-        preparedStatement.setInt(1,id);
-        ResultSet rs = preparedStatement.executeQuery();
-
         Os ordemServico = new Os();
-        if(rs.next()){
+        try {
+            Connection dbConenection = connection.abrirConexao();
+            PreparedStatement preparedStatement = dbConenection.prepareStatement(comando.toString());
+            preparedStatement.setInt(1, id);
+            ResultSet rs = preparedStatement.executeQuery();
 
-            Orcamento orcamento = new Orcamento();
-            orcamento.setId(rs.getInt("orc.id"));
-            orcamento.setData(rs.getDate("orc.data"));
-            orcamento.setValor(rs.getBigDecimal("orc.valor"));
-            orcamento.setHorasPrevistas(rs.getInt("orc.horasPrevistas"));
+            if (rs.next()) {
 
-            Funcionario funcionario = new Funcionario();
-            funcionario.setId(rs.getInt("fun.id"));
-            funcionario.setEmail(rs.getString("fun.email"));
-            funcionario.setSenha(rs.getString("fun.password"));
-            funcionario.setNome(rs.getString("fun.nome"));
+                Orcamento orcamento = new Orcamento();
+                orcamento.setId(rs.getInt("orc.id"));
+                orcamento.setData(rs.getDate("orc.data"));
+                orcamento.setValor(rs.getBigDecimal("orc.valor"));
+                orcamento.setHorasPrevistas(rs.getInt("orc.horasPrevistas"));
 
-            Cargo cargo = new Cargo();
-            cargo.setId(rs.getInt("cargo.id"));
-            cargo.setDescricao(rs.getString("cargo.descricao"));
+                Funcionario funcionario = new Funcionario();
+                funcionario.setId(rs.getInt("fun.id"));
+                funcionario.setEmail(rs.getString("fun.email"));
+                funcionario.setSenha(rs.getString("fun.password"));
+                funcionario.setNome(rs.getString("fun.nome"));
 
-            funcionario.setCargo(cargo);
+                Cargo cargo = new Cargo();
+                cargo.setId(rs.getInt("cargo.id"));
+                cargo.setDescricao(rs.getString("cargo.descricao"));
 
-            Cliente cliente = new Cliente();
-            cliente.setId(rs.getInt("cli.id"));
-            cliente.setEmail(rs.getString("cli.email"));
-            cliente.setCpf(rs.getString("cli.cpf"));
-            cliente.setNome(rs.getString("cli.nome"));
-            cliente.setTelefone(rs.getString("cli.telefone"));
+                funcionario.setCargo(cargo);
 
-            orcamento.setFuncionario(funcionario);
-            orcamento.setCliente(cliente);
+                Cliente cliente = new Cliente();
+                cliente.setId(rs.getInt("cli.id"));
+                cliente.setEmail(rs.getString("cli.email"));
+                cliente.setCpf(rs.getString("cli.cpf"));
+                cliente.setNome(rs.getString("cli.nome"));
+                cliente.setTelefone(rs.getString("cli.telefone"));
 
-            ordemServico.setOrcamento(orcamento);
-            ordemServico.setId(rs.getInt("os.id"));
-            ordemServico.setStatus(rs.getInt("os.status"));
-            ordemServico.setDataCriacao(rs.getDate("os.dataInicio"));
-            ordemServico.setTitulo(rs.getString("os.titulo"));
-            ordemServico.setDataUltimaAtualizacao(rs.getDate("os.dataUltimaAtualizacao"));
+                orcamento.setFuncionario(funcionario);
+                orcamento.setCliente(cliente);
 
+                ordemServico.setOrcamento(orcamento);
+                ordemServico.setId(rs.getInt("os.id"));
+                ordemServico.setStatus(rs.getInt("os.status"));
+                ordemServico.setDataCriacao(rs.getDate("os.dataInicio"));
+                ordemServico.setTitulo(rs.getString("os.titulo"));
+                ordemServico.setDataUltimaAtualizacao(rs.getDate("os.dataUltimaAtualizacao"));
+
+            }
+
+            dbConenection.close();
+        }catch (Exception e){
+            e.printStackTrace();
         }
-
-        dbConenection.close();
 
         return ordemServico;
     }
@@ -93,50 +96,57 @@ public class OsDao implements Dao<Os> {
         ResultSet rs = stmt.executeQuery(comando.toString());
 
         List<Os> listaOs = new ArrayList<Os>();
-        while(rs.next()) {
 
-            Orcamento orcamento = new Orcamento();
-            orcamento.setId(rs.getInt("orc.id"));
-            orcamento.setData(rs.getDate("orc.data"));
-            orcamento.setValor(rs.getBigDecimal("orc.valor"));
-            orcamento.setHorasPrevistas(rs.getInt("orc.horasPrevistas"));
+        try {
 
-            Funcionario funcionario = new Funcionario();
-            funcionario.setId(rs.getInt("fun.id"));
-            funcionario.setEmail(rs.getString("fun.email"));
-            funcionario.setSenha(rs.getString("fun.password"));
-            funcionario.setNome(rs.getString("fun.nome"));
+            while (rs.next()) {
 
-            Cargo cargo = new Cargo();
-            cargo.setId(rs.getInt("cargo.id"));
-            cargo.setDescricao(rs.getString("cargo.descricao"));
+                Orcamento orcamento = new Orcamento();
+                orcamento.setId(rs.getInt("orc.id"));
+                orcamento.setData(rs.getDate("orc.data"));
+                orcamento.setValor(rs.getBigDecimal("orc.valor"));
+                orcamento.setHorasPrevistas(rs.getInt("orc.horasPrevistas"));
 
-            funcionario.setCargo(cargo);
+                Funcionario funcionario = new Funcionario();
+                funcionario.setId(rs.getInt("fun.id"));
+                funcionario.setEmail(rs.getString("fun.email"));
+                funcionario.setSenha(rs.getString("fun.password"));
+                funcionario.setNome(rs.getString("fun.nome"));
 
-            Cliente cliente = new Cliente();
-            cliente.setId(rs.getInt("cli.id"));
-            cliente.setEmail(rs.getString("cli.email"));
-            cliente.setCpf(rs.getString("cli.cpf"));
-            cliente.setNome(rs.getString("cli.nome"));
-            cliente.setTelefone(rs.getString("cli.telefone"));
+                Cargo cargo = new Cargo();
+                cargo.setId(rs.getInt("cargo.id"));
+                cargo.setDescricao(rs.getString("cargo.descricao"));
 
-            orcamento.setFuncionario(funcionario);
-            orcamento.setCliente(cliente);
+                funcionario.setCargo(cargo);
 
-            Os ordemServico = new Os();
-            ordemServico.setOrcamento(orcamento);
-            ordemServico.setId(rs.getInt("os.id"));
-            ordemServico.setStatus(rs.getInt("os.status"));
-            ordemServico.setDataCriacao(rs.getDate("os.dataInicio"));
-            ordemServico.setTitulo(rs.getString("os.titulo"));
-            ordemServico.setDataUltimaAtualizacao(rs.getDate("os.dataUltimaAtualizacao"));
+                Cliente cliente = new Cliente();
+                cliente.setId(rs.getInt("cli.id"));
+                cliente.setEmail(rs.getString("cli.email"));
+                cliente.setCpf(rs.getString("cli.cpf"));
+                cliente.setNome(rs.getString("cli.nome"));
+                cliente.setTelefone(rs.getString("cli.telefone"));
 
-            listaOs.add(ordemServico);
+                orcamento.setFuncionario(funcionario);
+                orcamento.setCliente(cliente);
+
+                Os ordemServico = new Os();
+                ordemServico.setOrcamento(orcamento);
+                ordemServico.setId(rs.getInt("os.id"));
+                ordemServico.setStatus(rs.getInt("os.status"));
+                ordemServico.setDataCriacao(rs.getDate("os.dataInicio"));
+                ordemServico.setTitulo(rs.getString("os.titulo"));
+                ordemServico.setDataUltimaAtualizacao(rs.getDate("os.dataUltimaAtualizacao"));
+
+                listaOs.add(ordemServico);
+
+            }
+
+            dbConenection.close();
+        }catch (Exception e){
+
+            e.printStackTrace();
 
         }
-
-        dbConenection.close();
-
         return listaOs;
     }
 
@@ -148,16 +158,21 @@ public class OsDao implements Dao<Os> {
         comando.append("VALUES(?,?,?,?,?)");
 
         Connection dbConenection = connection.abrirConexao();
-        PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando.toString());
-        preparedStatement.setInt(1,os.getStatus());
-        preparedStatement.setString(2,os.getTitulo());
-        preparedStatement.setDate(3,new Date(os.getDataCriacao().getTime()));
-        preparedStatement.setDate(4,new Date(os.getDataUltimaAtualizacao().getTime()));
-        preparedStatement.setInt(5,os.getOrcamento().getId());
+        try {
+            PreparedStatement preparedStatement = dbConenection.prepareStatement(comando.toString());
+            preparedStatement.setInt(1, os.getStatus());
+            preparedStatement.setString(2, os.getTitulo());
+            preparedStatement.setDate(3, new Date(os.getDataCriacaoDate().getTime()));
+            preparedStatement.setDate(4, new Date(os.getDataUltimaAtualizacaoDate().getTime()));
+            preparedStatement.setInt(5, os.getOrcamento().getId());
 
-        executarUpdate(preparedStatement);
+            executarUpdate(preparedStatement);
 
-        dbConenection.close();
+            dbConenection.close();
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
     }
 
@@ -173,18 +188,23 @@ public class OsDao implements Dao<Os> {
         comando.append("    dataUltimaAtualizacao = ?\n");
         comando.append("WHERE id = ?");
 
-        Connection dbConenection = connection.abrirConexao();
-        PreparedStatement preparedStatement  = dbConenection.prepareStatement(comando.toString());
-        preparedStatement.setInt(1,os.getOrcamento().getId());
-        preparedStatement.setInt(2,os.getStatus());
-        preparedStatement.setString(3,os.getTitulo());
-        preparedStatement.setDate(4, new Date(os.getDataCriacao().getTime()));
-        preparedStatement.setDate(5,new Date(os.getDataUltimaAtualizacao().getTime()));
-        preparedStatement.setInt(6,os.getId());
+        try {
+            Connection dbConenection = connection.abrirConexao();
+            PreparedStatement preparedStatement = dbConenection.prepareStatement(comando.toString());
+            preparedStatement.setInt(1, os.getOrcamento().getId());
+            preparedStatement.setInt(2, os.getStatus());
+            preparedStatement.setString(3, os.getTitulo());
+            preparedStatement.setDate(4, new Date(os.getDataCriacaoDate().getTime()));
+            preparedStatement.setDate(5, new Date(os.getDataUltimaAtualizacaoDate().getTime()));
+            preparedStatement.setInt(6, os.getId());
 
-        executarUpdate(preparedStatement);
+            executarUpdate(preparedStatement);
 
-        dbConenection.close();
+            dbConenection.close();
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
     }
 
@@ -225,50 +245,53 @@ public class OsDao implements Dao<Os> {
         ResultSet rs = preparedStatement.executeQuery();
 
         List<Os> listaOs = new ArrayList<Os>();
-        while (rs.next()) {
+        try {
+            while (rs.next()) {
 
-            Orcamento orcamento = new Orcamento();
-            orcamento.setId(rs.getInt("orc.id"));
-            orcamento.setData(rs.getDate("orc.data"));
-            orcamento.setValor(rs.getBigDecimal("orc.valor"));
-            orcamento.setHorasPrevistas(rs.getInt("orc.horasPrevistas"));
+                Orcamento orcamento = new Orcamento();
+                orcamento.setId(rs.getInt("orc.id"));
+                orcamento.setData(rs.getDate("orc.data"));
+                orcamento.setValor(rs.getBigDecimal("orc.valor"));
+                orcamento.setHorasPrevistas(rs.getInt("orc.horasPrevistas"));
 
-            Funcionario funcionario = new Funcionario();
-            funcionario.setId(rs.getInt("fun.id"));
-            funcionario.setEmail(rs.getString("fun.email"));
-            funcionario.setSenha(rs.getString("fun.password"));
-            funcionario.setNome(rs.getString("fun.nome"));
+                Funcionario funcionario = new Funcionario();
+                funcionario.setId(rs.getInt("fun.id"));
+                funcionario.setEmail(rs.getString("fun.email"));
+                funcionario.setSenha(rs.getString("fun.password"));
+                funcionario.setNome(rs.getString("fun.nome"));
 
-            Cargo cargo = new Cargo();
-            cargo.setId(rs.getInt("cargo.id"));
-            cargo.setDescricao(rs.getString("cargo.descricao"));
+                Cargo cargo = new Cargo();
+                cargo.setId(rs.getInt("cargo.id"));
+                cargo.setDescricao(rs.getString("cargo.descricao"));
 
-            funcionario.setCargo(cargo);
+                funcionario.setCargo(cargo);
 
-            Cliente cliente = new Cliente();
-            cliente.setId(rs.getInt("cli.id"));
-            cliente.setEmail(rs.getString("cli.email"));
-            cliente.setCpf(rs.getString("cli.cpf"));
-            cliente.setNome(rs.getString("cli.nome"));
-            cliente.setTelefone(rs.getString("cli.telefone"));
+                Cliente cliente = new Cliente();
+                cliente.setId(rs.getInt("cli.id"));
+                cliente.setEmail(rs.getString("cli.email"));
+                cliente.setCpf(rs.getString("cli.cpf"));
+                cliente.setNome(rs.getString("cli.nome"));
+                cliente.setTelefone(rs.getString("cli.telefone"));
 
-            orcamento.setFuncionario(funcionario);
-            orcamento.setCliente(cliente);
+                orcamento.setFuncionario(funcionario);
+                orcamento.setCliente(cliente);
 
-            Os ordemServico = new Os();
-            ordemServico.setOrcamento(orcamento);
-            ordemServico.setId(rs.getInt("os.id"));
-            ordemServico.setStatus(rs.getInt("os.status"));
-            ordemServico.setDataCriacao(rs.getDate("os.dataInicio"));
-            ordemServico.setTitulo(rs.getString("os.titulo"));
-            ordemServico.setDataUltimaAtualizacao(rs.getDate("os.dataUltimaAtualizacao"));
+                Os ordemServico = new Os();
+                ordemServico.setOrcamento(orcamento);
+                ordemServico.setId(rs.getInt("os.id"));
+                ordemServico.setStatus(rs.getInt("os.status"));
+                ordemServico.setDataCriacao(rs.getDate("os.dataInicio"));
+                ordemServico.setTitulo(rs.getString("os.titulo"));
+                ordemServico.setDataUltimaAtualizacao(rs.getDate("os.dataUltimaAtualizacao"));
 
-            listaOs.add(ordemServico);
+                listaOs.add(ordemServico);
 
+            }
+
+            dbConenection.close();
+        }catch (Exception e){
+            e.printStackTrace();
         }
-
-        dbConenection.close();
-
         return listaOs;
     }
 

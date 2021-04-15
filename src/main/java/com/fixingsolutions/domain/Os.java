@@ -4,6 +4,8 @@ import com.fixingsolutions.bean.OrcamentoDao;
 import com.fixingsolutions.bean.ServicoDao;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -15,6 +17,9 @@ public class Os {
     private Date dataUltimaAtualizacao;
     private Date dataCriacao;
     private Orcamento orcamento;
+
+    private String pattern = "dd-MM-yyyy";
+    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
     public Orcamento getOrcamento() {
         return orcamento;
@@ -40,19 +45,27 @@ public class Os {
         this.status = status;
     }
 
-    public Date getDataUltimaAtualizacao() {
-        return dataUltimaAtualizacao;
+    public String getDataUltimaAtualizacao() throws ParseException {
+        return simpleDateFormat.format(dataUltimaAtualizacao);
     }
 
-    public void setDataUltimaAtualizacao(Date dataUltimaAtualizacao) {
+    public Date getDataUltimaAtualizacaoDate(){
+        return this.dataUltimaAtualizacao;
+    }
+
+    public void setDataUltimaAtualizacao(Date dataUltimaAtualizacao) throws ParseException {
         this.dataUltimaAtualizacao = dataUltimaAtualizacao;
     }
 
-    public Date getDataCriacao() {
-        return dataCriacao;
+    public String getDataCriacao() throws ParseException {
+        return simpleDateFormat.format(dataCriacao);
     }
 
-    public void setDataCriacao(Date dataCriacao) {
+    public Date getDataCriacaoDate(){
+        return this.dataCriacao;
+    }
+
+    public void setDataCriacao(Date dataCriacao) throws ParseException {
         this.dataCriacao = dataCriacao;
     }
 

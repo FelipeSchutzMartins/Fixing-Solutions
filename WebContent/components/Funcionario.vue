@@ -75,6 +75,28 @@
         </form>
       </b-modal>
     </div>
+
+    <b-modal ref="confirmacaoExclusaoFuncionario" hide-footer>
+
+      <template #modal-header>
+        <div class="mx-auto">
+          <h5>Confirmar</h5>
+        </div>
+      </template>
+
+      <form class="col-12">
+
+        <div class="card-body">
+          Tem certeza que deseja excluir o funcionario?
+        </div>
+
+        <div class="card-body">
+          <button @click="hideModal('confirmacaoExclusaoFuncionario')" type="button" class="btn btn-secondary float-left">Fechar</button><button @click="excluirFuncionario()" type="button" class="btn btn-success float-right">Confirmar</button>
+        </div>
+
+      </form>
+    </b-modal>
+
   </div>
 </template>
 
@@ -146,26 +168,8 @@ export default {
     excluir(id) {
 
       var ref = this
-
-      window.$.ajax({
-        method: "DELETE",
-        url: "http://localhost:8080/deletarFuncionario",
-        contentType: 'application/json',
-        dataType: 'json',
-        data: JSON.stringify({id: id}),
-        success: function (result) {
-
-          alert("Funcionario excluido com sucesso!")
-          ref.hideModal('editar')
-          ref.reload();
-
-        },
-        error: function (result) {
-
-          alert(result.responseText)
-
-        }
-      });
+      ref.id = id
+      ref.showModal('confirmacaoExclusaoFuncionario')
     },
     showModal(modaiId,acao) {
       var ref = this
@@ -220,7 +224,34 @@ export default {
 
         }
       });
-    }
+    },
+
+    excluirFuncionario() {
+
+      var ref = this
+
+      window.$.ajax({
+        method: "DELETE",
+        url: "http://localhost:8080/deletarFuncionario",
+        contentType: 'application/json',
+        dataType: 'json',
+        data: JSON.stringify({id: ref.id}),
+        success: function (result) {
+
+          alert("Funcionario excluido com sucesso!")
+          ref.hideModal('editar')
+          ref.hideModal('confirmacaoExclusaoFuncionario')
+          ref.reload();
+
+        },
+        error: function (result) {
+
+          alert(result.responseText)
+
+        }
+      });
+    },
+
   },
   mounted() {
     this.buscarCargos();

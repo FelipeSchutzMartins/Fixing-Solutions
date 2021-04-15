@@ -3,6 +3,7 @@ package com.fixingsolutions.controller;
 import com.fixingsolutions.bean.OsDao;
 import com.fixingsolutions.domain.AjaxResponseBody;
 import com.fixingsolutions.domain.Os;
+import com.fixingsolutions.service.InputValidationService;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -36,8 +37,27 @@ public class RelatorioController {
             Font font = FontFactory.getFont(FontFactory.COURIER, 16, BaseColor.BLACK);
 
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+
+            if(!InputValidationService.isValidStringInput((String) params.get("dataFimPeriodo"))){
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Data fim do periodo inválida");
+            }
+
+            if(!InputValidationService.isValidStringInput((String) params.get("dataIniPeriodo"))){
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Data inicio do periodo inválida");
+            }
+
             Date dataFin = formatter.parse((String) params.get("dataFimPeriodo"));
             Date dataIni = formatter.parse((String) params.get("dataIniPeriodo"));
+
+            if(dataFin.before(dataIni)){
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Data fim do periodo precisa ser maior do que a data de inicio");
+            }
 
             List<Os> ordemServicos = OsDao.findWhereDateCriacaoBetween(dataIni,dataFin);
 
@@ -54,13 +74,18 @@ public class RelatorioController {
                 table.addCell(ordemServico.getId().toString());
                 table.addCell(ordemServico.getStatus().toString());
                 table.addCell(ordemServico.getOrcamento().getValor().toString());
-                table.addCell(ordemServico.getDataCriacao().toString());
-                table.addCell(ordemServico.getDataUltimaAtualizacao().toString());
+                table.addCell(ordemServico.getDataCriacao());
+                table.addCell(ordemServico.getDataUltimaAtualizacao());
                 table.addCell(ordemServico.getOrcamento().getFuncionario().getEmail().toString());
 
             }
 
+            String pattern = "dd-MM-yyyy";
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
+            document.add(new Paragraph("Relatório de ordem de serviços"));
+            document.add(new Paragraph("Data de emissão: "+simpleDateFormat.format(new Date())));
+            document.add(Chunk.NEWLINE);
             document.add(table);
             document.close();
 

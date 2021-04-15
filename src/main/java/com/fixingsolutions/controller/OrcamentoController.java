@@ -221,7 +221,7 @@ public class OrcamentoController {
                         .body("Responsável inválido");
             }
 
-            Integer horasPrevistas = Integer.parseInt((String) params.get("horasPrevistas"));
+            Integer horasPrevistas = Integer.parseInt(params.get("horasPrevistas").toString());
             if(horasPrevistas==null){
                 return ResponseEntity
                         .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -395,7 +395,7 @@ public class OrcamentoController {
                             .body("Descrição do serviço Nº"+(i+1)+" inválido");
                 }
 
-                String paramValor = (String) ob.get("valor");
+                String paramValor = ob.get("valor").toString();
                 if(paramValor==null){
                     return ResponseEntity
                             .status(HttpStatus.INTERNAL_SERVER_ERROR)

@@ -17,9 +17,9 @@
         </thead>
         <tbody>
           <tr v-for="dado in dados" :key="dado.id" v-show="!dadosFiltrados.length>0&&(filtro == null || filtro == '')">
+            <td v-show="dado.orcamento!=undefined"><button type="button" class="btn-sm btn-primary btn-rounded" @click="verDetalhes(dado)">Ver detalhes</button></td>
             <td scope="row" v-show="key!='id'&&key!='servicos'&&key!='orcamento'" v-for="(value , key) in dado" :key="key">{{ valorExibido(value) }}</td>
             <td v-show="dado.servicos!=undefined"><button type="button" class="btn-sm btn-primary btn-rounded" @click="verServico(dado)">Ver serviços</button></td>
-            <td v-show="dado.orcamento!=undefined"><button type="button" class="btn-sm btn-primary btn-rounded" @click="verDetalhes(dado)">Ver detalhes</button></td>
             <td><button type="button" class="btn-sm btn-primary btn-rounded" @click="editar(dado)">Editar</button></td>
             <td><button @click="excluir(dado.id)" class="btn-sm btn-danger float-left" type="button">Excluir</button></td>
             <td v-if="exibirMenuOs">

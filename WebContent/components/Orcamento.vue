@@ -105,7 +105,7 @@
           <div class="card-body" v-for="servico in servicos" :key="servico">
             <label style="display: block;">Serviço #{{ servico.id }}</label>
             <input v-model="servico.descricao" class="form-control" style="width: 150px; display: inline;" placeholder="Descrição"><input v-model="servico.valor" @change="atualizarValor()" class="form-control" style="margin-left:15px;width: 60px;display: inline;" placeholder="valor">
-            <button @click="excluirServico(servico.id)" style="margin-left: 15px;height: 38px;" class="btn-danger rounded" type="button">Excluir</button>
+            <button @click="abrirPopupexcluirServico(servico.id)" style="margin-left: 15px;height: 38px;" class="btn-danger rounded" type="button">Excluir</button>
           </div>
 
           <div class="card-body">
@@ -135,6 +135,48 @@
         </form>
       </b-modal>
 
+      <b-modal ref="confirmacaoExclusaoOrcamento" hide-footer>
+
+        <template #modal-header>
+          <div class="mx-auto">
+            <h5>Confirmar</h5>
+          </div>
+        </template>
+
+        <form class="col-12">
+
+          <div class="card-body">
+            Tem certeza que deseja excluir o orçamento?
+          </div>
+
+          <div class="card-body">
+            <button @click="hideModal('confirmacaoExclusaoOrcamento')" type="button" class="btn btn-secondary float-left">Fechar</button><button @click="excluirOrcamento()" type="button" class="btn btn-success float-right">Confirmar</button>
+          </div>
+
+        </form>
+      </b-modal>
+
+      <b-modal ref="confirmacaoExclusaoServico" hide-footer>
+
+        <template #modal-header>
+          <div class="mx-auto">
+            <h5>Confirmar</h5>
+          </div>
+        </template>
+
+        <form class="col-12">
+
+          <div class="card-body">
+            Tem certeza que deseja excluir o serviço?
+          </div>
+
+          <div class="card-body">
+            <button @click="hideModal('confirmacaoExclusaoServico')" type="button" class="btn btn-secondary float-left">Fechar</button><button @click="excluirServico()" type="button" class="btn btn-success float-right">Confirmar</button>
+          </div>
+
+        </form>
+      </b-modal>
+
     </div>
   </div>
 </template>
@@ -153,7 +195,8 @@ export default {
       servicos:[],
       responsavel:null,
       cliente:null,
-      id:null
+      id:null,
+      idServico:null
     }
   },
   watch:{
@@ -224,25 +267,10 @@ export default {
     excluir: function (id) {
 
       var ref = this
+      ref.id = id
 
-      window.$.ajax({
-        method: "DELETE",
-        url: "http://localhost:8080/deletarOrcamento",
-        contentType: 'application/json',
-        dataType: 'json',
-        data: JSON.stringify({id: id}),
-        success: function (result) {
+      ref.showModal('confirmacaoExclusaoOrcamento')
 
-          alert("Orçamento excluido com sucesso!")
-          ref.reload();
-
-        },
-        error: function (result) {
-
-          alert(result.responseText)
-
-        }
-      });
     },
     showModal: function (modaiId, acao) {
 
@@ -386,28 +414,12 @@ export default {
 
     },
 
-    excluirServico: function (id) {
+    abrirPopupexcluirServico: function (id) {
       var ref = this;
 
-      window.$.ajax({
-        method: "DELETE",
-        url: "http://localhost:8080/excluirServico",
-        contentType: 'application/json',
-        dataType: 'json',
-        data: JSON.stringify({idServico: id, idOrcamento: ref.id}),
-        success: function (result) {
+      ref.idServico = id
 
-          ref.carregarServicos()
-          ref.hideModal('servicos', 'reload')
-          alert("Excluido com sucesso bro!")
-
-        },
-        error: function (result) {
-
-          alert(result.responseText)
-
-        }
-      });
+      ref.showModal('confirmacaoExclusaoServico')
 
 
     },
@@ -468,7 +480,59 @@ export default {
         }
       });
 
-    }
+    },
+
+    excluirOrcamento(){
+      var ref = this
+      window.$.ajax({
+        method: "DELETE",
+        url: "http://localhost:8080/deletarOrcamento",
+        contentType: 'application/json',
+        dataType: 'json',
+        data: JSON.stringify({id: ref.id}),
+        success: function (result) {
+
+          alert("Orçamento excluido com sucesso!")
+          ref.hideModal('confirmacaoExclusaoOrcamento')
+          ref.reload();
+
+        },
+        error: function (result) {
+
+          alert(result.responseText)
+
+        }
+      });
+
+    },
+
+    excluirServico: function () {
+      var ref = this;
+
+      window.$.ajax({
+        method: "DELETE",
+        url: "http://localhost:8080/excluirServico",
+        contentType: 'application/json',
+        dataType: 'json',
+        data: JSON.stringify({idServico: ref.idServico, idOrcamento: ref.id}),
+        success: function (result) {
+
+          ref.carregarServicos()
+          ref.hideModal('confirmacaoExclusaoServico')
+          ref.hideModal('servicos', 'reload')
+          alert("Excluido com sucesso bro!")
+
+        },
+        error: function (result) {
+
+          alert(result.responseText)
+
+        }
+      });
+
+
+    },
+
   }
 }
 </script>
