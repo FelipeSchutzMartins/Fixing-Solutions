@@ -1,4 +1,4 @@
-# ProjetoIndividual
+# Fixing Solutions
 This project is in development, it's a collegue web app using springboot and Vue.js
 # Requirements
 * JDK 1.8
